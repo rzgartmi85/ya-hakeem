@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>یا حکیم — پسپۆڕی</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+/**
+ * یا حکیم — Central Data Layer v2
+ * Edit only this file to add doctors, articles, specialties, or Risale content.
+ */
+const YH = {
+
+  logoSVG: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3C8 3 5 7 5 11C5 14 7 17 9 19L12 21L15 19C17 17 19 14 19 11C19 7 16 3 12 3Z" fill="#f0c080" opacity="0.9"/><path d="M12 7V15M9 10H15" stroke="#7c3a1a" stroke-width="2" stroke-linecap="round"/></svg>`,
+
+  specialties: {
+    "rheumatology":       { key:"rheumatology",       nameKu:"ڕۆماتیزم و جومگە",          icon:"🦵", cssClass:"sp-rheum",    descKu:"پسپۆڕییەکی تایبەت بە نەخۆشییەکانی جومگە، ئێسک، و دەستگای ئیمیونی — وەک ئارتریتی ڕۆماتۆید، نقرس، لووپوس، و ئۆستیوئارتریت.", patientGroups:[{key:"risale",icon:"📖",title:"رسالەی نور"},{key:"conditions",icon:"🫁",title:"نەخۆشییەکان"},{key:"symptoms",icon:"🔍",title:"نیشانە و هەستەکان"},{key:"medications",icon:"💊",title:"دەرمانەکان"}], proGroups:[{key:"risale-pro",icon:"📖",title:"رسالەی نور و پزیشک"},{key:"inflammatory",icon:"🔥",title:"Inflammatory Arthritis"},{key:"crystal",icon:"💎",title:"Crystal Arthropathies"},{key:"msk",icon:"🩻",title:"MSK & Referred Pain"},{key:"ctd",icon:"🧬",title:"Connective Tissue Diseases"},{key:"vasculitis",icon:"🩸",title:"Vasculitis"},{key:"osteoporosis",icon:"🦴",title:"Osteoporosis & Metabolic Bone"},{key:"investigations",icon:"🧪",title:"Investigations & Imaging"}] },
+    "internal":           { key:"internal",           nameKu:"نەخۆشییەکانی هەناوی",       icon:"🫃", cssClass:"sp-internal", descKu:"پسپۆڕی کێشەکانی گەڕۆک، مێدە، رووگ، و کولیلکە — وەک گەستروئێنتریت، سیروز، و نەخۆشییەکانی لووگ.", patientGroups:[], proGroups:[] },
+    "surgery":            { key:"surgery",            nameKu:"نەشتەرگەری گشتی",            icon:"🔪", cssClass:"sp-surgery",  descKu:"نەشتەرگەریی سەرانسەری لە هەموو پارچەکانی جەستەدا، بە تایبەت ئامەڵیەکانی مێدە، رووگ، و غددەکان.", patientGroups:[], proGroups:[] },
+    "ortho":              { key:"ortho",              nameKu:"ئێسک و شکاوی",               icon:"🦴", cssClass:"sp-ortho",    descKu:"پسپۆڕی ئەندامە بزووتنەوەییەکان — شکاو، ئەمەڵەکانی هاوبەشی، و جووتبوونی جومگە.", patientGroups:[], proGroups:[] },
+    "urology":            { key:"urology",            nameKu:"میزەڕۆ و گورچیلە",           icon:"🫘", cssClass:"sp-urology",  descKu:"پسپۆڕی دەستگاکانی مێزکردن — گورچیلە، مەسانە، و لووڵەکانی مێز.", patientGroups:[], proGroups:[] },
+    "neuro":              { key:"neuro",              nameKu:"مێشک و دەمار",               icon:"🧠", cssClass:"sp-neuro",    descKu:"پسپۆڕی نەخۆشییەکانی دەستگای دەمارەوەیی — سکتە، پارکینسۆن، و مایگرێن.", patientGroups:[], proGroups:[] },
+    "neurosurgery":       { key:"neurosurgery",       nameKu:"نەشتەرگەری مێشک و دەمار",    icon:"🧠", cssClass:"sp-neuro",    descKu:"نەشتەرگەریی دەستگای دەمارەوەیی — مێشک، ستووری مریشک، و دەمارەکانی ناو کەللەوە.", patientGroups:[], proGroups:[] },
+    "cardio":             { key:"cardio",             nameKu:"دڵ و قەستەرە",               icon:"🫀", cssClass:"sp-cardio",   descKu:"پسپۆڕی نەخۆشییەکانی دڵ و قەستەرە — قەلپ، هاوەڵدڵی، و قەستەرەی بەرز.", patientGroups:[], proGroups:[] },
+    "thoracic":           { key:"thoracic",           nameKu:"سنگ و دڵ و بۆرییەکانی خوێن", icon:"🫁", cssClass:"sp-cardio",   descKu:"پسپۆڕی مەندالیات — تایبەت بە نەخۆشییەکانی سنگ و بۆرییەکانی خوێن.", patientGroups:[], proGroups:[] },
+    "obgyn":              { key:"obgyn",              nameKu:"ژنان و مناڵبوون",             icon:"🤰", cssClass:"sp-obgyn",    descKu:"پسپۆڕی تەندروستی ژنان — دووگیانی، زایین، و نەخۆشییەکانی ئەستوو.", patientGroups:[], proGroups:[] },
+    "ophtho":             { key:"ophtho",             nameKu:"نەشتەرگەری چاو",              icon:"👁️", cssClass:"sp-ophtho",   descKu:"پسپۆڕی نەشتەرگەریی چاو — کاتاراکت، گلاوکۆم، و نقصانی دیدن.", patientGroups:[], proGroups:[] },
+    "ent":                { key:"ent",                nameKu:"قوڕگ و لوت و گوێ",           icon:"👂", cssClass:"sp-ent",      descKu:"پسپۆڕی قوڕگ، لوت، و گوێ — گرتوو، ئینفیکشن، و بێدەنگی.", patientGroups:[], proGroups:[] },
+    "peds":               { key:"peds",               nameKu:"مناڵان و تازە لەدایکبووان",  icon:"👶", cssClass:"sp-peds",     descKu:"پسپۆڕی تەندروستی مناڵ — لە لەدایکبوونەوە تا سەردەمی گەنجایەتی.", patientGroups:[], proGroups:[] },
+    "derm":               { key:"derm",               nameKu:"پێست",                        icon:"🧴", cssClass:"sp-derm",     descKu:"پسپۆڕی نەخۆشییەکانی پێست — ئێگزیما، سۆریاسیس، و نەخۆشییەکانی کەش.", patientGroups:[], proGroups:[] },
+    "radio":              { key:"radio",              nameKu:"تیشک و سۆنار",               icon:"🩻", cssClass:"sp-radio",    descKu:"ئامرازی دیاگنۆزی وێنەگرتن — ئولتراساوند، ئێکسرە، و MRI.", patientGroups:[], proGroups:[] },
+    "psych":              { key:"psych",              nameKu:"دەروونی",                     icon:"🧩", cssClass:"sp-psych",    descKu:"پسپۆڕی تەندروستی دەروونی — کسالتی، فیکر، و شیزۆفرێنیا.", patientGroups:[], proGroups:[] },
+    "nutri":              { key:"nutri",              nameKu:"خۆراک و گەشە",               icon:"🥗", cssClass:"sp-nutri",    descKu:"پسپۆڕی خۆراک و گەشەی دروست — دیابێت، قەڵەوی، و کورتی ئەندامەکان.", patientGroups:[], proGroups:[] },
+    "breast":             { key:"breast",             nameKu:"نەخۆشییەکانی مەمک",          icon:"🎗️", cssClass:"sp-breast",   descKu:"پسپۆڕی تەشخیص و چارەسەری نەخۆشییەکانی مەمک — بەتایبەت مەمک کانسەر.", patientGroups:[], proGroups:[] },
+    "anest":              { key:"anest",              nameKu:"بێهۆشکاری",                  icon:"💉", cssClass:"sp-anest",    descKu:"پسپۆڕی بێهۆشکردن و ئەندازەی دەرد لە کاتی نەشتەرگەریدا.", patientGroups:[], proGroups:[] }
+  },
+
+  // Maps Kurdish specialty name (from DATA array) → specialty key
+  spNameToKey: {
+    "ڕۆماتیزم و جومگە":"rheumatology","نەخۆشییەکانی هەناوی":"internal","نەشتەرگەری گشتی":"surgery",
+    "ئێسک و شکاوی":"ortho","میزەڕۆ و گورچیلە":"urology","مێشک و دەمار":"neuro",
+    "نەشتەرگەری مێشک و دەمار":"neurosurgery","دڵ و قەستەرە":"cardio","سنگ و دڵ و بۆرییەکانی خوێن":"thoracic",
+    "ژنان و مناڵبوون":"obgyn","نەشتەرگەری چاو":"ophtho","قوڕگ و لوت و گوێ":"ent",
+    "مناڵان و تازە لەدایکبووان":"peds","پێست":"derm","تیشک و سۆنار":"radio",
+    "دەروونی":"psych","خۆراک و گەشە":"nutri","نەخۆشییەکانی مەمک":"breast","بێهۆشکاری":"anest"
+  },
+
+  doctors: {
+    "rzgar-tayb": {
+      id:"rzgar-tayb", name:"دکتۆر ڕزگار تەیب مەعروف", specialty:"rheumatology",
+      qualifications:"MBChB; ACR, ARMRK, ILBJH", clinic:"هەڵەبجەی شەهید / نزیک کانی قوڵکە",
+      days:"—", phone:"07510032518", fee:"—",
+      bio:"پسپۆڕی ڕۆماتیزم و نەخۆشییەکانی جومگە، خاوەنی مەمبەرایەتی ACR (ئەمریکا) و ARMRK (ئەردەن) و ILBJH (عێڕاق).",
+      articles:["art-risale-pain","art-ra-basics","art-gout","art-knee-pain","art-dmards-patient","art-risale-pro","art-ra-clinical","art-gout-clinical","art-hip-knee-referred"]
+    }
+  },
+
+  specialtyDoctors: {
+    "rheumatology": [
+      {id:"ayar-omar",    name:"دکتۆرە ئایار عمر عەلی",         q:"MBChB",                      cl:"کۆمەڵگەی پزیشکی بەخشین",           days:"شەممە، دوو شەممە، چوار شەممە", ph:"07511817571", fee:"—", dataId:null},
+      {id:"rzgar-tayb",   name:"دکتۆر ڕزگار تەیب مەعروف",       q:"MBChB; ACR, ARMRK, ILBJH",   cl:"هەڵەبجەی شەهید / نزیک کانی قوڵکە",days:"—",                            ph:"07510032518", fee:"—", dataId:"rzgar-tayb"},
+      {id:"krmanj-hadi",  name:"دکتۆر کرمانج محمد هادی",         q:"MSc Rheumatology, MBChB",     cl:"تەلاری پزیشکی ئایندە",             days:"دوو شەممە، چوار شەممە",        ph:"07501957909", fee:"—", dataId:null},
+      {id:"lawen-jamal",  name:"دکتۆرە لاوێن جمال",             q:"—",                           cl:"بەرجی تەندروستی زیرەک (سلێمانی)", days:"—",                            ph:"07705670404", fee:"—", dataId:null},
+      {id:"afin-mariwan", name:"دکتۆرە ئەڤین مەریوان حمە ساڵح", q:"—",                           cl:"—",                                days:"—",                            ph:"—",           fee:"—", dataId:null},
+      {id:"zhuan-ibrahim",name:"دکتۆرە ژوان ابراهیم",           q:"—",                           cl:"کۆمەڵگەی پزیشکی بەخشین (سلێمانی)",days:"—",                            ph:"07714841616", fee:"—", dataId:null}
+    ]
+  },
+
+  articles: {
+    "art-risale-pain":{
+      id:"art-risale-pain", specialty:"rheumatology", level:"patient", group:"risale",
+      icon:"📖", date:"2025-04",
+      title:"دەردی جەستەیی و مانای ئەو لە رسالەی نوردا",
+      synopsis:"سەید نورسی لە ئیشارەتول ئیعجازدا تەفسیری بنیاتنانی دەردی جەستەیی دەدات لە بنچینەی ئیمان و تەوەکوڵ. ئەم وتارە ئەم بینینەی تایبەتی بۆ نەخۆشانی ناوچەمان ڕووناک دەکاتەوە و پەیوەندییەکی نێوان ئازاری جەستەیی و گەشەی مانەویی دروست دەکات.",
+      body:`<p>سەید نورسی لە رسالەی نوردا دەڵێت دەردی جەستەیی ئەگەر بە سەبر بوو، دەبێتە سەبەبی شکرانەی ئەزلی. ئەم مانایە دەتوانێت بە پزیشکی دروست بکرێت: ئازار تەنها نیشانەیە، نەک دوژمن.</p><h4>🕊️ مانای دەرد لە چەشنی رسالەی نور</h4><p>بێدەردی بەرزترین نەعمەت نییە — بەردەوامی لەگەڵ دەرد و شکرانەی ئەو بەرزترین مامەڵەیە.</p><div class="article-tip"><span>💡</span> هیچ دەردێک بێ مانا نییە — ئەگەر لەگەڵ ئاگایی و بردبارییەوە بهاتێتە سەر.</div>`,
+      fullBody:`<h2>دەردی جەستەیی و مانای ئەو لە رسالەی نوردا</h2>
+
+<p>یەکێک لە پرسیارە گرنگەکانی مرۆڤ ئەمەیە: «بۆچی دەردم دەکات؟» ئەم پرسیارە نەک تەنها پزیشکییە — فەلسەفییشە، مانەویشە. سەید نورسی، مامۆستای گەورەی رسالەی نور، لە ئیشارەتول ئیعجازدا و لە لائیلاجەدا وەڵامێکی قووڵی بۆ ئەم پرسیارە دەستنیشان دەکات.</p>
+
+<h3>دەرد لە بینینی رسالەی نور</h3>
+
+<p>نورسی دەڵێت مرۆڤ لە سێ ئالوگۆڕدا دێتە دووچاری دەردی جەستەیی:</p>
+<ul>
+<li><strong>پاکایی لە گوناه:</strong> دەرد بەرپرسیارێتیی کاری نادروستی پێشوویان کەم دەکاتەوە. ئەمە نەک سازاندن، بەڵکو خولقاندنی دووبارەیی مانەوییە.</li>
+<li><strong>بەرزبوونی دەرەجەی مانەوی:</strong> خودا بە بەعزی بەندەکانی لێیان هەڵستاوە بۆ کەمتر کردنی ئەو دەردە، چونکە زیاتر لاواز دەبن و پەناهان بۆ خودا دەبرێت.</li>
+<li><strong>ئازمون و تەکامول:</strong> دەرد مرۆڤ دەهاتێنێتە بەردەم ئەو ئاستەی لە جیهانی داهاتوودا پێویستیی پێیەتی.</li>
+</ul>
+
+<h3>کاربردی عەملی بۆ نەخۆش</h3>
+
+<p>ئەم بینینە چۆن یارمەتی نەخۆشی کڕۆنیک دەدات؟ گاتێک کەسێک دووچاری نەخۆشییەکی درێژخایەن دەبێت — وەک ئارتریتی ڕۆماتۆید یان نقرس — هەستی بێوانەیی و نادایەمەندی دەکات. رسالەی نور ئەم سۆزانەی دەگۆڕێتەوە: نەخۆشی دەبێتە دەرگا، نەک دیوار.</p>
+
+<blockquote class="art-quote">"بێمارییەکانت ئەگەر نبوایە ئاخرەتت چۆن دروست دەبوو؟ مەریضلق، مصیبت — بیر ئەلماس آناختاردیر." — رسالەی نور</blockquote>
+
+<h3>پەیوەندی لەگەڵ پراکتیکی پزیشکیی تازە</h3>
+
+<p>لە بواری پزیشکیی ئەمڕۆدا، ئەوەی بەناوی «Illness Meaning» و «Narrative Medicine» ناسراوە، زیاترو زیاتر بەهاکراوە. نەخۆشانێک کە مانایەک بۆ دەردەکانیان دەدۆزنەوە، Adherence باشتری هەیە، ژیانی باشتری دەژین، و دەستکەوتی کلینیکیی باشتری هەیە.</p>
+
+<p>لە ناوچەمان — هەڵەبجە و باشووری کوردستان — رسالەی نور شێوازی هزرکردنی گشتی بووە. پزیشکێک کە ئەم زمینەی دەناسێت، دەتوانێت لەگەڵ نەخۆشەکانی بە زمانی دڵی ئەوان قسە بکات.</p>
+
+<div class="article-tip"><span>💡</span> پرسیارەکانی «بۆچی من؟» و «بۆچی ئێستا؟» کە نەخۆشەکانت دەیانکەن — وەڵامەکانی رسالەی نور دەتوانن بوێرانەترین وەڵامی پزیشکی پڕ بکەنەوە.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["رسالەی نور","دەرد","سەبر","مانا"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-ra-basics":{
+      id:"art-ra-basics", specialty:"rheumatology", level:"patient", group:"conditions",
+      icon:"🤲", date:"2025-04",
+      title:"ئارتریتی ڕۆماتۆید — نەخۆشییەکە بناسە پێش ئەوەی دواخوازییەکان دەستپێبکەن",
+      synopsis:"ئارتریتی ڕۆماتۆید نەخۆشییەکی ئیمیونییە کە هەر تەمەنێک دەتوانێت تووشی بکات. قتبوونی بەیانیان، وورمی هەردوو لایەکی دەستان، و مانبوونی بێ هۆکار — ئەمانە نیشانەکانی سەرەکیەتی. چارەسەری بە دواخستن کارتیلاجی جومگەکان بەهەمیشە خراپ دەکات.",
+      body:`<p>زۆرێک لە مرۆڤەکان دەگمان دەبن ئارتریت تەنها کێشەی پیرەمێردانە. بەڵام ئارتریتی ڕۆماتۆید دەتوانێت لە هەر تەمەنێک دەست پێبکات، تەنانەت لە مناڵانیشدا.</p><h4>🔴 نیشانە سەرەکییەکان</h4><ul><li>قتبوونی سکاڵا لە بەیانیان (زیاتر لە ٣٠ خولەک)</li><li>وورمی سیمیتریکی جومگەکان</li><li>مانبوون و وزەکەمی ناچاری</li></ul><div class="article-tip"><span>💡</span> ئارتریتی ڕۆماتۆید نەخۆشییەکی ئیمیونییە — چارەسەر سەرچاوەکەی دەگیرێتەوە.</div>`,
+      fullBody:`<h2>ئارتریتی ڕۆماتۆید — ڕووبەڕووبوونەوەی تەواو</h2>
+
+<p>ئارتریتی ڕۆماتۆید (RA) یەکێک لە باوترین نەخۆشییەکانی ئیمیونییە کە لەناو جومگەکاندا کاردەکات. بەلاپانی ١٪ لە گشت دیاریکراوەکانی دەگرێتەوە، و لە ژنان ٢-٣ جار زیاتر لە پیاوانە.</p>
+
+<h3>نەخۆشییەکە چییە؟</h3>
+
+<p>جهازی بەرگری لە RA خۆی تووش دەکات — بەتایبەت سینۆڤیۆمی جومگەکان. سینۆڤیۆم پاردەیەکی بچووکە کە ئەگەر ئازایی بوو، دەبێتە مەدار و بە تەدریج کارتیلاج و ئێسکی ناوچەکە خراپ دەکات. ئەگەر بێ چارەسەر بمێنێتەوە، تێپەڕی ساڵانی کەم، جومگەکان دەتوانن بێ گەڕانەوە بشکێنن.</p>
+
+<h3>نیشانەکان بناسە</h3>
+
+<p><strong>قتبوونی بەیانیانە:</strong> یەکێک لە نیشانەکانی تایبەت بە RA ئەمەیە. قتبوون زیاتر لە ٣٠ خولەک دەمێنێتەوە — ئەمە جیاوازییەتی لە ئارتریتی ئۆستیوئارتریت کە قتبوونی کوورتتری هەیە.</p>
+
+<p><strong>وورمی سیمیتریک:</strong> هەردوو دەستان، هەردوو قاچان — کاتێ هەردوو لایەک تووش بن، ئەمە نیشانەی RA-یە. ئارتریتی ئاسایی زیاتر یەک لایەک تووش دەکات.</p>
+
+<p><strong>جومگەکانی بچووک:</strong> RA بەتایبەت پەنجەکانی دەست و قاچ دەگرێت — جومگەی MCP و PIP. ئەمە جیاوازییەتی لە گوت کە زیاتر قوچکانی قاچ دەگرێت.</p>
+
+<h3>بۆچی مەوقەی سەرەتا گرنگترە؟</h3>
+
+<p>لەگەڵ ئەوەی سەرەتا نەخۆشییەکە تیمار بکرێت، «Window of Opportunity» هەیە — کاتێ کە دەرمانەکان باشترین ئەنجامیان هەیە. ئەگەر نەخۆش لە ساڵی یەکەمدا تیمار بکرێت، ئەنجامەکانی دروستکردنەوەی جومگە باشتر دەبن لەو نەخۆشەی کە ٥ ساڵ دواکەوتوو.</p>
+
+<blockquote class="art-quote">"RA is a marathon, not a sprint — but early treatment changes the finish line entirely."</blockquote>
+
+<h3>کاتێ بچووایە پزیشک؟</h3>
+
+<p>ئەگەر ئەم نیشانانەت هەن، تکایە مەوقەی پزیشک نەخستەوە دواتر: جومگەکانت وورمن و قتن و گەرمن لە بەیانیان، مانبووتی بە شێوەیەکی نەئاسایی، یان دەردی هەردوو دەستانت لە ئاخری شەودایە. ئەمانە نیشانەی مەوقەی پزیشکییەتی کە بە دواخستن دەبێتە سەبەبی زیانی نەخۆش.</p>
+
+<div class="article-tip"><span>💡</span> Anti-CCP و RF تاقیکردنەوەی خوێنی ئاسانن کە پزیشکت پێویستت دەکات. ئەم تاقیکردنەوانە زیاتر لە ٩٥٪ بۆ RA تایبەتیان هەیە.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["ئارتریت","ڕۆماتۆید","جومگە","ئیمیون"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-gout":{
+      id:"art-gout", specialty:"rheumatology", level:"patient", group:"conditions",
+      icon:"🔥", date:"2025-04",
+      title:"نقرس — ئەو دەردە تووندەی شەوانەکان",
+      synopsis:"نقرس نەخۆشییەکی کریستاڵییە لە جومگەدا، دەرمانکردنی ئاسانە بەڵام زۆرجار دوا دەکەوێت. کریستاڵی یوریک ئاسید لەناو جومگە دانیشتوون و لە شەودا دەردێکی بیکەوتن دروست دەکەن. بەڕێکخستنی خۆراک و دەرمانی دروست دەتوانن بەتەواوی پێشگیری لێ بکەن.",
+      body:`<p>نقرس کاتێ دێت کە ئاستی یوریک ئاسید لە خوێندا زیادی بکات، کریستاڵ بەدی دێت و لەناو جومگەدا دانیشت.</p><h4>🍺 خۆراکانی خەتەرناک</h4><ul><li>گۆشتی سووری زیاد</li><li>خۆراکی دەریا</li><li>عەرەق و بیرەی گەوران</li></ul><div class="article-tip"><span>💡</span> ئاوی زیاد خواردن (٨-١٠ گڵاسی ڕۆژانە) یەکێک لە ئاسانترین ڕێگاکانە.</div>`,
+      fullBody:`<h2>نقرس — ئەو دەردە تووندەی شەوانەکان</h2>
+
+<p>نقرس نەخۆشییەکی کریستاڵی یوریک ئاسیدە. ئاستی SUA لە خوێندا زیاد دەکات، کریستاڵی Monosodium Urate (MSU) دروست دەکات و لەناو جومگە دانیدەنیشێت. ئەمەش بوونی شەوانەی تووندترین دەردی جومگەیی کە ناسراوە دروست دەکات.</p>
+
+<h3>بۆچی شەودا دەردەکە دێتە سەر؟</h3>
+
+<p>تەمپەراتووری جومگەکان لە شەودا کەم دەبێت. ئەم سەردبوونە دەبێتە سەبەبی ئیستابیلیزەیشنی کریستاڵ و زیادبوونی ئازایی. بۆیە ئەتاکی نقرس بەتایبەت لە شەودا یان بەیانی زووەوەدا دەستپێدەکات.</p>
+
+<h3>خۆراکانی خەتەرناک</h3>
+
+<p>یوریک ئاسید لە شکستی پیوورینی دروست دەبێت. بۆیە خۆراکانی پڕ لە پیوورین ئاستی SUA زیاد دەکەن:</p>
+<ul>
+<li><strong>گۆشتی سووری زیاد:</strong> بەتایبەت دیل، گوێرە، و گورچیلە</li>
+<li><strong>خۆراکی دەریا:</strong> مەسماڵە و قەمپێلەی بچووک</li>
+<li><strong>عەرەق و بیرەی گەوران:</strong> هەردووکیان مووڵانی یوریک ئاسید کەم دەکەن</li>
+<li><strong>شەربەتی فروکتۆز بەرز:</strong> نووشیراوەکان و شەربەتی میوەی پاکەتی</li>
+</ul>
+
+<h3>چارەسەر لە دوو قۆناغدا</h3>
+
+<p><strong>قۆناغی یەکەم — چارەسەری ئەتاکی تیژ:</strong> ئامانج کەمکردنەوەی دەرد و ئازایی لە ئەتاکی ئێستایە. Colchicine، NSAIDs، یان کۆرتیکۆستیرۆیدی کورت-خایەن بەکاردێن. هیچ ULT لەناو ئەتاکدا دەستپێبکرێت — ئەتاک زیاد دەکات.</p>
+
+<p><strong>قۆناغی دووەم — چارەسەری درێژخایەنی:</strong> Allopurinol ئامرازی یەکەمە. ئامانج گەیشتن بە SUA لەژێر ٦ mg/dL. ئەم قۆناغەی گرنگترە — زۆر نەخۆش لە بەشی دووەم دواکەوتوون.</p>
+
+<blockquote class="art-quote">"نقرس نەخۆشییەکییە کە دەتوانرێت بەتەواوی کۆنترۆڵ بکرێت — بەڵام تەنها ئەگەر دەرمانی دروست بخوریت."</blockquote>
+
+<h3>شتی گرنگ بزانیت</h3>
+
+<p>زۆر نەخۆش لە کاتی ئەتاکدا دەرمانی Allopurinol دەست پێدەکەن — ئەمە هەڵەیە. Allopurinol ئەگەر لەناو ئەتاکدا دەست پێ بکرێت، ئەتاک درێژتر دەکات. تەنها دوای تەواوبوونی ئەتاک، دەرمانگرتنی درێژخایەنی دەستپێبکرێت.</p>
+
+<div class="article-tip"><span>💡</span> ئاوی زیاد خواردن (٢-٣ لیتر ڕۆژانە) بەسەرخۆی مووڵانی یوریک ئاسید زیاد دەکات و ئەتاکی نقرس کەم دەکاتەوە.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["نقرس","یوریک ئاسید","خۆراک","جومگە"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-knee-pain":{
+      id:"art-knee-pain", specialty:"rheumatology", level:"patient", group:"symptoms",
+      icon:"🦵", date:"2025-04",
+      title:"ئایا ئەو دەردی زانووتەوە لە زانووکەتە نییە؟",
+      synopsis:"ئەوەی کە وەک دەردی زانوو هەست پێدەکات، ئەگەری هەیە کە سەرچاوەی لە مووچەی قاچ بێت — ئەمەش بەناوی «دەردی بەرپرسراوی» ناسراوە. لە مناڵانی ٨-١٤ ساڵ بەتایبەت، ئەم خەڵەتییە باوترە و پێویستی بە ئازمونی تایبەت هەیە.",
+      body:`<p>زۆر جار نەخۆش دێتە لای پزیشک و دەڵێت «زانووم دەردم دەکات»، بەڵام زانوو بە تەواوی باشە.</p><h4>🔍 نیشانەکانی تایبەت</h4><ul><li>دەردەکە لە قاچی ژووردایە نەک لە دەمی زانووەوە</li><li>جووڵەدانی مووچەی قاچ دەردەکە زیاد دەکات</li></ul><div class="article-tip"><span>💡</span> دەردی ساڵانەی زانوو لە مناڵان پێویستی بە تاقیکردنەوەی مووچەی قاچ هەیە.</div>`,
+      fullBody:`<h2>کاتێ زانووکەت درد دەکات بەڵام مووچەی قاچتە سەرچاوەکە</h2>
+
+<p>دەردی بەرپرسراو (Referred Pain) ئەو دیاردەیەیە کە تێیدا دەستگای دەمارەوەیی مرکەزی ئەو شوێنە نییەکە کە دەردەکە لێ دێت دانیشاندەدات. لە ناوچەی مووچەی قاچ و زانووی قاچدا، ئەم دیاردەیە باوترە لەوەی زۆرێک تصور دەکەن.</p>
+
+<h3>بۆچی دەبێت؟</h3>
+
+<p>ئۆبتوراتۆر نێرڤ (L2-L4) هەر دووی مووچەی قاچ و ناوچەی مۆعیالی زانوو ئینێرفاسیۆن دەکات. بۆیە پاتۆلۆجییەکی مووچەی قاچ — وەک ئۆستیوئارتریت، Perthes، یان Slipped Capital Femoral Epiphysis (SCFE) — دەتوانێت ئیمپولسی دەردی بناردێ بۆ ناوچەی زانوو لە دماغدا. نەخۆش دەردی زانووی هەست دەکات لەحاڵیکەدا زانووکەی تەواو سالمە.</p>
+
+<h3>کامانە لە مەترسیدان؟</h3>
+
+<p>ئەم دیاردەیە لە مناڵانی ٨-١٤ ساڵ بەتایبەت گرنگترە. سێ نەخۆشی گرنگ کە دەتوانن بەم شێوەیە خۆیان پیشان بدەن:</p>
+<ul>
+<li><strong>SCFE (سڕینەوەی سەری بۆنی مووچەی قاچ):</strong> ئیمەرجێنسی ئۆرتۆپیدیکییە — دیاخیری ئەمە دەتوانێت بە قوتابوو یا نەخۆشی درێژخایەن بمێنێتەوە.</li>
+<li><strong>Perthes Disease:</strong> نیکرۆزی ئاڤاسکولاری سەری بۆنی مووچەی قاچ لە مناڵاندا.</li>
+<li><strong>OA مووچەی قاچ لە پیران:</strong> زۆرجار وەک زانوو ئەشتباه دیاگنۆز دەکرێت.</li>
+</ul>
+
+<h3>چۆن دیاری بکەیت؟</h3>
+
+<p><strong>FABER Test:</strong> نەخۆش بەپشتاخوی بخووە. ئێمارە بکەوێتە سەر زانوو. قاچ بکڕێت بە ئابدۆکشن و ئیکستەرنال ڕۆتەیشن. ئەگەر دەردی گروینی یان کروینی دەستپێکرد = نیشانەی مووچەی قاچ.</p>
+
+<p><strong>FADIR Test:</strong> Flexion + Adduction + Internal Rotation — حەساسیەتی زیاتر بۆ ئیمپینجمینت و لابرال تیر.</p>
+
+<blockquote class="art-quote">"Always examine the joint above and below the pain — this principle saves diagnoses every day."</blockquote>
+
+<h3>ئامرازی ئیمیجینگ</h3>
+
+<p>ئاپی ئووی مووچەی قاچ لەگەڵ بارگرانی بەرپی لەسەر هەردوو لایەک — وێنەی یەکەمە. MRI بۆ کاتی شکی ئیمپینجمینت، لابرال تیر، یان ئاڤاسکولار نیکرۆسیس. ئولتراساوند بۆ توشبوونی سینۆڤیتیس یان ئازایی.</p>
+
+<div class="article-tip"><span>💡</span> لە هەڵەبجەدا بینی کراوە کە OA مووچەی قاچ لە پیران زیاتر لە پێویست وەک زانوو دیاگنۆز دەکرێت. ئازمونی FABER و FADIR دەزگیرانە و پێویستی بە ئامراز نییە — تەنها خولقینی ١ خولەک کار دەکات.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["زانوو","دەرد","دیاگنۆز","مووچەی قاچ"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-dmards-patient":{
+      id:"art-dmards-patient", specialty:"rheumatology", level:"patient", group:"medications",
+      icon:"💊", date:"2025-04",
+      title:"دەرمانەکانی ئارتریت — چی دەخوریت و بۆچی؟",
+      synopsis:"دەرمانەکانی DMARD وەک Methotrexate نەک تەنها دەردی کەم دەکەن — جومگەکانت لە زیانی داهاتوودا دیفاع دەکەن. تاقیکردنەوەی خوێن کە پزیشکت داواکاری دەکات ترسناک نییە — چاودێریی تەندروستیتە.",
+      body:`<p>زۆر نەخۆش دەیانپرسێت «بۆچی پێویستە دەرمانی گران بخوم، ئاخر دەردم نییە»؟</p><h4>🎯 ئامانجی دەرمان</h4><p>DMARDs ئیمیونی کەم دەکەن بۆ کەمکردنەوەی ئێجارەی تووشبوون — نەک تەنها دەرد.</p><div class="article-tip"><span>💡</span> هیچ دەرمانێک بەخۆیی بەتاڵ مەکەوە — پزیشکت پێشتر ئاگادار بکەرەوە.</div>`,
+      fullBody:`<h2>دەرمانەکانی ئارتریت — ڕووبەڕووبوونەوەی تەواو</h2>
+
+<p>یەکێک لە گرفتە گەورەکانی RA ئەمەیە: نەخۆش دەردی هەست نادەکات — بەڵام جومگەکانی خراپ دەبن. بۆیە دەرمانگرتن تەنها دەردی کەم ناکاتەوە — ئامانج جەخت کردنەوەی ئازایی و پاراستنی جومگەکانە لە زیانی داهاتوودا.</p>
+
+<h3>جۆرەکانی دەرمانی DMARD</h3>
+
+<p><strong>csDMARDs (دەرمانە کلاسیکییەکان):</strong></p>
+<ul>
+<li><strong>Methotrexate (MTX):</strong> ئامرازی یەکەم و باوەڕپێکراوترین. هەفتەیەک جار دەخورێت — نەک ڕۆژانە.</li>
+<li><strong>Hydroxychloroquine (HCQ):</strong> بۆ نەخۆشی خوارتر، سیسترک لووپوس.</li>
+<li><strong>Sulfasalazine (SSZ):</strong> تەرکیبکراو لەگەڵ MTX زیاتر دەکرێت.</li>
+<li><strong>Leflunomide:</strong> جێگرەوەی MTX کاتی کۆنتراتندیکاسیون.</li>
+</ul>
+
+<p><strong>bDMARDs (دەرمانە بیۆلۆجییەکان):</strong> ئەمانە ئینجێکشنن یان ئینفیوژن. بۆ کاتی csDMARDs بسود نەبن. TNF-inhibitors (Adalimumab، Etanercept)، IL-6 inhibitors (Tocilizumab).</p>
+
+<h3>Methotrexate بە قووڵی</h3>
+
+<p>MTX بەرزترین ئامرازی یەکەم-هێڵ لە RA. بەشێک لە نەخۆشان دەترسن چونکە «ئامرازی شیمیادەرمانییە». بەڵام دۆزی بەکارهێنراوی لە RA (٧.٥-٢٥ mg/هەفتە) لە دۆزی بەکارهێنراوی لە کانسەر زیاتر لە ١٠٠ جار کەمترە.</p>
+
+<p>ئەثەرەی لاوەکی باوترین: تهوع و ئازاری مێدە — ئەمانە لە ٢٤-٤٨ ساعەتی دوای خواردنی دەکرێن. فۆلیک ئاسید ١ mg/ڕۆژ لەگەڵ MTX بدرێت بۆ کەمکردنەوەی ئەثەرەی لاوەکی.</p>
+
+<h3>تاقیکردنەوەی خوێن بۆچی؟</h3>
+
+<p>MTX دەتوانێت لە کەمترین کەیسەکاندا کارتیلیڤەر یان خوێن تووش بکات. بۆیە CBC (مانیتۆرینگی خوێن) و LFT (لیڤەر) هەموو ٨-١٢ هەفتەیەک پێویستن. ئەم تاقیکردنەوانە نەک ترسناکن — ئامرازی پاراستنی تەندروستیتن.</p>
+
+<blockquote class="art-quote">"دەرمانگرتن لەوانەیە ١٠ ساڵ ژیانی باشتری پێبدات — دواخستن ١٠ ساڵ زیانی جومگە دروست دەکات."</blockquote>
+
+<div class="article-tip"><span>💡</span> هیچکاتێ بە خۆت دەرمانەکەت بەتاڵ مەکەوە. ئەگەر کێشەت هەیە، پزیشکت ئاگادار بکەرەوە — دەرمان دەگۆڕدرێت، نامرێت.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["دەرمان","Methotrexate","DMARD","ئارتریت"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-risale-pro":{
+      id:"art-risale-pro", specialty:"rheumatology", level:"professional", group:"risale-pro",
+      icon:"📖", date:"2025-04",
+      title:"رسالەی نور و فەلسەفەی دەرد — پەرتووکی مەنا بۆ پزیشک",
+      synopsis:"تەفسیری سەید نورسی لەسەر دەردی جەستەیی وەک ئامرازی تەکامول — کاربردی پراکتیکی بۆ Shared Decision Making، زیادکردنی Adherence، و گفتوگۆی ئاخری ژیان لەگەڵ نەخۆشانی کولتووری کوردی-ئیسلامی.",
+      body:`<h4>دیدگاهی سەید نورسی لەسەر نەخۆشی</h4><p>لە ئیشارەتول ئیعجازدا، نورسی نەخۆشی وەک دەرگای بەرزبوونی مانەویی ڕووناکدەکاتەوە.</p><div class="article-tip professional"><span>📌</span> کولتووری باشووری کوردستان بە رسالەی نور ئاشنایە — ئەم زمینەیە بکەرە دەرگای گفتوگۆ.</div>`,
+      fullBody:`<h2>رسالەی نور لە پراکتیکی کلینیکیدا — ڕووبەڕووبوونەوەی تەواو</h2>
+
+<p>ئەم وتارە بۆ پزیشکانی کاری لەگەڵ نەخۆشانی کولتووری کوردی-ئیسلامینووسراوە. ئامانجمان نییە کە بابەتی ئەکادیمیکی تەنها بکەین — بەڵکو پرتووکی مانادانەوەیەکی پرەکتیکی لە رسالەی نور بۆ کاربردی کلینیکی پیشکەش دەکەین.</p>
+
+<h3>چەرچەوەی تیۆریک — نورسی و نەخۆشی</h3>
+
+<p>سەید نورسی لە لائیلاجەدا (یەکێک لە بەشەکانی رسالەی نور) دەڵێت نەخۆشی لە سێ شێوەیەک کار دەکات: پاکایی لە گوناه، بەرزبوونی دەرەجەی مانەوی، و ئامادەکردن بۆ جیهانی داهاتوو. ئەم بینینەی کلینیکی گرنگییەکی هەیە — چونکە نەخۆشی کولتووری کوردی-ئیسلامی بەم شێوەیە مانادەداتەوە.</p>
+
+<h3>Shared Decision Making و رسالەی نور</h3>
+
+<p>کاتێک نەخۆشێک لەبەردەم هەڵبژاردنێکی سەخت دایە — وەک دەستپێکردنی Biologic کە گران و سەرکارە — پرسیارکردن لە «بۆچی ئەمانەم پێویستن؟» ئاسانتر دەبێت ئەگەر چەرچەوەیەکی فەلسەفیی بۆ هەیە. رسالەی نور ئەم چەرچەوەیە دەدات: «تیمار ئامانجت نییە — تیمار ئامرازی ئەوەیە کە ئامانجی ئاخرتت باشتر بکات.»</p>
+
+<h3>زیادکردنی Adherence</h3>
+
+<p>تاقیکردنی کلینیکی لە ناوچەی باشووری کوردستاندا نیشانی داوە کە نەخۆشانێک کە باوەڕی ئیمانیان بە دەرمانگرتن دروست بکرێت — لەڕێگەی ڕووناکیکردنەوەی مانای تیمار — Adherence باشتریان هەیە لەوانەی تەنها ئینفۆرمیشنی پزیشکیان گیرا.</p>
+
+<blockquote class="art-quote">"مریضلق، مصیبت، فقر — بیر ئەلماس آناختاردیر." — رسالەی نور</blockquote>
+
+<h3>گفتوگۆی ئاخری ژیان</h3>
+
+<p>کاتێک نەخۆشێک دووچاری نەخۆشی کڕۆنیکی پێشکەوتوو دەبێت، گفتوگۆی ئاخری ژیان (End-of-Life Conversation) ئاڵۆزترین گفتوگۆی کلینیکییە. رسالەی نور چەندین بەشی ناسراوی هەیە لەسەر مانای مرن — وەک رسالەی ئەجەل — کە دەتوانرێت وەک بنەمایەک بەکاربهێنرێت.</p>
+
+<h3>ئاگادارییەکی مەعقووڵ</h3>
+
+<p>ئەم ئامرازە تایبەت بە کولتووری ناوچەیە. لای نەخۆشانی بێ باوەڕ یان جیاوازی کولتووری بە وریایی بەکارببەیت. هەرگیز نەکەرێت کە باوەڕی نەخۆش ببیتە بهانە بۆ کەمکردنی تیمار.</p>
+
+<div class="article-tip professional"><span>📌</span> ئەگەر نەخۆشت رسالەی نور دەخوێنێت یان بەش دەبێت — ئەمە دەرگای گفتوگۆیەکی قووڵترە. «ئیزنت هەیە لەو بارەوە پرسیار بکەم؟» کافیە.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["رسالەی نور","فەلسەفە","کلینیک","Adherence"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-ra-clinical":{
+      id:"art-ra-clinical", specialty:"rheumatology", level:"professional", group:"inflammatory",
+      icon:"🔬", date:"2025-04",
+      title:"ئارتریتی ڕۆماتۆید — پرۆتۆکۆلی دیاگنۆز و سەرەتای چارەسەر",
+      synopsis:"ACR/EULAR 2010 Classification Criteria بە شێوازی نومرەدان، ستراتیژی Treat-to-Target بە ئامرازی DAS28/CDAI، و پرۆتۆکۆلی سەرەتای چارەسەر لەگەڵ Methotrexate و بریج تھراپی.",
+      body:`<h4>ACR/EULAR 2010 Classification Criteria</h4><p>نمرەی ٦ یان زیاتر لە ١٠ کلاسیفیکەیشنی RA دابین دەکات.</p><div class="article-tip professional"><span>📌</span> Anti-CCP حەساسیەتی ٦٧٪ و تایبەتمەندییەتی ٩٥٪+ — هەرزانبەهاترین ئامرازی سکرینینگ.</div>`,
+      fullBody:`<h2>ئارتریتی ڕۆماتۆید — پرۆتۆکۆلی کلینیکی تەواو</h2>
+
+<h3>ACR/EULAR 2010 Classification Criteria</h3>
+
+<p>ئەم ئامرازە جێگرەوەی ACR 1987 Criteria بووە. تایبەتمەندی بەرزتری هەیە لە کۆتاییدا کاتی سەرەتا. نمرەی ≥٦ لە ١٠ کلاسیفیکەیشنی RA دابین دەکات:</p>
+
+<table class="art-table">
+<thead><tr><th>دۆمێن</th><th>تایبەتمەندی</th><th>نمرە</th></tr></thead>
+<tbody>
+<tr><td rowspan="5">A. جومگەکان</td><td>١ جومگەی گەورە</td><td>٠</td></tr>
+<tr><td>٢-١٠ جومگەی گەورە</td><td>١</td></tr>
+<tr><td>١-٣ جومگەی بچووک</td><td>٢</td></tr>
+<tr><td>٤-١٠ جومگەی بچووک</td><td>٣</td></tr>
+<tr><td>>١٠ جومگە (کەمی یەک بچووک)</td><td>٥</td></tr>
+<tr><td rowspan="3">B. سێرۆلۆجی</td><td>RF و ACPA نێگاتیڤ</td><td>٠</td></tr>
+<tr><td>RF یان ACPA لۆ-پۆزیتیڤ</td><td>٢</td></tr>
+<tr><td>RF یان ACPA هایی-پۆزیتیڤ (>٣× ULN)</td><td>٣</td></tr>
+<tr><td rowspan="2">C. ئاکیوت فەیز</td><td>CRP و ESR نۆرمەل</td><td>٠</td></tr>
+<tr><td>CRP یان ESR ئالتەر</td><td>١</td></tr>
+<tr><td rowspan="2">D. درێژایی</td><td>< ٦ هەفتە</td><td>٠</td></tr>
+<tr><td>≥ ٦ هەفتە</td><td>١</td></tr>
+</tbody>
+</table>
+
+<h3>Treat-to-Target (T2T) Strategy</h3>
+
+<p>T2T ستراتیژی دیاریکراوی ئامانج و سنجینی بەردەوامییە. ئامانجی سەرەکی: DAS28 < 2.6 (Remission). ئامانجی جێگرەوە: DAS28 < 3.2 (LDA).</p>
+
+<p>سنجین هەموو ٤-٨ هەفتەیەک لە سەرەتادا. دەرمانی ئەگەر لە ٣ مانگدا ئامانج نەگات، گۆڕانی پڕۆتۆکۆل پێویستە.</p>
+
+<h3>پرۆتۆکۆلی سەرەتای چارەسەر</h3>
+
+<p><strong>DMARD-Naive بە MTX کۆنتراتندیکاسیون نییە:</strong> MTX لە ١٠-١٥mg/هەفتە دەست پێبکە. لە ٦-٨ هەفتەیەک، ئەگەر باش تۆلیرەیت بوو، زیاد بکە بۆ ٢٠-٢٥mg. فۆلیک ئاسید ١mg/ڕۆژ لەگەڵدا.</p>
+
+<p><strong>MTX کۆنتراتندیکاسیون یان نەتۆلیرەیت:</strong> SSZ یان Leflunomide. Triple Therapy (MTX + HCQ + SSZ) بۆ کاتی دیزیز ئاکتیڤ.</p>
+
+<p><strong>بریج تھراپی:</strong> Prednisolone ≤ ١٠mg/ڕۆژ بۆ کۆنترۆڵکردنی ئازایی لە کاتی DMARD کار دەکات. بەتەدریج کەمبکەوە — هەرگیز ناکرێت درێژخایەن بمێنێتەوە.</p>
+
+<blockquote class="art-quote">"Tight control with T2T reduces radiographic progression by 50% compared to routine care." — TICORA Trial</blockquote>
+
+<h3>مۆنیتۆرینگ</h3>
+
+<p>CBC + LFT + کریاتینین هەموو ٨ هەفتەیەک لە ساڵی یەکەم، دوا هەموو ٣-٦ مانگ ئەگەر ئیستابلە. ئەگەر ALT/AST > ٢× ULN دووجار: دۆز کەم بکە. ئەگەر > ٣× ULN: بوقوف.</p>
+
+<div class="article-tip professional"><span>📌</span> Anti-CCP پۆزیتیڤ بودنە لەگەڵ هایی-تیتەر RF — ئەوانەی باشترین نەتیجەیان لە MTX هەیە. ئەمانە ئامرازی پێشبینیی ئەنجامن، نەک تەنها دیاگنۆزی.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["RA","ACR","EULAR","Methotrexate","DAS28"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-gout-clinical":{
+      id:"art-gout-clinical", specialty:"rheumatology", level:"professional", group:"crystal",
+      icon:"💎", date:"2025-04",
+      title:"نقرس — دیاگنۆز و منەجمینتی درێژخایەنی",
+      synopsis:"ACR 2020 Gout Guidelines: دیاگنۆزی دەفینیتیڤ بە MSU کریستاڵ، ئامانجی SUA < 6 mg/dL، پرۆتۆکۆلی Allopurinol بە دۆزی تەدریجی، و منەجمینتی ئەتاک لەگەڵ Colchicine.",
+      body:`<h4>دیاگنۆزی دەفینیتیڤ</h4><p>دیتنی کریستاڵی MSU لە ئاسپیرەیتی جومگە. ئامرازی نومرەدان (نمرەی ≥٨) دیاگنۆزی دەکات.</p><div class="article-tip professional"><span>📌</span> لە هەڵەبجەدا زۆر نەخۆش بە ئەتاک دێن بۆ Allopurinol — مۆنیتۆرینگی SUA و دۆزی ئەدەپتاسیۆن بخوێنەوە.</div>`,
+      fullBody:`<h2>نقرس — پرۆتۆکۆلی کلینیکی تەواو</h2>
+
+<h3>پاتۆفیزیۆلۆجی</h3>
+
+<p>هایپەریوریسیمیا (SUA > 6.8 mg/dL) شەرتی پێویستییە بۆ دروستبوونی کریستاڵی MSU. بەڵام هەموو مرۆڤی هایپەریوریسیمیک نقرسیان نییە. زیادبوونی ناکاوی SUA، ئازاری جومگە، یان گەرمی کاتی دروستکردنی ئەتاکن.</p>
+
+<h3>دیاگنۆز</h3>
+
+<p>ستاندارد طلایی: دیتنی کریستاڵی MSU لە ئاسپیرەیتی جومگە لە مایکرۆسکۆپی پۆلارایزد. کریستاڵەکان نیگاتیڤ-بایریفرینجەنسی خودپێدەخەن.</p>
+
+<p>ئەگەر ئاسپیرەیشن ناکرێت، ACR 2015 Classification Criteria نومرەدان بەکاربهێنە. نمرەی ≥٨ دیاگنۆزی دەکات.</p>
+
+<h3>ئامانجی SUA</h3>
+<ul>
+<li>< ٦ mg/dL بۆ هەموو نەخۆشانی ULT</li>
+<li>< ٥ mg/dL بۆ نەخۆشی تۆفاسی یان گران</li>
+<li>دابەزینی زووتر مووڵانی کریستاڵ دروست دەکات — Anti-inflammatory prophylaxis ٣-٦ مانگ پێویستە</li>
+</ul>
+
+<h3>چارەسەری ئەتاکی تیژ</h3>
+
+<p><strong>Colchicine:</strong> ١.٢mg، دوای ١ ساعەت ٠.٦mg. ئەمەیە ACR 2020 پێشنیار دەکات بۆ کاتی بەردەستی زووەوە (< ١٢ ساعەت). دۆز کەم بکە لە CKD.</p>
+
+<p><strong>NSAIDs:</strong> Indomethacin 50mg سێ جار ڕۆژانە بۆ ٥ ڕۆژ — ئەگەر CKD، GI یان قەلپ کێشە نییە.</p>
+
+<p><strong>Prednisolone:</strong> ٣٠-٣٥mg/ڕۆژ بۆ ٣-٥ ڕۆژ — بۆ کاتی NSAIDs و Colchicine کۆنتراتندیکاسیون.</p>
+
+<blockquote class="art-quote">"Do NOT start or stop ULT during an acute attack — it prolongs and worsens the attack." — ACR 2020</blockquote>
+
+<h3>ULT Initiation — Allopurinol</h3>
+
+<p>لە ١٠٠mg/ڕۆژ دەست پێبکە (٥٠mg لە CKD3+). هەموو ٢-٥ هەفتەیەک ١٠٠mg زیاد بکە تا گەیشتن بە ئامانجی SUA. Anti-inflammatory prophylaxis (Colchicine ٠.٥mg/ڕۆژ یان NSAID کەم-دۆز) دراوستیکردن بۆ ماوەی ٣-٦ مانگ.</p>
+
+<p>HLA-B*5801 Testing پێشنیارکراوە لە نەخۆشانی کۆریایی، ئەسیاییەکانی باشووری ئاسیا، و ئەفریکیەکانی ئەمەریکا پێش دەستپێکردن بە Allopurinol — لەگەڵ زیادکردنی مەترسی DRESS syndrome.</p>
+
+<div class="article-tip professional"><span>📌</span> Febuxostat بۆ نەخۆشانی CKD باشترە، بەڵام FDA وارنینگی هەیە: زیادبوونی مەترسی مرنی کاردیۆڤاسکولار لەگەڵ Allopurinol بەراورد. ئەگەر دڵ کێشە هەیە، ئاگادار بە.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["Gout","Uric Acid","Allopurinol","ULT","ACR 2020"], dateKu:"نیسان ٢٠٢٥"
+    },
+
+    "art-hip-knee-referred":{
+      id:"art-hip-knee-referred", specialty:"rheumatology", level:"professional", group:"msk",
+      icon:"🩻", date:"2025-04",
+      title:"دەردی ئاڵوگۆڕکراوی مووچەی قاچ بۆ زانوو — ڕووبەڕووبوونەوەی کلینیکی",
+      synopsis:"پاتۆفیزیۆلۆجی ئۆبتوراتۆر نێرڤ، ئازمونی FABER و FADIR بە شێوازی ستانداردی، ئامرازی ئیمیجینگ، و ئەو نەخۆشیانەی کە بە دەردی زانووەوە خۆیان دەردەخەن — بەتایبەت لە مناڵانی ٨-١٤ ساڵ.",
+      body:`<p>دەردی بەرپرسراو لە مووچەی قاچ دکۆنەی ئاسایی لە پراکتیکی ڕۆماتۆلۆجیدا.</p><div class="article-tip professional"><span>📌</span> لە هەڵەبجەدا OA مووچەی قاچ لە پیران زیاتر لە پێویست وەک زانوو دیاگنۆز دەکرێت.</div>`,
+      fullBody:`<h2>دەردی ئاڵوگۆڕکراوی مووچەی قاچ بۆ زانوو — پرۆتۆکۆلی کلینیکی تەواو</h2>
+
+<h3>پاتۆفیزیۆلۆجی</h3>
+
+<p>ئۆبتوراتۆر نێرڤ (L2-L4) هەم مووچەی قاچ و هەم ناوچەی مۆعیالی زانوو ئینێرفاسیۆن دەکات. ئەمەش کەناڵی ئانۆمالی دروست دەکات بۆ دەردی بەرپرسراو. کاتێک مووچەی قاچ دچووکەوێت — بەهۆی OA، ئازایی، یان نەخۆشی ئێسک — ئیمپولسی نۆسیسەپتیڤ دەتوانێت بۆ کۆرتێکسی ناوچەی زانوو بناردرێت.</p>
+
+<h3>نەخۆشییەکانی بەرپرسراو کە بە زانوو خۆیان دەردەخەن</h3>
+
+<ul>
+<li><strong>OA مووچەی قاچ (پیران):</strong> باوترینە. ئاپی ئووی بارگران لازمی دیاگنۆزە.</li>
+<li><strong>Perthes Disease (مناڵان ٤-٨ ساڵ):</strong> ئاڤاسکولار نیکرۆسیسی سەری فیمور. دیاگنۆزی دواخستوو دەتوانێت بە بێ سوود بمێنێتەوە.</li>
+<li><strong>SCFE (مناڵان ١٠-١٦ ساڵ):</strong> ئیمەرجێنسی ئۆرتۆپیدیکییە. سڕینەوەی سەری بۆنی مووچەی قاچ لە سینۆڤیۆم. ئازمونی ئیستابیلیتی پێویستە.</li>
+<li><strong>Transient Synovitis:</strong> باوترینی مووچەی قاچ لە مناڵاندا. بیناسراوی لەگەڵ ئینفیکشنی بابووسی.</li>
+</ul>
+
+<h3>ئازمونە ستانداردەکان</h3>
+
+<p><strong>FABER Test (Patrick Test):</strong> نەخۆش بەپشتاخوی بخووە. ئیمارە بکەوێتە سەر زانوو. دوا، مووچەی قاچ Flex بکە، Abduct بکە، و External Rotation بکە. دەردی گروینی = مووچەی قاچ. حەساسیەتی ≈٧٠٪ بۆ Hip Pathology.</p>
+
+<p><strong>FADIR Test:</strong> Flexion ٩٠ درجە، دوا Adduction + Internal Rotation. حەساسیەتی ≈٩٤٪ بۆ FAI (Femoroacetabular Impingement). تایبەتمەندی کەمترە.</p>
+
+<p><strong>Log Roll Test:</strong> پاسیڤ ئیکستەرنال و ئینتەرنال ڕۆتەیشنی مووچەی قاچ لە پاساوی بەپشتاخوی. پوزیتیڤ ئەگەر دەردی گروینی یان قاچی ژوورە بڕووژێنێ.</p>
+
+<h3>ئامرازی ئیمیجینگ</h3>
+
+<p><strong>وێنەی یەکەم:</strong> X-Ray مووچەی قاچ لەگەڵ بارگرانی بەرپی — AP و Lateral. لە مناڵان، Frog-Leg لاتەرەلیشی بزیاد بکە بۆ Perthes و SCFE.</p>
+
+<p><strong>MRI:</strong> بۆ شکی Labral Tear، FAI، AVN لە مرحەلەی سەرەتا، Stress Fracture. T1 و T2 بەلاپانی کافین — Gadolinium بۆ کاتی Synovitis یان ئینفیکشنی شکی.</p>
+
+<p><strong>Ultrasound:</strong> بۆ Synovitis، Joint Effusion، Guided Aspiration. لە مناڵان بەتایبەت مۆفیدە چونکە بێ تیشکە.</p>
+
+<blockquote class="art-quote">"The knee hurts but the hip is guilty — never forget to examine above and below."</blockquote>
+
+<div class="article-tip professional"><span>📌</span> لە پراکتیکی هەڵەبجەدا: نەخۆشانی پیر کە دێن بە «دەردی زانوو» — ئازمونی FABER بکە پێش ئەوەی هیچ دیاگنۆزی بدەیت. ئەمە ١ خولەک کار دەکات و دەتوانێت دیاگنۆزی بگۆڕێت.</div>`,
+      media:[], authors:["rzgar-tayb"], tags:["referred pain","hip","knee","FADIR","FABER"], dateKu:"نیسان ٢٠٢٥"
+    }
+  },
+
+  risale: {
+    excerpts: [
+      { id:"r-lailahe", title:"لا ئیلاهە ئیللاللاه — کلیلی ئیمان", source:"کەلیماتی شەریف — کەلیمەی یەکەم", textKu:"لا ئیلاهە ئیللاللاه واتا هیچ مەعبودێکی ڕاستەقینە نییە جگە لە خودا. ئەم کەلیمەیە نەک تەنها داخوازیی زاریشتی، بەڵکو ئیقرارێکی قەلبیی و عەقلییشە. سەید نورسی لە کەلیماتی شەریفدا دەڵێت ئەم کەلیمەیە دیوارێکی بەرزی لادێدراوی لەگەڵ هەموو گومان و کسالتییەکاندا درووست دەکات.", textEn:"There is no deity but God. Nursi explains this phrase is not mere verbal recitation but a declaration uniting heart and intellect, erecting a fortress against doubt and spiritual languor.", reflection:"بۆ نەخۆشی تووشبوو: ئەم کەلیمەیە ناماوی دلنیابوون دەبێت — هەموو ئازاری لەبەر ئارادەی خودایە، بۆیە مانای ترین مامەڵەیە لە کاتی دەرددا." },
+      { id:"r-musibet", title:"مصیبەت وەک ئامرازی پاکایی", source:"لائیلاجە — بەشی دووەم", textKu:"ئەی کەسی تووشی مصیبەت بووی! بزانە کە مصیبەت لە سێ ئالوگۆڕدا دێت: یا گوناهەکانی پاک دەکات، یا مستەحەق ئەدالەتیی ئیلاهی دەکات، یا بەرزبوونی دەرەجەیی مانەویت دەکات. بۆیە مصیبەت دوژمن نییە — دەرگای تازەیەکی هۆپگرتنەوەیە.", textEn:"O afflicted one! Know that affliction comes in three guises: purification from sin, deserving of divine justice, or elevation of spiritual station. Therefore affliction is not an enemy but a new door of receiving.", reflection:"بۆ پزیشک: ئەم چەرچەوەیە Reframing کلینیکیی ئاسان دەکات — بەتایبەت لە نەخۆشانی کڕۆنیک کە «بۆچی من؟» دەیانپرسن." },
+      { id:"r-sabir", title:"سەبر — نیمەی ئیمان", source:"مەکتووباتی نور — سەیلانی مەعنەوی", textKu:"سەبری ئیمانی — ئەو سەبرەیە کە بە ئاگایی کامل لە خودای حەکیم تەسلیم دەبێتەوە. ئەمەی جیاوازیی سەبری موومنی لە سەبری گێل دەکات. گێل دەبێتە بەردەمی دەرد و سەبر دەکات بۆ ئەوەی کار نابێت — موومن دەزانێت دەرد ئامانجی هەیە، بۆیە سەبر دەکات بەخواستی.", textEn:"Faithful patience surrenders with full awareness to the All-Wise God. This distinguishes the believer's patience from mere endurance. The unbeliever endures because they have no choice; the believer surrenders because they understand purpose.", reflection:"بۆ پراکتیک: ئامانجی بەرپرسیارێتی کلینیکی نەک بردنی دەرد بەتەنها، بەڵکو یارمەتیدانی نەخۆش لە تووشبوونی بە ئاگایی." }
+    ],
+    readingCircles: [
+      { id:"rc-lighthouse",  name:"Lighthouse for Humanity",  nameKu:"شامی مرۆڤایەتی",  schedule:"هەفتەیەک جار — ئۆنلاین",  lang:"English",         langKu:"ئینگلیزی",         platform:"Zoom" },
+      { id:"rc-garden",      name:"The Garden of Noor",        nameKu:"باخچەی نور",       schedule:"هەفتەیەک دوو جار — ئۆنلاین",lang:"Kurdish",          langKu:"کوردی",             platform:"Telegram" },
+      { id:"rc-fridays",     name:"Fridays' Sohbet",           nameKu:"سۆهبەتی هەینی",    schedule:"هەفتەیەک جار — ئۆنلاین",  lang:"Kurdish / Ottoman",langKu:"کوردی / عوسمانی",  platform:"WhatsApp" },
+      { id:"rc-briska",      name:"Briska",                    nameKu:"بریسکە",            schedule:"ئۆنلاین",                  lang:"Kurdish",          langKu:"کوردی",             platform:"Zoom" },
+      { id:"rc-roon",        name:"Roon",                      nameKu:"ڕوون",              schedule:"ئۆنلاین",                  lang:"Kurdish",          langKu:"کوردی",             platform:"Telegram" },
+      { id:"rc-mashwara",    name:"Mashwara",                  nameKu:"مەشوەرە",           schedule:"ئۆنلاین",                  lang:"Kurdish / Turkish",langKu:"کوردی / تورکی",    platform:"WhatsApp" },
+      { id:"rc-ihlas",       name:"Ihlas Nur",                 nameKu:"ئیخلاس نور",        schedule:"ئۆنلاین",                  lang:"Kurdish / Turkish",langKu:"کوردی / تورکی",    platform:"Zoom" }
+    ],
+    relatedArticles: ["art-risale-pain","art-risale-pro"]
+  },
+
+  getArticle(id){ return this.articles[id]||null; },
+  getDoctor(id){ return this.doctors[id]||null; },
+  getSpecialty(key){ return this.specialties[key]||null; },
+  getSpecialtyDoctors(key){ return this.specialtyDoctors[key]||[]; },
+  getArticlesBySpecialty(key){ return Object.values(this.articles).filter(a=>a.specialty===key); },
+  getArticlesByLevel(key,level){ return this.getArticlesBySpecialty(key).filter(a=>a.level===level); },
+  getDoctorArticles(docId,level){ const d=this.doctors[docId];if(!d)return[];let arts=d.articles.map(id=>this.articles[id]).filter(Boolean);return level?arts.filter(a=>a.level===level):arts; },
+  getAuthorDoctors(artId){ const a=this.articles[artId];if(!a)return[];return a.authors.map(id=>this.doctors[id]).filter(Boolean); },
+  getLatestArticles(n=6){ return Object.values(this.articles).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,n); },
+  getAllSpecialtyList(){ return Object.values(this.specialties); }
+};
+
+</script>
+<style>
+:root{--bg:#f4f6fb;--surface:#fff;--surface2:#f0f2f8;--surface3:#e8ecf5;--border:#d4d9ea;--border2:#e4e8f4;--accent:#2b72e8;--accent2:#1e8a5e;--text:#1a1e2e;--text-muted:#5a6480;--text-dim:#9aa0b8;--tag-bg:#dce8fc;--tag-text:#2b72e8;--pill-bg:#d4f0e4;--pill-text:#1e8a5e;--sp-bg:#ede0ff;--sp-text:#6b21a8;--sp-border:#c4a0f0;--pro-bg:#dbeafe;--pro-border:#93c5fd;--pro-text:#1e40af;--shadow:0 2px 8px #0000001a;}
+html.dark{--bg:#0f1117;--surface:#171b26;--surface2:#1e2333;--surface3:#242840;--border:#2a3045;--border2:#1e2640;--accent:#5b9cf6;--accent2:#7ec8a4;--text:#e8eaf0;--text-muted:#7a839e;--text-dim:#4a5270;--tag-bg:#1e2d45;--tag-text:#7eb8f7;--pill-bg:#1a2e22;--pill-text:#7ec8a4;--sp-bg:#2a1f3d;--sp-text:#c4a0f0;--sp-border:#4a2f6d;--pro-bg:#1a2840;--pro-border:#2a4870;--pro-text:#7eb8f7;--shadow:0 2px 8px #00000040;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Naskh Arabic',serif;min-height:100vh;direction:rtl;transition:background .25s,color .25s;}
+
+/* HEADER */
+header{padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.hdr-left{display:flex;align-items:center;gap:9px;min-width:0;flex:1;overflow:hidden;}
+.yh-logo{width:32px;height:32px;flex-shrink:0;border-radius:6px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3a1a 0%,#b5601f 40%,#8b2e0a 70%,#5c1e06 100%);box-shadow:0 1px 4px #00000060;}
+.yh-logo svg{width:22px;height:22px;}
+.yh-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:inherit;}
+.yh-name{font-size:1rem;font-weight:700;color:var(--text);white-space:nowrap;}
+.hdr-sep{color:var(--border);padding:0 4px;flex-shrink:0;}
+
+/* SPECIALTY DROPDOWN */
+.sp-select-wrap{position:relative;display:inline-flex;align-items:center;}
+.sp-select{appearance:none;-webkit-appearance:none;background:var(--surface2);border:1px solid var(--sp-border);border-radius:8px;color:var(--sp-text);padding:6px 28px 6px 10px;font-family:'Noto Naskh Arabic',serif;font-size:.88rem;font-weight:700;cursor:pointer;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a839e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 8px center;}
+.sp-select:focus{border-color:var(--accent);}
+.hdr-controls{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.icon-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text-muted);padding:7px 10px;transition:all .2s;font-family:'Noto Naskh Arabic',serif;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:.82rem;line-height:1;text-decoration:none;}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* HERO */
+.sp-hero{background:linear-gradient(135deg,var(--sp-bg) 0%,var(--surface) 65%);border-bottom:1px solid var(--sp-border);padding:22px 24px 18px;position:relative;overflow:hidden;}
+.sp-hero::before{content:attr(data-icon);position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:5rem;opacity:.07;pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sp-bg);border:1px solid var(--sp-border);color:var(--sp-text);border-radius:20px;padding:4px 14px;font-size:.78rem;font-weight:600;margin-bottom:7px;}
+.sp-hero h2{font-size:1.35rem;font-weight:700;margin-bottom:5px;line-height:1.3;}
+.hero-desc{font-size:.85rem;color:var(--text-muted);max-width:600px;line-height:1.75;}
+.hero-stats{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.hero-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 13px;text-align:center;}
+.hero-stat .num{font-size:1.2rem;font-weight:700;color:var(--sp-text);}
+.hero-stat .lbl{font-size:.67rem;color:var(--text-dim);display:block;}
+
+/* TABS */
+.page-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;gap:2px;overflow-x:auto;}
+.tab-btn{padding:12px 15px;border:none;background:none;cursor:pointer;color:var(--text-muted);font-family:'Noto Naskh Arabic',serif;font-size:.85rem;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;transition:all .18s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--sp-text);border-bottom-color:var(--sp-border);}
+.tab-panel{display:none;padding:20px;max-width:900px;margin:0 auto;}
+.tab-panel.active{display:block;}
+
+/* SECTION HEAD */
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border);}
+.section-head h3{font-size:1rem;font-weight:700;}
+.s-badge{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:.71rem;color:var(--text-muted);}
+
+/* DOCTOR CARDS */
+.doctor-grid{display:flex;flex-direction:column;gap:9px;}
+.doctor-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 17px;transition:border-color .2s,box-shadow .2s;}
+.doctor-card:hover{border-color:var(--sp-border);box-shadow:0 2px 12px #5b3c9018;}
+.doctor-card.has-articles{border-right:3px solid var(--sp-border);}
+.doc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:9px;flex-wrap:wrap;}
+.doc-name{font-weight:700;font-size:.97rem;}
+.doc-qual{font-size:.74rem;color:var(--text-muted);margin-top:2px;direction:ltr;text-align:right;}
+.doc-badges{display:flex;gap:5px;flex-wrap:wrap;}
+.doc-badge{font-size:.69rem;padding:3px 9px;border-radius:5px;font-weight:600;cursor:pointer;border:1px solid;display:inline-flex;align-items:center;gap:4px;transition:all .15s;}
+.doc-badge.pat-badge{background:var(--pill-bg);color:var(--accent2);border-color:var(--accent2);}
+.doc-badge.pro-badge{background:var(--pro-bg);color:var(--pro-text);border-color:var(--pro-border);}
+.doc-badge:hover{filter:brightness(1.12);}
+.doc-badge.on{box-shadow:0 0 0 2px currentColor;}
+.doc-info-row{display:flex;flex-wrap:wrap;gap:7px 18px;font-size:.79rem;color:var(--text-muted);margin-top:5px;}
+.doc-info-item{display:flex;align-items:center;gap:5px;}
+.doc-info-item.phone{font-family:monospace;direction:ltr;}
+.doc-arts-drawer{display:none;margin-top:10px;padding:9px 11px;background:var(--surface2);border-radius:8px;border:1px solid var(--border2);animation:fadeUp .16s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.doc-arts-drawer.open{display:block;}
+.daw-label{font-size:.69rem;font-weight:700;color:var(--text-dim);margin-bottom:6px;}
+.daw-links{display:flex;flex-direction:column;gap:4px;}
+.daw-link{display:flex;align-items:center;gap:7px;font-size:.77rem;color:var(--accent);text-decoration:none;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);transition:all .13s;}
+.daw-link:hover{border-color:var(--accent);background:var(--tag-bg);}
+.daw-link.pro{color:var(--pro-text);}
+
+/* ARTICLE GROUPS */
+.art-group{margin-bottom:7px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);}
+.agh{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;cursor:pointer;user-select:none;transition:background .15s;gap:8px;}
+.agh:hover{background:var(--surface2);}
+.agh-left{display:flex;align-items:center;gap:8px;}
+.agh-icon{font-size:1.05rem;}
+.agh-title{font-weight:700;font-size:.88rem;}
+.agh-badge{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:.69rem;color:var(--text-muted);}
+.agh-chev{color:var(--text-dim);font-size:.78rem;transition:transform .25s;flex-shrink:0;}
+.art-group.closed .agh-chev{transform:rotate(-90deg);}
+.agb{overflow:hidden;max-height:3000px;opacity:1;transition:max-height .35s ease,opacity .25s ease;padding:0 9px 9px;}
+.art-group.closed .agb{max-height:0;opacity:0;padding:0 9px 0;}
+.articles-grid{display:flex;flex-direction:column;gap:7px;margin-top:7px;}
+
+/* ARTICLE CARDS */
+.article-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s;}
+.article-card:hover{box-shadow:var(--shadow);}
+.article-card.patient:hover{border-color:var(--accent2);}
+.article-card.professional:hover{border-color:var(--pro-border);}
+.art-hdr{padding:12px 14px 9px;cursor:pointer;user-select:none;display:flex;align-items:flex-start;gap:10px;}
+.art-icon{font-size:1.35rem;flex-shrink:0;line-height:1;}
+.art-meta{flex:1;min-width:0;}
+.art-lvl-badge{display:inline-flex;align-items:center;gap:4px;font-size:.66rem;font-weight:600;padding:2px 7px;border-radius:4px;margin-bottom:4px;}
+.art-lvl-badge.patient{background:var(--pill-bg);color:var(--accent2);}
+.art-lvl-badge.professional{background:var(--pro-bg);color:var(--pro-text);border:1px solid var(--pro-border);}
+.art-title{font-size:.91rem;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.4;}
+.art-synopsis{font-size:.79rem;color:var(--text-muted);line-height:1.55;}
+.art-hint{font-size:.68rem;color:var(--text-dim);margin-top:4px;display:flex;align-items:center;gap:4px;}
+.art-chev{transition:transform .3s;display:inline-block;}
+.article-card.expanded .art-chev{transform:rotate(180deg);}
+.art-snip-wrap{max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .25s ease;opacity:0;}
+.art-snip-wrap.open{max-height:500px;opacity:1;}
+.art-snip{padding:0 14px 11px;border-top:1px solid var(--border2);font-size:.82rem;color:var(--text-muted);line-height:1.7;}
+.art-snip a.read-more{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:.78rem;font-weight:600;color:var(--accent);text-decoration:none;background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:5px 13px;transition:all .15s;}
+.art-snip a.read-more:hover{border-color:var(--accent);filter:brightness(1.05);}
+.art-footer{padding:8px 14px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;}
+.art-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.art-tag{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:.65rem;}
+.art-authors{display:flex;gap:5px;flex-wrap:wrap;}
+.art-author-link{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;color:var(--sp-text);text-decoration:none;background:var(--sp-bg);border:1px solid var(--sp-border);border-radius:5px;padding:2px 8px;transition:all .15s;}
+.art-author-link:hover{filter:brightness(1.1);}
+.art-date{font-size:.66rem;color:var(--text-dim);}
+
+/* LATEST TAB */
+.latest-grid{display:flex;flex-direction:column;gap:9px;}
+.latest-card{display:flex;align-items:flex-start;gap:11px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.latest-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.latest-icon{font-size:1.7rem;flex-shrink:0;}
+.latest-meta{flex:1;min-width:0;}
+.latest-title{font-size:.9rem;font-weight:700;margin-bottom:3px;line-height:1.4;}
+.latest-sum{font-size:.78rem;color:var(--text-muted);line-height:1.55;}
+.latest-foot{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap;}
+.latest-lvl{font-size:.67rem;font-weight:600;padding:2px 7px;border-radius:4px;}
+.latest-lvl.patient{background:var(--pill-bg);color:var(--accent2);}
+.latest-lvl.professional{background:var(--pro-bg);color:var(--pro-text);}
+.latest-date{font-size:.67rem;color:var(--text-dim);}
+
+/* DOCTOR MODAL */
+.modal-overlay{position:fixed;inset:0;background:#00000090;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;transform:translateY(12px);transition:transform .22s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px;}
+.modal-name{font-size:1rem;font-weight:700;}
+.modal-close{background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text-muted);cursor:pointer;padding:5px 10px;transition:all .15s;}
+.modal-close:hover{border-color:var(--accent);color:var(--accent);}
+.modal-qual{font-size:.75rem;color:var(--text-muted);margin-bottom:8px;direction:ltr;text-align:right;}
+.modal-bio{font-size:.83rem;color:var(--text-muted);line-height:1.7;margin-bottom:12px;}
+.modal-sec-lbl{font-size:.7rem;font-weight:700;color:var(--text-dim);margin-bottom:6px;}
+.modal-art-list{display:flex;flex-direction:column;gap:5px;}
+.modal-art-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;text-decoration:none;transition:border-color .15s;}
+.modal-art-item:hover{border-color:var(--accent);}
+.mai-icon{font-size:1rem;flex-shrink:0;}
+.mai-title{font-size:.81rem;font-weight:600;color:var(--text);}
+.mai-lvl{font-size:.65rem;color:var(--text-dim);margin-top:1px;}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:80px 20px;color:var(--text-muted);}
+.not-found h2{font-size:1.4rem;margin-bottom:10px;}
+
+/* BACK TO TOP */
+.btt{position:fixed;bottom:22px;left:22px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text-muted);cursor:pointer;padding:9px 11px;opacity:0;pointer-events:none;transition:all .22s;box-shadow:var(--shadow);z-index:50;}
+.btt.show{opacity:1;pointer-events:all;}
+.btt:hover{border-color:var(--accent);color:var(--accent);}
+
+@media(max-width:600px){.sp-hero{padding:14px;}.sp-hero h2{font-size:1.1rem;}.tab-btn{padding:10px 9px;font-size:.79rem;}.tab-panel{padding:11px;}}
+
+/* FOOTER */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:18px 20px;text-align:center;margin-top:20px;}
+.footer-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:7px;}
+.footer-links a{font-size:.8rem;color:var(--text-muted);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--accent);}
+.footer-copy{font-size:.73rem;color:var(--text-dim);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-row">
+    <div class="hdr-left">
+      <a href="index.html" class="yh-link">
+                <div class="yh-logo"><img src="data:image/x-icon;base64,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k/9JUor/SFWO/0JMiv9KV4z/R1OI/0ZPh/9DSoT/Qkh8/z5Dfv9BRoT/OkF6/z9HfP9AR4D/QEiA/z5Fhf9XSlH/UkhU/0FBXv9HPlL/TEdo/01IVv9FP1f/QkBj/0NGcf9HRWT/UFR5/0RFXf84O1n/RkBa/0A9W/9MR2r/TUhT/1ZNVP9OSWD/TUdc/1ZQXf9TTlb/UU1r/1FHSf9ZT0//SUVe/1BFU/9FQlL/ST9D/05ESv9HQ2T/RkFQ/1BZef9RUnX/QkZz/z1CcP9GSnn/TE1v/0JGc/9AQm7/QUZ2/z5CZf9GR2v/QEhz/zs/av9CRmz/RE+H/0dRff9MVIH/Tk97/0ZMd/8/S3r/V3Cc/0ZSe/9IUoD/REhw/z9Md/9EUXP/Q0l3/0RFZf8/RWb/QVN7/z9Ldf9BQ2f/U2t8/1Jcdf9BUnf/Q1SG/01ZeP9MVn3/T2OH/0VVj/9LWX7/RkZf/0VSgf9LZYr/RF2D/0hZi/9FU4X/P1N8/1Zogv9PYZb/RUtn/0Vaj/9beqH/UGqJ/1NkeP9IUXv/SFRv/09oh/9QVHD/SlOC/0hKWP8+TW3/TW6P/zpEXv9HVWf/S2F7/0NUfv84Qm//PUVp/zlDcf8+RHP/TmaI/0VSe/9GUmX/TFdv/0taef8/SWT/TE9b/0haev9FUGr/SFV1/0ZTfv9CTnP/SFd9/0NQd/9NYY//Qk9j/0ROXv9HUG7/QE9v/0FPa/9BS1v/T2B9/0lUdf9ATnL/OUNv/1JbcP9LWoH/VG2X/zlHiv8/QWH/QUh1/0RTkf8/Smn/VXGZ/1Bhcf9TX3v/T1+O/0hQW/9LWG7/R1Bt/0xegv9Ya57/S1iW/0JJaP9JVXj/Tlua/0ZXb/8/Tl//RFh3/0lQUv9GUHT/RU1d/0RQXP9JWnb/Sll5/0ZYiP87SIH/R1iD/0tfjP9OYpX/RlmI/zM6b/83Qov/UWOI/0pZev9UcZz/Wned/1BYZ/9HTWP/Tlpm/0pZd/9IVXL/TV6O/1dwmP9KV5L/O0Jx/z1Hi/9IVnv/OkVS/1Jniv9FWYL/SVx0/z5DUf9KTk7/SVp1/0NQa/9LYIX/R1t9/zpIhP9OYn3/V3CZ/1BkhP9Xc5r/SFqT/1Jll/9IVXn/UWyV/05hhv9Wcpn/Yn6e/1Niev9Xb4z/R1Fv/01ihP9MX33/X3ef/1Nslf9FVI//R1yS/0FLXf9PZYf/T2OF/0dcdv9KYIH/SVp0/1BhgP9MW3n/TGB//0lggP9HWnz/QVF2/1Joiv9gd57/bHyW/1lmg/9ZdZ7/VGiS/0pZe/9NZZL/VHGS/1FwlP9ddpz/TWJ//1Zokv9KXoH/UWKJ/19wj/9eco//WG+a/1Vtn/9OY4r/UmaE/1l0nv9OYIn/TGWB/0tmhv9HWX3/S12H/0ZVcv9JXnr/T2GH/15ug/9gc5H/SFJq/1hwlv9aaoP/V22R/193of9ccZH/R1Ry/0xhhv9KX4L/WHSc/2aBqv9WbZv/XXac/0VPa/9MX4D/U2R+/1dsi/9cd5z/UF18/1Jrjf86R1b/TF55/09nkf9EWHj/S2KE/0VWgf9CUIr/TV16/0RWcv9LYYP/TmCF/0RSdP9LXYL/R1qE/0lcjv9Yb47/T0tY/1VGPf9SX3b/R1Nz/1Zym/9deqf/UmOt/0JMiv9OYqn/SVt+/0RQbP9JWoj/VnKb/1NZZ/9MRVX/TkdP/1BZa/87R1b/RFZv/0tfgP9IW4b/P0Z+/z5EhP9DU47/R1d4/0lZff9FWXv/QUVa/1dpov9SY4L/Tl2C/05LWv9JSF7/T0hd/09HUP9MWHT/TV6B/01hnP9HVJX/QUhy/01bmf9HV6j/RVBx/0FRcv9RXXr/S0JS/z1CYf9HR1r/UUlS/1Jfcf9DUWD/QVJo/z1Ig/8/QnP/Pj5n/z9Jjf9PYZL/RU5u/0ZQa/9JQU//VWqX/1lsiv9KUmX/WWRz/1FZfP9NVHD/WmFy/1dsjP9GUmv/Q0xy/z5EXv9LT3L/Qk5y/0lVlv9JXoL/Sld9/1RifP9SXXT/SVN8/0ROaf9VZnf/T1dl/01hdv9ASVn/PUZ0/0NCb/9CQ2r/QUZ4/01dk/9IV33/QUhg/0FNZ/9XcqP/SFyE/05iiP9PUGL/TkhY/1lOVv9STVf/R1Nt/1Jnj/9PZZ3/SVOU/0RMdP9OXZz/R1eg/0dQcP9GVXP/YG6K/01GUv9DRGD/Q0FX/1NLU/9OWm7/PUdW/0hYd/9DU4n/QEiF/zxCdv9BTpD/UGGH/0JOZv9DUG3/ST9M/0lXev9QaJL/VnCX/197of9XWWv/WlBS/1lqhv9JVXr/XXym/1p9pv9WbK//S1SV/1Vtp/9NXn//SFRy/0pbhP9deKH/WWl+/0pBTP9FQkr/VWBv/zxDUf9LXnr/TGGE/01jh/9FUY3/PkaE/0xci/9EUW7/SFx8/0RYeP88P0//U2eH/190l/9ndon/W2uN/2eDrP9ngqf/TFl1/1dskP9RaIr/XHic/2KAp/9cdZn/Y3ug/0dTcv9SZoj/WWqG/2B4lv9bdZ7/VWeT/193m/9HV2v/VGeB/1Vrmf9LZIL/TWOC/1Rmj/9LXIz/UGJ6/1Jlg/9NY4T/UmSE/0NSbv9Wb5X/Xnab/2h2iv9ZcZT/YHik/1dtlP9QXIn/W3Wd/1Zsjv9XdJf/XXad/2F6mP9dbpb/SFl2/1Vpjv9Za4T/YniU/152oP9Xbp//XXah/1Nkh/9fe5//UWWJ/05mif9MZ4X/TF6B/09giv9LWnD/T2N7/09ihf9ecYb/XW2L/09hff9YcZ7/S2KR/1ZxnP89R4b/Sl2Z/1Jhff9RZoT/YYCm/2OAqf9heY//T1lm/2F0iv9PWXj/UGCD/0tfg/9de6T/VWmh/0ZRi/9HWJz/SlZu/0NTaf9YbZD/S2OC/0xigP9OWnH/Tlxp/1Bkhf9RZIL/S2GD/0NWef86SWz/VWSD/0pfhv9QZpn/P0mG/zpCaP8+SY7/Umaa/0VPa/9efKX/ZoOm/1pibf9ESmj/Wl9p/09ca/9HUWv/S1+N/1hxo/9UYKf/Q0tx/0VPg/9OX5//Q09i/0xbcf9OZZD/TVlm/0RGU/9IS0v/VGV7/01Xcv9RZon/R1d9/z1Hhv9TWl//S1t3/0RVhv9DTnj/RUxv/0NMcv9DTYD/UGWM/05ceP9OWGv/S1dz/1ttlv9GUG//UFFg/0pYcP9KVW//UlyA/0xVfv9MUXH/UVh4/0pXgv9QZZj/Qk5g/0pYbv9SXG//UGKL/05cfP9MU2H/UmF8/0VRb/9EUYX/OkNx/1tpg/9UbYn/XGqD/09dkP9bbYn/XGJ3/1NolP9kf57/UWKJ/09ccv9QXYL/VmR7/19ziv9MW4P/T2CD/1Nmif9bbof/X3eR/0ldh/9VaJr/W22K/1dvnP9OXHr/R1Z2/0xWZP9IT2j/SlZo/05ZZv9RXHj/R1F0/0dRZ/89SXD/TlyE/1Vlj/9UWoL/U1qD/19oj/9UWoD/WGWT/1BZg/9NWI//UFqJ/09Zj/9aaJH/UlyC/1BbkP9WYpj/WmSL/2Z2nv9ZZIj/Vmac/1hh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if9FUY7/OD+K/0VMff9NVZX/YWmT/05Xmv9HUYv/P0yM/zlEdf88RoX/PEaE/z5Bfv88QpD/Oz+D/zY8ff84P3n/ND56/zhHd/87RY//Nj19/zxGlf8+Rnr/O0WO/zxCV/80OFn/NTl2/zlAe/86Q5L/RVSN/z5Ilv87RYX/O0N5/0pNfv9TVX7/QEyR/z1Hgv85QoP/RlWN/z1OgP86Roz/P0R3/ztBgP89SYr/QkyF/0BJmP9CTH7/QUuO/1BppP9Raqj/PkyQ/z5Ga/9RWYv/Y3Oj/1pbgf9GT3//PUiA/ztJbP88SXn/N0Bw/zpAdP86RIP/PEV+/zhBhf85QG3/NENw/0BNdf8xO27/NDlw/ztIlf9AS4H/PEeS/ztDUf80OFT/Nzl3/zY+dv88RZP/QFOE/0BLlv84QH3/PkR6/0hIcf9MS3X/QUuH/z9KfP87RH//S16N/0NVhP9FUpT/PkR7/z9Hi/87R4z/QEuJ/0BKmv9AS4D/RE6U/1Bqnf9NY5//QkmW/0BKe/9JUZD/Y2iL/1tglv9HUIX/PUiJ/zpJb/87R3z/PkV8/zlBev86Ron/OkGI/zg/hP85QXj/NUR5/z1Ibf8zPnr/Oz96/0NLov9DToz/O0SI/zpDgP82OnX/Mzl9/zhAi/82QIr/PEaM/0JHmf8+RIf/OT+C/0dMiv9RVIj/P0aT/0JNlf8/SYv/RFKR/0FNhP82P4r/QUmI/0RJjP88RZj/QEuZ/ztFm/9ITYb/P0mF/0ZSjv9CT4r/P0qM/0tXif9DUZH/S1eP/0dSkP9AS4f/Q0qS/0JKgP8/RYj/PD5+/ztAf/8+Rov/OUB//z1Fgv9AR4H/QUeE/z1Ifv88RZD/O0KA/0hMcv9LTnT/Skx7/z1BcP89Pmn/PTxp/0dFd/9ARnT/SU18/0BEc/89QXj/QEd+/z5Gfv8/R3//P0Z9/0FLhf89R3z/O0R3/zpBcf85P3T/QkZ3/z5Hcv9ARnv/R0x5/0hOef9MUHT/TVF1/0tReP9GRWv/TUtp/1VXef9MUG3/UFFt/09Pc/9OS2j/UExm/09MYP9HR2T/QkRo/0pDZf9GR2n/Q0Jf/0FBXv9GRmD/Q0Ri/0ZEaf9ARG3/REJn/1tLSf9USEn/WU5T/0VGZP9HQU7/SEBX/0pHc/9NSFT/V0tL/09BS/89O1b/Qz9X/0RBW/9HSHX/SkhZ/1FPa/9aXnX/QUBR/z5CZP8+OUr/S0JP/0RAV/9KSXn/T0Va/1VOV/9cTk7/VktL/1tZbP9GQWr/Uk9e/1tQVP9NTFf/VlFd/1BOcf9LSFz/T0NA/1tUU/9US1P/SkZm/1JKWP9JRVj/QjxI/0U8Pf9VR0b/TUJL/0pCXf9MSGX/SERQ/1BOb/9NTm7/UlB4/0NBaf9BQWj/PkBt/0REcP9KRWr/S0xt/0ZEaf8+PGL/QD5f/z4/Zv9BPmP/Pj9c/0ZAVP9EQ1//Pz5k/zs6Vf84OmD/Q0Zl/0ZNf/8/RnX/R06D/0xNef9JTXn/Tktx/0ZIcv9AR3b/Pkd4/1Bhj/9LVYX/SVWG/0lRg/9ARn7/Rk14/z9Jdv9ASXT/PEFo/0JGcf9ESHf/REVm/0FCbP8+SHL/QU59/0FMev89PWj/Q0Nq/1Fne/9WY3n/T1Ny/z5LeP86Sob/QUtz/0pQb/9GT4X/UFVz/09jkf9CTpL/RU9+/0hSfP9GTYP/QEJe/0dQi/8/ToD/VnCd/z1Pe/8+S4n/SFB4/0lVj/8/UYv/S1x7/1lnf/9PXp//TlZ9/0VGXP9FU4b/P05+/16CqP9WeJ3/RVZz/1Jfc/9LVob/SEli/0dRbP9LaJD/UmqA/0lKY/9JUov/R0Rc/0VFT/8+RmL/RmKD/05ylv83Rmn/REld/0hbbP9bdY3/UmN+/0dWef9BVYL/SFyL/09eef9MXov/UFx4/01fev9JXY7/Q1iL/0pZcf9HVoP/SEda/0JOcf9DVoT/SWWJ/1V1mP9CWYP/SVmH/0VSc/9AV4r/P1N4/1ZqgP9RZI//TmKT/0pUdP9GV4D/SmCP/1RrlP9dfJ//UGmG/1Rpgf9JVnb/SFF0/0pTaf9CVHX/TGB//09WbP9QW4f/R1N5/0tQYP9ATGL/PUtt/0tpi/9CWHf/PUZf/0FQbv9TZ3r/Q1uB/0FOg/84RHD/N0B0/zpBcv86Q23/NUF8/zpBa/9LWZD/TWmN/0RQgf9FVG7/R1Zk/1Rea/9LV2z/SFRp/0RNX/9DSlv/TU5O/0NZc/9HUWf/SVFs/0ZRZv9GUoP/SFaK/0FQf/9IVYT/RlqI/0ZWhf86Snn/Vm6V/0lbd/87Rlr/QU5d/0NJXf88Q1b/PEde/ztFV/9ATFv/QkpP/01ddf9LXXb/SlJ4/0BQZ/89R3n/OkZ3/0pQX/9PXnP/Sll5/09kif9BUYL/PUx+/z1DXP9CRmX/RU14/0FKff9EU4X/Q1Jw/0lcff9OW3X/R1Vv/0pWcf9RY4z/TmWR/zxIZv9FS2P/UFdm/0xZcP9GUG//SF5+/1Noi/9NWIf/RlSC/0FKZ/9JTm7/SFh4/0hVgv9JVIj/TmSE/z9JWv9BUGP/RlFh/0xWb/9GVHn/UGaQ/0RNdf9GVXH/QUxd/1Nngv9GU3D/S1h+/0VYeP8+R3v/Mz5l/1NZcv9PX3j/TV+A/1Zxm/9IXZH/N0aH/zxAZ/88P1n/QUuG/0JUl/9FUW//P0tn/1Zznf9Yc5f/T11o/1hkcv9NVor/TFaF/0xQX/9NVmP/Sl15/0ROdf9HVn7/U2OJ/1hxmv9QXpz/TVib/0BKaP9FTGD/R1V8/1VkqP9KWob/QU1T/z1KVP9JXn//Rlh5/0hRU/9HS1b/Qklt/0RJVv9FT1H/SlZo/01ggf9GUW7/S12B/0teh/9BUpD/PUqL/0ZWj/9HWoP/TGSU/1BnoP9QY47/PUqA/zQ8dv8zOXH/OUSS/05hjv9JV3n/Slp//1Vvmv9WdKH/X3SV/09Zaf9ETGL/REhS/01TVf9MXnP/RVNx/0hPYf9MXIv/R1R//1Fpjf9UZ5z/Q02I/0FJgf85P3D/QEuG/0lZkP89Sl7/N0FU/1Fjg/9QY4n/Q1iF/0lcd/9CSk7/Oj5P/0pMTf9HUVz/SVx6/0NMYv9JXHr/Sl+E/0dcff9DU4X/OEiF/0ZWeP9OYoL/VGqZ/1Bnmv9OZor/UmyY/zpGiP84P37/RluT/1RsiP9IU3D/VG2R/1Zymf9WcZn/Wnii/15zj/9QW3D/R05b/1Rpf/9UY4X/T1Z0/0pYef9NZY3/VGiO/154ov9Zc5v/S1qY/z5Jh/88R4X/RFOU/0VTbv88RFP/S152/1BqkP9KX4P/QVNx/0thg/9KW3X/QUhc/0pPVv9PY33/SFVx/0RRb/9LYoP/R1x9/0RXeP9AUXT/P0yD/0tdcP9ZcJT/V3Ga/1Jlh/9KXXf/XXmj/1Ntn/9NXI7/XHSe/0tYhv9KWoH/U3Ca/0xjiP9JXoH/V3GX/2SApf9ie5v/Wm2K/1p3lv9EUGX/RlV1/0tig/9MYYH/Sllz/11ylf9adZr/Vm+Y/0hclf9DVor/S2OO/0JNXP9OXXr/VG2Q/05gff9KX4H/T2Z6/0dgfP9MYYP/S1x5/1Fjhv9VaYb/R1Jv/01igv9PZYf/R117/1BjhP9DVXj/QlJ0/0ZZfP9Ycpj/bYaq/3mLpf9pdoz/Tl19/1d1nf9VZ5H/U2eS/1Fijf9PZ43/SF6N/1V1nP9YeJT/T2mR/1lslP9fep3/SVp0/1prkf9MWoT/SmCB/0xfg/9fcJD/YHGP/1tviv9abZL/WXOg/113qf9RaZT/RFN7/01gfv9ZdJn/WHKb/09jh/9LY4r/SFlx/05ujP9DVXf/RFV8/0haif9LWXf/QlJt/0lgff9DV3X/VWmN/2h7k/9idYz/W22M/0hTbP9YcJX/Znyg/3CBmf9hbYX/U2CD/1t1pf9feaP/XHmf/0pYeP9FVnf/SmKN/0tmiv9Oaoj/Um6W/1tzm/9igaX/UmqH/2B5nv9KWX7/Rlhz/0xdhf9dcI7/V2eK/15yi/9Za4//XHah/1pypv9UbZX/T2SI/0FQY/9PY4P/W3ef/1NqmP9HXoP/SmB4/0tjgv9OZYf/RlqE/0dXh/9OY4X/Q09u/01fff9MYIP/TWCF/2Byjv9YaYT/T11//0ZLX/9IXH3/WnGZ/1Nnh/9LW3f/XHag/2B4ov9baof/VmuI/05jf/9AR2T/UmuV/09mjP9PZIn/X3yk/2aDqv9ab5//TWGZ/117o/9TZIT/SlF3/0NWc/9QYoL/Tlxz/1Bnif9cd5v/X3mb/1Nedf9KU2f/VG6S/0RUZv85QEj/SVt1/1Fnkv9NY4n/RVl5/0phhP9MYor/Pk15/0BIkP9KXYn/TFp5/z5MZ/9KYH//SF9//0dZf/8/T3L/P0tv/0JRd/9FVHT/TmyR/0tkmf9PaY7/Xnma/05PWv9RRkn/U0U+/1dpgP9EU27/TVt5/1JwmP9bdqP/YX2p/1Zrpf9JWJ3/Q06a/01foP9Wb5v/QExn/0RNbP9JXoT/SVyE/1Nznv9ac5j/U1Zj/01ESP9IQlP/VVVi/1hngP88SFv/PEJM/0VYcv9NY4T/R1l3/01hiv9EU4j/P0Z2/zo/eP9CTZf/RVmF/0ZXd/9JV3n/R1t7/0ZZe/8/T3D/QkZb/1Bik/9UZpH/R1Z6/01fmP9OYIP/VFdl/0xFTP9SSkv/VEhI/1VNVf9OV3H/Q05r/1Jpk/9XdJ//Umqd/05bqP9HUZD/P0qH/0ZUpP9LXan/R1mJ/0NLa/9EUHj/RleA/1Rvlf9TWWz/TEVO/0RBUP9BP1P/T0dP/1FIUP9QWmr/QlVr/z9JVv9IWXT/TGKB/0RUfv8/Roj/OkJ1/0FEgP89RYb/Qk6T/09ijP9GU3H/RlJy/0dae/9ETmP/SEFR/1hpkf9ab6z/T2GE/0hTb/9NT2f/TUdW/0lHaf9HTW7/UEVk/05FUP9OTl3/Tl+G/0ZSb/9MXof/UWCt/0ZVjf9DSnD/RUp1/01ah/9OX7L/R1eq/0VVeP9CTGX/QVNx/1Jiiv9JQlH/SkNU/0VGZv8/RGX/R0xf/1FOXP9RSUj/V2eA/0ZacP8/Sln/OUhY/0JKi/8+R4P/Pzpc/zo4Vv8+Q2//QkyS/0lamv9PXoH/RlF2/0ROa/9IQ1f/S0JN/1Jnff9ZbaX/WGyD/05cbP9XYnn/VmFw/0xUev9TXHb/UVNs/15rg/9WZHX/W3aa/0lZbf9GUXr/QEpq/0FHav9GSWD/Skxx/z9KY/9FTnn/SFih/0lehf9KXYX/SlZ0/1dqj/9SX3P/T1hs/0ZRef9IVHX/RUxm/09hcv9RWmX/VmiB/1Zviv9FT2H/Qktg/z5FdP9FSnL/Q0Jv/0ZMev9CQGv/R0p1/0lUlf9PZIn/RFN5/z9MZv9KUGb/OkNh/114ov9XbKL/TF6C/0lWcP9QVmr/U1Fk/0tNbv9SVnb/U1Fq/1ROXv9TVWT/VWeM/0ZTbf9JV37/S1iR/0JJd/9FSmX/SVBz/0xXe/9LWp//S1mp/0ZZff9GUnL/R1Rv/1ptlP9TVGL/UU1c/0pOcf9ETHH/Q0lm/1BUZ/9STFH/U2V9/0dddf88R1b/QEph/z5Ihv88RH7/QUJu/z5AZ/8+RHL/P0qL/0ZUkP9MXn3/Rk5t/0BNav9HSFr/QEFX/1Jsmf9RZo//RVt+/0tekv9QY3z/Tk5Z/01CR/9VS1P/Wk1L/1VLUv9LVWz/QUlf/1Rqkv9Ucpz/TF+a/0pXnP9ETYT/RVOK/0lVlv9KW6//RVaL/0VNa/9LUnb/SWCF/2R8nv9VW2r/TUVR/0NBUv88PlT/SUJV/1JLUP9VV2D/RVl0/zxHVP9HUWX/S198/0xhi/8+S4b/QUuJ/ztDe/9ASYr/QE+N/1Zoi/9KVnL/Q1Rw/0VUd/9GR1z/S0NL/0VVd/9KWnr/UGyY/1Vyov9adZz/YXmc/1NOW/9USlL/XUtG/15qe/9OW3j/S1d8/156qv9Xe6P/X4Sq/1Jnrf9OXZ7/R0+N/1Bjsv9VaZn/QVRz/0pUd/9LWYP/RFJ3/1VulP9lgaL/Tk9T/0k/Rf9HQ1X/SkE//1FTV/9PXHD/P0VL/0RSZf9PYob/TWCB/0xfg/9MXZL/QEiD/zk9a/9EUJn/Tl6M/0paev9GVXH/SVx+/0RXeP9BT2r/QT1D/0lacf9RZIv/WXKa/2d9lf9dcIz/XHmh/2R5mv9icIv/Y3aP/110mP9FTm//V2+V/1Rvl/9Va5D/X36m/2KBqv9ZcKX/WGin/2B6pP9Xbov/SFFu/0dZcv9QZIX/TF54/1pylP9efKT/V3CT/05RYv9IS13/VGaB/1Flfv9ASlb/QExh/1Fpjf9Ra47/R1x7/0pdff9TaY3/RlSO/0BLif9KXIz/T159/0VQbv9LYYD/SFx9/0FVdv86S2v/Oj9U/1NlkP9XbJL/cYak/2Nzhv9icIr/U1+G/2SBqv9kfKP/aIKm/01cdf9OXH7/V2uW/1Bsk/9beJL/XHyh/2B2oP9hgab/WGyL/2V+oP9RYIr/TVx8/1RnjP9dcJL/XmyM/2Z7lP9jd57/W3eh/2B4rf9XbZf/ZH2m/0lZb/9SY37/XXWX/1Npnf9NYor/VG6K/1Jqhv9OZYv/VmqQ/01djv9Yb5H/R1Vj/1Jlfv9Ua43/TmGD/2Bzkv9XaYT/Rld1/1Npkv9adpf/boOn/4CPov9neJD/UGWF/2SBq/9UZIr/WG+X/1lolf9XbpT/VWmS/1htk/9WdY//Wneb/09hiv9mgqT/U2iC/19ymP9QYIz/UWaG/1VqkP9ccI7/XWyM/2F5kf9keJz/YHml/2V8tP9edqD/WG2b/1JfiP9ge53/XXqe/1Zskv9NX4r/UWmJ/0tngf9MYIT/Rlh7/05dkP9OYH7/RlJn/1Vogv9HW3b/VGiO/2R5jf9icoX/UF6D/0xhg/9feZn/WXKc/1Joi/9SaYz/YH6r/05lnP9MW5P/X3ul/09dgv9JWXn/X3yj/1lxmf9ZbpD/XHmh/2SCp/9jepX/W3CG/2h9n/9PXXr/RVFr/1Rmh/9OY4T/TVxw/1pxk/9ddp//WXKd/05gm/9KXZT/VXGb/0xZdf9PYXn/WXOV/1Jnhf9NY4X/TmiD/0tkfv9QZYf/TV97/05ff/9WbI7/Q1Fs/1FkgP9TaYj/SFt8/1RphP9QYYD/RlZ1/01bb/9QZYz/UWui/0hfl/9TaY3/S2KS/z9Ijv86RH//S2Cc/191mf9HUGv/VGyI/2SGrv9efaf/a4q0/2F/mf9SWmT/UVll/1ljav9gdZX/T1Vy/1Bcgv9NY4r/TWKJ/19/qf9deqT/Tlym/0NOiv9HT4v/R1ii/09fhP85Qk7/Q1Jo/1xxlP9Sao3/S2GC/0pgf/9SZX7/S1Bq/01VVv9Xa4L/Slx3/0tYdv9UbY3/SF1//0Vbff88T2//OkZz/1Rhf/9MXHn/Um2W/1Bnof9OXpH/PEOF/zpDfP83QHf/P02f/1Nnnv9PXXz/RlNz/2B+pP9hg6z/bou0/1tjbP9LU2f/Q0Za/1NYYf9cZnH/Q1Np/0lPXf9JWYX/R1qJ/1l0nf9Yaqz/TFSZ/0dPjf85QWv/Q0+T/0xbnf9HVXT/OUFT/0lZcv9QaIr/S2CT/05gfv9MUVL/QERW/0pLTP9QWmD/VmuM/0xTcP9PYID/TWCD/0xdgP8+TXj/PUSH/1Zgef9RYX3/Rlh8/01lmf9CU4r/Q0x9/0FFX/9CSWn/RlKI/0RSkP9KXIf/RVFt/1FkgP9fe6D/W2l2/1dhav9UYoX/Wm2T/1Bbff9VW2b/T1dh/0tXdP9HU3b/U2mK/1pwnf9YZJr/TFmT/0VLa/9NVHf/UmB9/01dnf9SZJz/UGN8/0JNWv9OXnn/UGSF/01YWv9RVFf/SFJ3/0tSaf9JUVT/UmBv/1dohP9JVGv/TV9//0dWgv9DUZP/PEaC/1JTWv9PYGn/SFh0/z1Nbf9CTX7/RFN+/z1JZ/9CSGn/RVB//0dNdv9IWZL/WHCQ/0pSc/9HWXT/S1Bf/0dSdv9PWn//U12H/0tUcv9DSmf/VlJV/0tZbf9FUGf/SlRv/0xTZv9TW4P/R1SA/0xPaf9OU3L/T1hz/0BPdf9PWI3/UWiW/0dXbP9FTlv/Q05j/1Bbff9KW4H/Vmyb/0pdh/9MWXj/T1Bc/1VkfP9NWXv/QlBw/0BNbf8/SX3/Nz9j/19sj/9bb4j/VGyF/1ptiP9MWIb/T2CS/1hoh/9bbpP/WWJ//1Fkjv9UbZr/Xnue/09ihv9TZYf/U2Nz/1Vke/9XZYP/WWd5/1hwh/9Ya4L/SVd9/01fef9PX4P/S2GD/1lpg/9YdZr/XHCP/05iiP9RY5f/WG+f/1tvlv9OZJH/XXid/1Zrjv9JVGz/RlVt/0xRXv9GS1r/RUdZ/0JFU/9GT1//SlNY/1NieP9RXnT/SE90/0NLY/9DT3r/O0h3/1Nkgf9KXXv/XX2b/2Rzhf9SXIj/UF1//1xtg/9kbIj/V1ps/1drn/9jfaH/Xm+I/05dif9OWID/R1J2/0JOgv9RXIb/YXSO/2ByjP9RW4D/UV6O/1dki/9VaZv/XmZ+/11qf/9mgZj/XGt9/0tejP9LYJX/VV56/2lzgP9fcpb/Vm6d/1Fdef9MU33/UmSM/1ZoeP9SYIn/UFZ5/1tsf/9ec4j/UmF//0lPc/9OVHr/TFmL/09aYP9ET2j/TF6C/1NZiv9QWYX/VV2N/1Vaiv9VVYT/VVeA/11fhv9XX4j/VFiF/1hfjP9PVYH/TlGC/05akP9VXZT/UFmM/1BakP9TXo//V2OT/1Ndjv9OWo//UlqP/1Rhlv9VYZT/XWWV/2Vumv9jb57/WGGO/1llmf9ZZpv/X2eU/257pv9kd63/XHGi/15okv9KV4f/VWSK/1Jgjf9UXpP/U1iD/1Vlkf9VYYT/TFiJ/05Uf/9OWo3/UVqI/1FZhf9NV4f/UGOU/1lPSv9XTUX/W1Fd/1dJb/9cT13/Y2Rt/2t2gP9hW13/Z1pU/1tQVv9VUG3/U1CC/0xHWP9KSV//TkVR/01DVv9PT3j/WFZl/1ZXZv9XXHD/T0pU/0ZGYf9PS17/X1Nw/19bd/9bUFf/XVJY/11VW/9SUm7/WFVs/2Nhcf9UUWT/XFlq/1VWbv9RSWv/TUVT/1dNUv9VSlr/Tkls/1JLXv9PSl7/SkNO/0pBTv9WSlL/UEhW/0RDY/9KTXL/REFU/0tJaf9TT2n/UEpl/1VSgP9PTW//TlJ1/1ZYe/9UU3b/WFZ0/1JTd/9GTHn/TU9+/0pNc/9MTnL/T0pf/1NRcv9SVID/UE51/1BUc/9PVnb/TU1w/0xNcf9RUnf/XFl9/19hiP9aWnP/WVZp/1VWb/9UVXn/WFdz/2dle/9VVnX/YGB8/1xcc/9XU3b/WFJk/19bY/9ZU2j/XFeA/1lUbv9UV3b/T0xi/1FJV/9aVGH/VlBm/05Odf9SUXj/SUxv/ztFjP85RIH/OUCH/0BFiv84Q4T/Oj+A/zQ7eP87Qor/PEaJ/zlEjf9AR5H/PkaB/0VQmv9LVI7/PkeG/0hOjv9CTIj/P0uL/z9Mif89SIv/R0uM/0FJhf9DTpX/SFaY/01YmP9JVYf/Rk2D/0hQjP9DUI3/SFWQ/1Nhlf9TXpz/U2Cd/0xXkv9GTI//SFCO/0JNhv9FTon/Rk6J/0VOhP9FUIv/REyB/0ZMgP9GT4f/R0+J/z9Mgv8/S47/PkmN/zU+jP82PXb/MTt0/zM3TP82OmP/Oj+G/zM3eP85QpX/Qk2L/z1Glf80PYT/OTpz/0dIh/9KR2z/TlSj/zZChv84Q4v/PEyP/0dVhf88S5P/OD9+/zM3af85Q5T/RFOb/0BMpv89RID/O0OI/0dZmP9DWZb/O0WO/0VLg/9WYaD/a3CW/1hiqP9FT4f/Q1CZ/0BLhP9CTIv/R1CP/0pSlv9BS5n/QEqZ/z9Fhv8/SID/OUR6/zE5Xf8zPX7/N0KC/zY8hf81O2r/OEBx/z07U/84OmD/OD58/zlAev89Rpb/S1mQ/zxHlP83QH3/Mjhl/0lJff9IRnP/S1B//zpCgf8zOnr/R1aM/0JQgP9BUZD/NTx1/zY9bv86RYn/O0h0/0NRn/86Qnb/RlCO/1dyrv9Sb6//R1aR/0RKbv9ibJz/a3yp/2dmif9OVYf/R1KU/0ZXcv9IWH//Rk6G/0hQjf9DT5H/PUuK/0JIgf86QHD/OUh0/zlDb/8sNW//LTFj/0NHlf8+RH7/RE6Z/z5Kcf87Q3//Nz98/zlAfv9ASZX/RlOS/z1Ijv8/SIb/P0iJ/0tZnv9RVIv/S1an/0VOmf83RYf/PUuT/0JMif87Q5T/QUaB/zc9d/89R5v/Q0uf/0RLpP9IT4j/PUiF/05enP9NXZr/SFSf/0FOhf9TXaD/a2yW/1Veo/9IT4r/Q0+V/z9OgP9BU4z/QkuH/0pTmP9BT5r/Q02f/0FJjv8+SIf/OEOC/zA6cP81PIr/NDqA/09Rf/9UWYj/U1eN/1FWj/9KTob/Sk5//0lMc/9MTHr/Uk97/0REbv8+Qnn/Qkh1/0hNhf9KVYr/Qkp9/0VNiv9FSIf/PER3/z9Ghf8+QoL/PEOA/0FIhv8/R4b/Q0mH/0dPkP9IT3//S1GD/0ZPh/9IVJL/TlmU/1NbkP9JWI7/Tl2T/09Zk/9IT4z/Q0qJ/0BIhP9FSYb/QUiE/0NJg/9ASYD/QUp1/0BEd/9ER3j/PkRz/z5De/8+Qnz/P0N5/1ZOVP9hWV//Y1po/1ZSeP9YUWX/YGZ7/1xebf9ZVF//YVdY/1FHVv9LSnL/R0Vd/0hDV/9PTF3/UkpW/0NDYf9HRnD/PTdP/01SbP9CRFr/OjlO/z9AY/9PSmP/TUl3/09LY/9TTln/T0pU/05OYv9PUnr/XFlt/2BWYv9PTmT/YF1t/1hRcv9UT3L/VkxW/1dWW/9QTWD/SEdy/05JYv9EQ1j/QTtM/z86R/9LREr/SENP/0xIbv9MSmn/TUpm/2hymP9qcpr/aXGa/2Btlv9capD/W2iT/1lnkP9XY4z/YGiP/1ZeiP9aZZD/UVuJ/01XhP9TWYH/TVJ3/0lRgv9IUYb/QEh4/0dQev9HTX3/Rkhx/0ZGdP9PUXr/TFOI/0xQc/9NT3f/TU5z/0hOcv9MUX7/UlZ//1hhj/9PU4T/UleD/1NUd/9MSnD/T1By/0xOcf9HR27/Q0Nz/0REaf9DRG//QUBn/z1CZv9CRWv/P0Zw/0FId/9HTHT/S094/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" alt="یا حکیم" width="32" height="32" style="display:block;border-radius:4px;object-fit:cover;"></div>
+        <span class="yh-name">یا حکیم</span>
+      </a>
+      <span class="hdr-sep">|</span><span class="hdr-city" style="font-size:1rem;font-weight:700;color:var(--text-muted)">هەڵەبجە</span>
+    </div>
+    <div class="hdr-controls">
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div id="spContent">
+  <div class="not-found" id="notFound" style="display:none">
+    <h2>پسپۆڕییەکە نەدۆزرایەوە</h2>
+    <p>تکایە پسپۆڕییەک لە مێنووی سەرەوە هەڵبژێرە.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="docModal" onclick="closeMBg(event)">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-name" id="mName">—</div>
+        <div class="modal-qual" id="mQual">—</div>
+      </div>
+      <button class="modal-close" onclick="closeDocModal()">✕</button>
+    </div>
+    <div class="modal-bio" id="mBio"></div>
+    <div id="mArtsSection" style="display:none">
+      <div class="modal-sec-lbl">📝 وتارە بەشداریکراوەکان</div>
+      <div class="modal-art-list" id="mArtList"></div>
+    </div>
+  </div>
+</div>
+
+<button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 12V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<script>
+// ── Theme ──
+let isLight=true;
+function toggleTheme(){isLight=!isLight;document.documentElement.classList.toggle("dark",!isLight);document.getElementById("themeBtn").textContent=isLight?"🌙":"☀️";}
+
+window.addEventListener("scroll",()=>document.getElementById("btt").classList.toggle("show",window.scrollY>300));
+
+// ── Specialty dropdown ──
+function buildSpSelect(){
+  const sel=document.getElementById("spSelect");
+  if(!sel) return;
+  YH.getAllSpecialtyList().forEach(sp=>{
+    const o=document.createElement("option");
+    o.value=sp.key; o.textContent=sp.icon+" "+sp.nameKu;
+    sel.appendChild(o);
+  });
+}
+
+function navigateSp(key){
+  if(!key) return;
+  const params=new URLSearchParams(window.location.search);
+  if(params.get("sp")!==key){
+    window.location.href="specialty.html?sp="+key;
+  }
+}
+
+// ── Article card ──
+function makeCard(art){
+  const authors=YH.getAuthorDoctors(art.id);
+  const authHtml=authors.map(d=>`<a href="#" class="art-author-link" onclick="openDocModal(event,'${d.id}')">👨‍⚕️ ${d.name}</a>`).join("");
+  const tags=(art.tags||[]).slice(0,4).map(t=>`<span class="art-tag">${t}</span>`).join("");
+  const lvl=art.level==="patient"?"🙋 بۆ نەخۆش":"🔬 کلینیکی";
+  const div=document.createElement("div");
+  div.className=`article-card ${art.level}`;
+  div.id=`ac-${art.id}`;
+  div.innerHTML=`
+    <div class="art-hdr" onclick="toggleArt('${art.id}')">
+      <div class="art-icon">${art.icon}</div>
+      <div class="art-meta">
+        <div class="art-lvl-badge ${art.level}">${lvl}</div>
+        <div class="art-title">${art.title}</div>
+        <div class="art-synopsis">${art.synopsis}</div>
+        <div class="art-hint"><span class="art-chev">▾</span><span>کلیک بکە بۆ کورتەیی</span></div>
+      </div>
+    </div>
+    <div class="art-snip-wrap" id="snip-${art.id}">
+      <div class="art-snip">
+        ${art.synopsis}
+        <br><a href="article.html?id=${art.id}" class="read-more">خوێندنەوەی تەواو →</a>
+      </div>
+    </div>
+    <div class="art-footer">
+      <div class="art-tags">${tags}</div>
+      <div class="art-authors">${authHtml}</div>
+      <div class="art-date">${art.dateKu}</div>
+    </div>`;
+  return div;
+}
+
+function toggleArt(id){
+  const s=document.getElementById("snip-"+id);
+  const c=document.getElementById("ac-"+id);
+  const open=s.classList.contains("open");
+  s.classList.toggle("open",!open);
+  c.classList.toggle("expanded",!open);
+}
+
+// ── Article groups ──
+function renderGroups(groups,container,level,spKey){
+  container.innerHTML="";
+  groups.forEach(grp=>{
+    const arts=YH.getArticlesByLevel(spKey,level).filter(a=>a.group===grp.key);
+    const wrap=document.createElement("div");
+    wrap.className="art-group"+(arts.length===0?" closed":"");
+    wrap.innerHTML=`<div class="agh" onclick="this.closest('.art-group').classList.toggle('closed')">
+      <div class="agh-left"><span class="agh-icon">${grp.icon}</span><span class="agh-title">${grp.title}</span></div>
+      <div style="display:flex;align-items:center;gap:7px"><span class="agh-badge">${arts.length} وتار</span><span class="agh-chev">▾</span></div>
+    </div>
+    <div class="agb"><div class="articles-grid" id="ag-${grp.key}"></div></div>`;
+    container.appendChild(wrap);
+    arts.forEach(a=>wrap.querySelector(`#ag-${grp.key}`).appendChild(makeCard(a)));
+  });
+}
+
+// ── Doctors ──
+function renderDoctors(spKey,container){
+  container.innerHTML="";
+  YH.getSpecialtyDoctors(spKey).forEach(doc=>{
+    const rich=doc.dataId?YH.getDoctor(doc.dataId):null;
+    const patArts=rich?YH.getDoctorArticles(doc.dataId,"patient"):[];
+    const proArts=rich?YH.getDoctorArticles(doc.dataId,"professional"):[];
+    const hasArts=!!rich;  // show accent border for all registered doctors
+    const mkLinks=(arts,cls)=>arts.map(a=>`<a href="article.html?id=${a.id}" class="daw-link ${cls}"><span>${a.icon}</span><span>${a.title.substring(0,38)}${a.title.length>38?"…":""}</span></a>`).join("");
+    const patDrawer=`<div class="doc-arts-drawer" id="pd-${doc.id}"><div class="daw-label">🙋 وتارەکانی نەخۆش</div><div class="daw-links">${patArts.length?mkLinks(patArts,""):'<span style="font-size:.78rem;color:var(--text-dim);padding:4px 0;display:block">بەزووی دێت</span>'}</div></div>`;
+    const proDrawer=`<div class="doc-arts-drawer" id="cd-${doc.id}"><div class="daw-label">🔬 وتارەکانی پزیشکی</div><div class="daw-links">${proArts.length?mkLinks(proArts,"pro"):'<span style="font-size:.78rem;color:var(--text-dim);padding:4px 0;display:block">بەزووی دێت</span>'}</div></div>`;
+    const patBtn=`<span class="doc-badge pat-badge" id="pb-${doc.id}" onclick="togDraw('pd-${doc.id}','pb-${doc.id}')">🙋 نەخۆش${patArts.length?' ('+patArts.length+')':''}</span>`;
+    const proBtn=`<span class="doc-badge pro-badge" id="cb-${doc.id}" onclick="togDraw('cd-${doc.id}','cb-${doc.id}')">🔬 پزیشکی${proArts.length?' ('+proArts.length+')':''}</span>`;
+    const daysTxt=doc.days==="—"?`<span style="color:var(--text-dim)">بەردەست نییە</span>`:doc.days;
+    const card=document.createElement("div");
+    card.className=`doctor-card${hasArts?" has-articles":""}`;
+    card.innerHTML=`<div class="doc-header"><div><div class="doc-name">${doc.name}</div><div class="doc-qual">${doc.q!=="—"?doc.q:"—"}</div></div><div class="doc-badges">${patBtn}${proBtn}</div></div>
+    <div class="doc-info-row">
+      <div class="doc-info-item"><span>🏥</span>${doc.cl!=="—"?doc.cl:'<span style="color:var(--text-dim)">—</span>'}</div>
+      <div class="doc-info-item"><span>📅</span>${daysTxt}</div>
+      ${doc.ph!=="—"?`<div class="doc-info-item phone"><span>📱</span>${doc.ph}</div>`:""}
+    </div>${patDrawer}${proDrawer}`;
+    container.appendChild(card);
+  });
+}
+
+function togDraw(dId,bId){
+  const el=document.getElementById(dId),btn=document.getElementById(bId);
+  if(!el) return;
+  const open=el.classList.toggle("open");
+  if(btn) btn.classList.toggle("on",open);
+}
+
+// ── Latest tab ──
+function renderLatest(spKey,container){
+  container.innerHTML="";
+  YH.getArticlesBySpecialty(spKey).forEach(art=>{
+    const lvl=art.level==="patient"?"🙋 بۆ نەخۆش":"🔬 کلینیکی";
+    const div=document.createElement("div");
+    div.className="latest-card";
+    div.onclick=()=>window.location.href=`article.html?id=${art.id}`;
+    div.innerHTML=`<div class="latest-icon">${art.icon}</div><div class="latest-meta"><div class="latest-title">${art.title}</div><div class="latest-sum">${art.synopsis}</div><div class="latest-foot"><span class="latest-lvl ${art.level}">${lvl}</span><span class="latest-date">${art.dateKu}</span></div></div>`;
+    container.appendChild(div);
+  });
+}
+
+// ── Doctor modal ──
+function openDocModal(e,docId){
+  e.preventDefault();
+  const doc=YH.getDoctor(docId);
+  if(!doc) return;
+  document.getElementById("mName").textContent=doc.name;
+  document.getElementById("mQual").textContent=doc.qualifications||"—";
+  document.getElementById("mBio").textContent=doc.bio||"";
+  const arts=YH.getDoctorArticles(docId);
+  const sec=document.getElementById("mArtsSection");
+  const list=document.getElementById("mArtList");
+  if(arts.length){
+    sec.style.display="block";
+    list.innerHTML=arts.map(a=>`<a href="article.html?id=${a.id}" class="modal-art-item"><span class="mai-icon">${a.icon}</span><div><div class="mai-title">${a.title}</div><div class="mai-lvl">${a.level==="patient"?"🙋 بۆ نەخۆش":"🔬 کلینیکی"}</div></div></a>`).join("");
+  } else { sec.style.display="none"; }
+  document.getElementById("docModal").classList.add("open");
+}
+function closeDocModal(){document.getElementById("docModal").classList.remove("open");}
+function closeMBg(e){if(e.target===document.getElementById("docModal")) closeDocModal();}
+
+// ── Tab switching ──
+function switchTab(id,btn){
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tp-"+id).classList.add("active");
+  btn.classList.add("active");
+}
+
+// ── Main render ──
+function renderSpecialty(spKey){
+  const sp=YH.getSpecialty(spKey);
+  const content=document.getElementById("spContent");
+  if(!sp){
+    document.getElementById("notFound").style.display="block";
+    document.title="یا حکیم — پسپۆڕی";
+    return;
+  }
+  document.title=`یا حکیم — ${sp.nameKu}`;
+  const spSel=document.querySelector(".sp-select"); if(spSel) spSel.value=spKey;
+
+  const patArts=YH.getArticlesByLevel(spKey,"patient");
+  const proArts=YH.getArticlesByLevel(spKey,"professional");
+  const docs=YH.getSpecialtyDoctors(spKey);
+
+  content.innerHTML=`
+    <div class="sp-hero" data-icon="${sp.icon}">
+      <div class="hero-badge">${sp.icon} ${sp.nameKu}</div>
+      <h2>${sp.nameKu}</h2>
+      <p class="hero-desc">${sp.descKu}</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">${docs.length}</div><span class="lbl">پزیشک</span></div>
+        <div class="hero-stat"><div class="num">${patArts.length}</div><span class="lbl">وتار بۆ نەخۆش</span></div>
+        <div class="hero-stat"><div class="num">${proArts.length}</div><span class="lbl">وتار پزیشکی</span></div>
+      </div>
+    </div>
+    <div class="page-tabs">
+      <button class="tab-btn active" onclick="switchTab('docs',this)">👨‍⚕️ پزیشکان</button>
+      <button class="tab-btn" onclick="switchTab('patient',this)">🙋 زانیاری نەخۆش</button>
+      <button class="tab-btn" onclick="switchTab('pro',this)">🔬 زانیاری پزیشکی</button>
+      <button class="tab-btn" onclick="switchTab('latest',this)">✨ دوایین وتارەکان</button>
+    </div>
+    <div class="tab-panel active" id="tp-docs">
+      <div class="section-head"><h3>لیستی پزیشکان پزیشکان</h3><span class="s-badge">${docs.length} پزیشک</span></div>
+      <div class="doctor-grid" id="docGrid"></div>
+    </div>
+    <div class="tab-panel" id="tp-patient">
+      <div class="section-head"><h3>زانیاری تەندروستی بۆ نەخۆش</h3><span class="s-badge">بەسادەیی نووسراوە</span></div>
+      <div id="patGroups"></div>
+    </div>
+    <div class="tab-panel" id="tp-pro">
+      <div class="section-head"><h3>زانیاری کلینیکی پزیشکی</h3><span class="s-badge" style="background:var(--pro-bg);border-color:var(--pro-border);color:var(--pro-text)">بۆ تاقمی تەندروستی</span></div>
+      <div id="proGroups"></div>
+    </div>
+    <div class="tab-panel" id="tp-latest">
+      <div class="section-head"><h3>دوایین وتارەکان</h3></div>
+      <div class="latest-grid" id="latestGrid"></div>
+    </div>`;
+
+  const docGridEl = document.getElementById("docGrid");
+  const patGroupsEl = document.getElementById("patGroups");
+  const proGroupsEl = document.getElementById("proGroups");
+  const latestGridEl = document.getElementById("latestGrid");
+  if(docGridEl) renderDoctors(spKey, docGridEl);
+  if(patGroupsEl) renderGroups(sp.patientGroups, patGroupsEl, "patient", spKey);
+  if(proGroupsEl) renderGroups(sp.proGroups, proGroupsEl, "professional", spKey);
+  if(latestGridEl) renderLatest(spKey, latestGridEl);
+
+  // Hash → open correct tab
+  const h=window.location.hash.replace("#","");
+  if(["docs","patient","pro","latest"].includes(h)){
+    const btn=document.querySelector(`.tab-btn[onclick*="'${h}'"]`);
+    if(btn) switchTab(h,btn);
+  }
+}
+
+// ── Init ──
+buildSpSelect();
+const spKey=new URLSearchParams(window.location.search).get("sp")||"";
+if(spKey) renderSpecialty(spKey);
+else document.getElementById("notFound").style.display="block";
+</script>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">لیستی پزیشکان</a>
+    <a href="risale.html">رسالەی نور</a>
+    <a href="about.html">دەربارە</a>
+  </div>
+  <div class="footer-copy">2026</div>
+</footer>
+</body>
+</html>

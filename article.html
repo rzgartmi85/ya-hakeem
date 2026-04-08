@@ -146,15 +146,24 @@ function renderMedia(mediaArr){
   }).join("");
 }
 
-function buildPage(art, bodyHtml) {
+function render(){
+  const artId=new URLSearchParams(window.location.search).get("id");
+  if(!artId){ document.getElementById("notFound").style.display="block"; return; }
+  const art=YH.getArticle(artId);
+  if(!art){ document.getElementById("notFound").style.display="block"; return; }
+
+  document.title=`یا حکیم — ${art.title}`;
+  document.getElementById("hdrTitle").textContent=art.title.substring(0,45)+(art.title.length>45?"…":"");
+
   const sp=art.specialty?YH.getSpecialty(art.specialty):null;
-  const authors=YH.getAuthorDoctors(art.id);
+  const authors=YH.getAuthorDoctors(artId);
   const lvlLbl=art.level==="patient"?"🙋 بۆ نەخۆش":"🔬 کلینیکی";
   const tags=(art.tags||[]).map(t=>`<span class="art-tag-full">${t}</span>`).join("");
   const authorsHtml=authors.map(d=>`<div class="author-chip"><div><div class="author-name">👨‍⚕️ ${d.name}</div><div class="author-qual">${d.qualifications}</div></div></div>`).join("");
   const spPill=sp?`<a href="specialty.html?sp=${sp.key}" class="art-sp-pill">${sp.icon} ${sp.nameKu}</a>`:"";
   const mediaHtml=renderMedia(art.media||[]);
   const backLink=sp?`specialty.html?sp=${sp.key}`:"index.html";
+
   document.getElementById("artRoot").innerHTML=`
     <div class="art-wrap">
       <div class="art-meta-bar">
@@ -166,34 +175,11 @@ function buildPage(art, bodyHtml) {
       <h1 class="art-heading">${art.title}</h1>
       <div class="art-synopsis-block">${art.synopsis}</div>
       ${authorsHtml?`<div class="art-authors-bar">${authorsHtml}</div>`:""}
-      <div class="art-body">${bodyHtml}</div>
+      <div class="art-body">${art.fullBody||art.body}</div>
       ${mediaHtml}
       ${tags?`<div class="art-tags-row">${tags}</div>`:""}
       <a href="${backLink}" class="art-back">← گەڕانەوە بۆ ${sp?sp.nameKu:"لیستی پزیشکان"}</a>
     </div>`;
-}
-
-function render(){
-  const artId=new URLSearchParams(window.location.search).get("id");
-  if(!artId){ document.getElementById("notFound").style.display="block"; return; }
-  const art=YH.getArticle(artId);
-  if(!art){ document.getElementById("notFound").style.display="block"; return; }
-
-  document.title=`یا حکیم — ${art.title}`;
-
-  // Try to load full article from articles/ folder first
-  fetch(`articles/${artId}.html`)
-    .then(r=>{
-      if(!r.ok) throw new Error("not found");
-      return r.text();
-    })
-    .then(html=>{
-      buildPage(art, html);
-    })
-    .catch(()=>{
-      // Fallback: use synopsis as body
-      buildPage(art, `<p>${art.synopsis}</p>`);
-    });
 }
 
 render();

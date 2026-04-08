@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>یا حکیم — پزیشکەکانی هەڵەبجە</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARS — light is default ── */
+:root {
+  --bg:#f4f6fb; --surface:#ffffff; --surface2:#f0f2f8; --surface3:#e8ecf5;
+  --border:#d4d9ea; --border2:#e4e8f4;
+  --accent:#2b72e8; --accent2:#1e8a5e;
+  --text:#1a1e2e; --text-muted:#5a6480; --text-dim:#9aa0b8;
+  --tag-bg:#dce8fc; --tag-text:#2b72e8;
+  --pill-bg:#d4f0e4; --pill-text:#1e8a5e;
+  --today-glow:#2b72e810;
+  --card-bg:#ffffff;
+  --shadow: 0 2px 8px #0000001a;
+  --live-bg:#d4f0e4; --live-border:#9adfc0; --live-text:#1e8a5e;
+}
+html.dark {
+  --bg:#0f1117; --surface:#171b26; --surface2:#1e2333; --surface3:#242840;
+  --border:#2a3045; --border2:#1e2640;
+  --accent:#5b9cf6; --accent2:#7ec8a4;
+  --text:#e8eaf0; --text-muted:#7a839e; --text-dim:#4a5270;
+  --tag-bg:#1e2d45; --tag-text:#7eb8f7;
+  --pill-bg:#1a2e22; --pill-text:#7ec8a4;
+  --today-glow:#5b9cf614;
+  --card-bg:#171b26;
+  --shadow: 0 2px 8px #00000040;
+  --live-bg:#0d2a1a; --live-border:#1a4a2a; --live-text:#7ec8a4;
+}
+/* specialty tags dark-mode override */
+html.dark .sp-rheum    { background:#2a1f3d;color:#c4a0f0 }
+html.dark .sp-internal { background:#1a2d40;color:#7eb8f7 }
+html.dark .sp-surgery  { background:#1a3028;color:#7ec8a4 }
+html.dark .sp-ortho    { background:#3a2a10;color:#f0b86a }
+html.dark .sp-urology  { background:#2a1a2a;color:#e07ec8 }
+html.dark .sp-neuro    { background:#1a1a3a;color:#8080f0 }
+html.dark .sp-cardio   { background:#3a1a1a;color:#f07e7e }
+html.dark .sp-obgyn    { background:#3a1a2a;color:#f07ec8 }
+html.dark .sp-ophtho   { background:#1a3a2a;color:#7ef0c8 }
+html.dark .sp-ent      { background:#2a2a1a;color:#d4c870 }
+html.dark .sp-peds     { background:#1a3a1a;color:#80d080 }
+html.dark .sp-derm     { background:#3a2a1a;color:#e0a870 }
+html.dark .sp-radio    { background:#1a2a2a;color:#70c8c8 }
+html.dark .sp-psych    { background:#2a1a3a;color:#c070d8 }
+html.dark .sp-nutri    { background:#1a3a30;color:#70d8b0 }
+html.dark .sp-breast   { background:#3a1a2a;color:#f080b0 }
+html.dark .sp-anest    { background:#1a2040;color:#70a0e0 }
+html.dark .dtag { background:#1a2e22; color:#7ec8a4; }
+html.dark .dtag.today { background:#0d2a1a; color:#7ec8a4; border-color:#1a4a2a; }
+html.dark thead th { background:#1e233380; }
+html.dark tbody tr.avail { background:#5b9cf614; }
+html.dark tbody tr.avail:hover { background:#5b9cf620; }
+html.dark .chip { border-color:#2a4070; }
+
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Noto Naskh Arabic',serif;
+  min-height:100vh; direction:rtl;
+  transition: background 0.25s, color 0.25s;
+}
+
+/* ── HEADER ── */
+header {
+  padding:10px 20px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  position:sticky; top:0; z-index:100;
+  box-shadow:var(--shadow);
+}
+.header-top {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.header-title {
+  display:flex; align-items:center; gap:9px; min-width:0; flex:1; overflow:hidden;
+}
+/* 2a. Logo — carpet SVG placeholder until favicon is provided */
+.yh-logo {
+  width:32px; height:32px; flex-shrink:0; border-radius:6px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#7c3a1a 0%,#b5601f 40%,#8b2e0a 70%,#5c1e06 100%);
+  box-shadow:0 1px 4px #00000060;
+}
+.yh-logo svg { width:22px; height:22px; }
+.yh-link {
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; color:inherit;
+}
+.yh-name {
+  font-size:1rem; font-weight:700; color:var(--text);
+  white-space:nowrap; font-family:'Noto Naskh Arabic',serif;
+}
+.header-title .divider { color:var(--border); font-weight:300; flex-shrink:0; padding:0 2px; }
+.header-title h1 { font-size:1.2rem; font-weight:700; line-height:1.2; white-space:nowrap; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.header-title h1 span { color:var(--accent); }
+.hdr-city { font-size:1rem; font-weight:700; color:var(--text-muted); white-space:nowrap; }
+.header-controls { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+
+/* icon buttons */
+.icon-btn {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; cursor:pointer; color:var(--text-muted);
+  padding:7px 9px; transition:all 0.2s;
+  font-family:'Noto Naskh Arabic',serif;
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  white-space:nowrap; font-size:0.82rem; line-height:1;
+}
+.icon-btn:hover { border-color:var(--accent); color:var(--accent); }
+.icon-btn.active { border-color:var(--accent); color:var(--accent); background:var(--tag-bg); }
+.icon-btn.today-btn { background:var(--live-bg); border-color:var(--live-border); color:var(--live-text); }
+.icon-btn.today-btn:hover { filter:brightness(1.1); }
+
+.inline-search-bar {
+  display:none; padding:8px 20px; background:var(--surface);
+  border-bottom:1px solid var(--border);
+  align-items:center; gap:8px;
+  animation: slideDown 0.18s ease;
+}
+.inline-search-bar.show { display:flex; }
+@keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+.inline-search-bar input {
+  flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:8px;
+  color:var(--text); padding:9px 14px;
+  font-family:'Noto Naskh Arabic',serif; font-size:0.9rem;
+  outline:none; direction:rtl; text-align:right;
+  transition:border-color 0.2s, background 0.25s;
+}
+.inline-search-bar input:focus { border-color:var(--accent); }
+.inline-search-bar input::placeholder { color:var(--text-dim); }
+.search-close-btn {
+  background:var(--surface2); border:1px solid var(--border); border-radius:7px;
+  color:var(--text-muted); cursor:pointer; padding:7px 9px; line-height:1;
+  transition:all 0.15s; flex-shrink:0; display:flex; align-items:center;
+}
+.search-close-btn:hover { border-color:var(--accent); color:var(--accent); }
+.search-chip {
+  padding:0; display:none;
+}
+
+/* ── FILTERS ── */
+.filter-toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px; background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  cursor:pointer; user-select:none; gap:10px;
+  transition:background 0.15s;
+}
+.filter-toggle-row:hover { background:var(--surface3); }
+.filter-toggle-left {
+  display:flex; align-items:center; gap:10px; flex:1; min-width:0; flex-wrap:wrap;
+}
+/* 1c. doctor count in filter handle */
+.filter-doc-count {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:2px 10px; font-size:0.73rem; color:var(--text-muted);
+  white-space:nowrap;
+}
+/* 1e. proper filter icon (SVG funnel) */
+.filter-icon { flex-shrink:0; opacity:0.7; }
+.filter-label { font-size:0.82rem; font-weight:600; color:var(--text-muted); white-space:nowrap; }
+/* 1c. toggle-all and today-btn in filter handle */
+.filter-handle-btns {
+  display:flex; gap:6px; align-items:center; flex-shrink:0;
+}
+.filter-handle-btns .icon-btn { padding:4px 8px; font-size:0.75rem; }
+.filter-handle-btns .icon-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+.filter-chevron { color:var(--text-dim); font-size:0.8rem; transition:transform 0.25s; flex-shrink:0; }
+.filters-collapsed .filter-chevron { transform:rotate(-90deg); }
+
+.filter-body {
+  overflow:hidden; max-height:600px; opacity:1;
+  transition:max-height 0.3s ease, opacity 0.22s ease;
+}
+.filters-collapsed .filter-body { max-height:0; opacity:0; }
+
+.filters-bar {
+  padding:12px 20px; background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;
+}
+.fg { display:flex; flex-direction:column; gap:4px; min-width:0; flex:1 1 140px; }
+.fg label { font-size:0.72rem; color:var(--text-dim); font-weight:600; }
+.fg select {
+  background:var(--surface); border:1px solid var(--border); border-radius:8px;
+  color:var(--text); padding:9px 12px;
+  font-family:'Noto Naskh Arabic',serif; font-size:0.88rem;
+  outline:none; transition:border-color 0.2s, background 0.25s;
+  appearance:none; -webkit-appearance:none; cursor:pointer;
+  direction:rtl; text-align:right; width:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a839e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:left 10px center; padding-left:28px;
+}
+.fg select:focus { border-color:var(--accent); }
+.reset-btn {
+  background:transparent; border:1px solid var(--border); border-radius:8px;
+  color:var(--text-muted); padding:9px 14px;
+  font-family:'Noto Naskh Arabic',serif; font-size:0.88rem;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap; align-self:flex-end;
+}
+.reset-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* 1a. checkbox inside filter body */
+.incomplete-row {
+  padding:10px 20px; background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-size:0.8rem; color:var(--text-muted);
+}
+.incomplete-row label { display:flex; align-items:center; gap:7px; cursor:pointer; }
+.incomplete-row input[type=checkbox] { accent-color:var(--accent); width:15px; height:15px; cursor:pointer; }
+
+/* chips */
+.chips-bar {
+  padding:8px 20px; display:flex; gap:7px; flex-wrap:wrap;
+  min-height:36px; align-items:center; border-bottom:1px solid var(--border);
+  background:var(--surface);
+}
+.chip {
+  background:var(--tag-bg); color:var(--tag-text);
+  border:1px solid #2a4070; border-radius:20px;
+  padding:3px 10px; font-size:0.76rem; font-weight:500;
+  display:flex; align-items:center; gap:4px;
+}
+html.dark .chip { border-color:#2a4070; }
+.chip button { background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1rem; line-height:1; padding:0; }
+.chip button:hover { color:var(--accent); }
+
+/* ── CONTENT ── */
+.content { padding:16px 20px 60px; display:flex; flex-direction:column; gap:10px; }
+
+.no-results { text-align:center; padding:60px 0; color:var(--text-muted); display:none; }
+.no-results.show { display:block; }
+.no-results p { font-size:1.3rem; color:var(--text-dim); margin-bottom:6px; }
+
+/* ── GROUP ── */
+.grp { border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--surface); transition:border-color 0.25s, background 0.25s; }
+
+.grp-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; background:var(--surface);
+  cursor:pointer; user-select:none; transition:background 0.15s; gap:8px;
+}
+.grp-header:hover { background:var(--surface2); }
+.grp-left { display:flex; align-items:center; gap:8px; min-width:0; }
+.grp-right { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+
+.grp-count {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:20px; padding:2px 9px;
+  font-size:0.73rem; color:var(--text-muted); white-space:nowrap;
+}
+.grp-count.live { background:var(--live-bg); border-color:var(--live-border); color:var(--live-text); }
+
+.chevron { color:var(--text-dim); font-size:0.8rem; transition:transform 0.25s; flex-shrink:0; }
+.grp.closed .chevron { transform:rotate(-90deg); }
+
+.grp-body {
+  max-height:4000px; opacity:1;
+  transition:max-height 0.35s ease, opacity 0.25s ease;
+  overflow:hidden;
+}
+.grp.closed .grp-body { max-height:0; opacity:0; }
+
+/* ── DESKTOP TABLE ── */
+.tbl-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:0.86rem; }
+thead th {
+  background:var(--surface2); color:var(--text-dim); font-size:0.68rem; font-weight:600;
+  padding:8px 12px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap;
+}
+tbody tr { border-bottom:1px solid var(--border2); transition:background 0.12s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--surface2); }
+tbody tr.avail { background:var(--today-glow); }
+tbody tr.avail:hover { background:var(--today-glow); filter:brightness(1.5); }
+td { padding:10px 12px; vertical-align:middle; color:var(--text); line-height:1.5; text-align:right; }
+td.nc { font-weight:600; font-size:0.9rem; }
+td.nc .dot { display:inline-block; width:7px; height:7px; background:var(--accent2); border-radius:50%; margin-left:6px; vertical-align:middle; }
+td.qc { color:var(--text-muted); font-size:0.77rem; direction:ltr; text-align:left; }
+td.pc { font-family:monospace; font-size:0.77rem; color:var(--text-muted); white-space:nowrap; direction:ltr; text-align:left; }
+td.fc { color:var(--accent2); font-weight:500; white-space:nowrap; }
+td.fc.d { color:var(--text-dim); }
+td.cc { color:var(--text-muted); font-size:0.8rem; }
+td.ic { color:var(--text-dim); font-size:0.75rem; text-align:center; width:28px; }
+
+/* ── MOBILE CARDS (replaces table on small screens) ── */
+.cards { display:none; padding:8px 12px 12px; gap:8px; flex-direction:column; }
+.doc-card {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:10px; padding:12px 14px;
+  transition:background 0.25s, border-color 0.25s;
+}
+.doc-card.avail { border-right:3px solid var(--accent2); }
+.card-name {
+  font-weight:700; font-size:0.95rem; margin-bottom:8px;
+  display:flex; align-items:center; gap:6px;
+}
+.card-name .dot { display:inline-block; width:7px; height:7px; background:var(--accent2); border-radius:50%; flex-shrink:0; }
+.card-row { display:flex; gap:6px; margin-bottom:5px; flex-wrap:wrap; align-items:flex-start; }
+.card-label { font-size:0.7rem; color:var(--text-dim); font-weight:600; white-space:nowrap; padding-top:3px; }
+.card-val { font-size:0.82rem; color:var(--text-muted); flex:1; direction:rtl; }
+.card-val.phone { font-family:monospace; direction:ltr; text-align:left; }
+.card-val.fee { color:var(--accent2); font-weight:600; }
+.card-val.fee.d { color:var(--text-dim); }
+.card-days { display:flex; flex-wrap:wrap; gap:4px; }
+
+/* day tags */
+.dtag {
+  display:inline-block; background:var(--pill-bg); color:var(--pill-text);
+  border-radius:4px; padding:2px 7px; font-size:0.72rem; font-weight:500;
+  margin:2px 0 2px 3px; white-space:nowrap;
+}
+.dtag.today { background:var(--live-bg); color:var(--live-text); border:1px solid var(--live-border); }
+
+/* specialty tags — light defaults */
+.stag { display:inline-block; padding:3px 10px; border-radius:5px; font-size:0.84rem; font-weight:600; white-space:nowrap; }
+.sp-rheum    { background:#ede0ff;color:#6b21a8 }
+.sp-internal { background:#dbeafe;color:#1e40af }
+.sp-surgery  { background:#dcfce7;color:#166534 }
+.sp-ortho    { background:#fef9c3;color:#854d0e }
+.sp-urology  { background:#fce7f3;color:#9d174d }
+.sp-neuro    { background:#e0e7ff;color:#3730a3 }
+.sp-cardio   { background:#fee2e2;color:#991b1b }
+.sp-obgyn    { background:#fce7f3;color:#9d174d }
+.sp-ophtho   { background:#d1fae5;color:#065f46 }
+.sp-ent      { background:#fef3c7;color:#92400e }
+.sp-peds     { background:#dcfce7;color:#14532d }
+.sp-derm     { background:#ffedd5;color:#9a3412 }
+.sp-radio    { background:#cffafe;color:#164e63 }
+.sp-psych    { background:#f3e8ff;color:#581c87 }
+.sp-nutri    { background:#d1fae5;color:#065f46 }
+.sp-breast   { background:#fce7f3;color:#831843 }
+.sp-anest    { background:#dbeafe;color:#1e3a8a }
+
+/* ── SPECIALTY DESCRIPTION + MORE BUTTON ── */
+.grp-desc {
+  padding:10px 16px 0; font-size:0.8rem; color:var(--text-muted);
+  line-height:1.65; border-top:1px solid var(--border2);
+}
+.grp-desc-row {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:10px; padding:10px 16px 8px; flex-wrap:wrap;
+}
+.grp-more-btn {
+  display:inline-flex; align-items:center; gap:5px; white-space:nowrap; flex-shrink:0;
+  font-size:0.76rem; font-weight:600; color:var(--accent);
+  background:var(--tag-bg); border:1px solid var(--border);
+  border-radius:6px; padding:4px 11px; text-decoration:none;
+  transition:all 0.15s; margin-top:2px;
+}
+.grp-more-btn:hover { border-color:var(--accent); filter:brightness(1.1); }
+
+/* ── INDEX DOCTOR ARTICLE DRAWER ── */
+.idx-art-btn {
+  font-size:0.7rem; padding:2px 8px; border-radius:4px;
+  background:var(--tag-bg); color:var(--tag-text); border:1px solid var(--border);
+  cursor:pointer; font-family:'Noto Naskh Arabic',serif; font-weight:600;
+  transition:all 0.15s; display:inline-flex; align-items:center; gap:4px;
+}
+.idx-art-btn:hover, .idx-art-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.idx-doc-arts {
+  margin-top:8px; padding:8px 10px;
+  background:var(--surface2); border-radius:8px;
+  border:1px solid var(--border2); animation:fadeIn 0.18s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+.idx-arts-label { font-size:0.68rem; font-weight:700; color:var(--text-dim); margin-bottom:6px; }
+.idx-art-links { display:flex; flex-direction:column; gap:5px; }
+.idx-art-link {
+  display:flex; align-items:center; gap:7px;
+  font-size:0.78rem; color:var(--accent); text-decoration:none;
+  padding:5px 8px; border-radius:6px; border:1px solid var(--border);
+  background:var(--surface); transition:all 0.13s;
+}
+.idx-art-link:hover { border-color:var(--accent); background:var(--tag-bg); }
+.idx-art-link.pro { color:var(--text-muted); }
+.idx-art-lvl { margin-right:auto; font-size:0.7rem; }
+
+/* ── YA HAKEEM BRAND ── */
+.ya-hakeem-link {
+  display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; color:var(--accent);
+  font-size:0.85rem; font-weight:700; letter-spacing:0.02em;
+  opacity:0.85; transition:opacity 0.2s;
+}
+.ya-hakeem-link:hover { opacity:1; }
+.ya-hakeem-link .yh-logo {
+  width:22px; height:22px; border-radius:50%;
+  background:linear-gradient(135deg,#5b9cf6,#7ec8a4);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; font-weight:900; color:#fff; flex-shrink:0;
+}
+
+
+/* ── RISALE BANNER ── */
+.risale-banner {
+  display:flex; align-items:center; justify-content:center;
+  padding:10px 20px; text-decoration:none;
+  background:linear-gradient(135deg,#fefce8,#fdf6c3);
+  border-bottom:1px solid #fde68a;
+  transition:filter .2s;
+}
+html.dark .risale-banner { background:linear-gradient(135deg,#1e1a00,#2a2400); border-bottom-color:#7a5c00; }
+.risale-banner:hover { filter:brightness(1.05); }
+.risale-banner-text { font-size:.88rem; font-weight:600; color:#854d0e; direction:rtl; }
+html.dark .risale-banner-text { color:#fde68a; }
+
+/* ── TODAY BANNER (kept for JS compat) ── */
+.today-banner {
+  background: linear-gradient(135deg, var(--live-bg) 0%, var(--surface2) 100%);
+  border-bottom: 1px solid var(--live-border);
+  padding: 10px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-align: center;
+}
+.today-banner .tb-label { font-size:0.78rem; color:var(--live-text); opacity:0.8; }
+.today-banner .tb-day {
+  font-size:1rem; font-weight:700; color:var(--live-text);
+  background:var(--live-bg); border:1px solid var(--live-border);
+  border-radius:6px; padding:2px 12px;
+}
+.today-banner .tb-note { font-size:0.78rem; color:var(--text-muted); }
+html.dark .today-banner { background: linear-gradient(135deg,#0d2a1a,#171b26); }
+
+/* ── COLLAPSIBLE FILTER SECTION ── */
+.filter-toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px; background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  cursor:pointer; user-select:none; gap:10px;
+}
+.filter-toggle-row:hover { background:var(--surface3); }
+.filter-toggle-label {
+  font-size:0.82rem; font-weight:600; color:var(--text-muted);
+  display:flex; align-items:center; gap:8px;
+}
+.filter-toggle-label .active-count {
+  background:var(--accent); color:#fff;
+  border-radius:20px; padding:1px 8px; font-size:0.7rem; font-weight:700;
+  display:none;
+}
+.filter-toggle-label .active-count.show { display:inline-block; }
+.filter-chevron { color:var(--text-dim); font-size:0.8rem; transition:transform 0.25s; }
+.filters-collapsed .filter-chevron { transform:rotate(-90deg); }
+
+.filter-body {
+  overflow:hidden; max-height:500px; opacity:1;
+  transition:max-height 0.3s ease, opacity 0.22s ease;
+}
+.filters-collapsed .filter-body { max-height:0; opacity:0; }
+
+/* search bar always visible */
+.search-bar {
+  padding:10px 20px; background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+}
+.search-bar input {
+  flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:8px;
+  color:var(--text); padding:9px 14px;
+  font-family:'Noto Naskh Arabic',serif; font-size:0.9rem;
+  outline:none; transition:border-color 0.2s, background 0.25s;
+  direction:rtl; text-align:right;
+}
+.search-bar input:focus { border-color:var(--accent); }
+.search-bar input::placeholder { color:var(--text-dim); }
+
+/* ── SPECIALTY ICONS ── */
+.sp-icon { font-size:1.1rem; line-height:1; flex-shrink:0; }
+
+/* today banner hidden when not showing today */
+.today-banner.hidden { display:none; }
+.risale-banner.hidden { display:none; }
+
+/* 4. Back-to-top button */
+.back-to-top {
+  position:fixed; bottom:24px; left:20px; z-index:150;
+  width:40px; height:40px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--text-muted); cursor:pointer;
+  display:none; align-items:center; justify-content:center;
+  box-shadow:var(--shadow); transition:all 0.2s;
+  font-size:1.1rem;
+}
+.back-to-top.show { display:flex; }
+.back-to-top:hover { border-color:var(--accent); color:var(--accent); background:var(--surface2); }
+
+
+/* FOOTER */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:18px 20px;text-align:center;margin-top:20px;}
+.footer-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:7px;}
+.footer-links a{font-size:.8rem;color:var(--text-muted);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--accent);}
+.footer-copy{font-size:.73rem;color:var(--text-dim);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .tbl-wrap { display:none; }
+  .cards { display:flex; }
+  .header-title h1 { font-size:1rem; }
+  .yh-name { font-size:0.88rem; }
+  .today-banner { padding:8px 16px; gap:7px; flex-wrap:wrap; justify-content:center; }
+  .today-banner .tb-note { display:none; }
+  .filter-toggle-row { padding:8px 16px; }
+  .filters-bar { padding:10px 16px; }
+  .incomplete-row { padding:8px 16px; }
+  .chips-bar { padding:6px 16px; }
+  .content { padding:12px 16px 60px; }
+}
+@media(min-width:641px){
+  header { padding:10px 28px; }
+  .filter-toggle-row { padding:10px 28px; }
+  .filters-bar { padding:12px 28px; }
+  .incomplete-row { padding:10px 28px; }
+  .chips-bar { padding:8px 28px; }
+  .content { padding:20px 28px 60px; }
+  .today-banner { padding:10px 28px; }
+  .search-chip { padding:6px 28px; }
+  .inline-search-bar { padding:8px 28px; }
+}
+@media(min-width:1024px){
+  header { padding:10px 48px; }
+  .filter-toggle-row { padding:10px 48px; }
+  .filters-bar { padding:12px 48px; }
+  .incomplete-row { padding:10px 48px; }
+  .chips-bar { padding:8px 48px; }
+  .content { padding:22px 48px 60px; }
+  .today-banner { padding:10px 48px; }
+  .search-chip { padding:6px 48px; }
+  .inline-search-bar { padding:8px 48px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="header-title">
+      <a href="https://yahakeem.com" target="_blank" class="yh-link">
+        <div class="yh-logo"><img src="data:image/x-icon;base64,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k/9JUor/SFWO/0JMiv9KV4z/R1OI/0ZPh/9DSoT/Qkh8/z5Dfv9BRoT/OkF6/z9HfP9AR4D/QEiA/z5Fhf9XSlH/UkhU/0FBXv9HPlL/TEdo/01IVv9FP1f/QkBj/0NGcf9HRWT/UFR5/0RFXf84O1n/RkBa/0A9W/9MR2r/TUhT/1ZNVP9OSWD/TUdc/1ZQXf9TTlb/UU1r/1FHSf9ZT0//SUVe/1BFU/9FQlL/ST9D/05ESv9HQ2T/RkFQ/1BZef9RUnX/QkZz/z1CcP9GSnn/TE1v/0JGc/9AQm7/QUZ2/z5CZf9GR2v/QEhz/zs/av9CRmz/RE+H/0dRff9MVIH/Tk97/0ZMd/8/S3r/V3Cc/0ZSe/9IUoD/REhw/z9Md/9EUXP/Q0l3/0RFZf8/RWb/QVN7/z9Ldf9BQ2f/U2t8/1Jcdf9BUnf/Q1SG/01ZeP9MVn3/T2OH/0VVj/9LWX7/RkZf/0VSgf9LZYr/RF2D/0hZi/9FU4X/P1N8/1Zogv9PYZb/RUtn/0Vaj/9beqH/UGqJ/1NkeP9IUXv/SFRv/09oh/9QVHD/SlOC/0hKWP8+TW3/TW6P/zpEXv9HVWf/S2F7/0NUfv84Qm//PUVp/zlDcf8+RHP/TmaI/0VSe/9GUmX/TFdv/0taef8/SWT/TE9b/0haev9FUGr/SFV1/0ZTfv9CTnP/SFd9/0NQd/9NYY//Qk9j/0ROXv9HUG7/QE9v/0FPa/9BS1v/T2B9/0lUdf9ATnL/OUNv/1JbcP9LWoH/VG2X/zlHiv8/QWH/QUh1/0RTkf8/Smn/VXGZ/1Bhcf9TX3v/T1+O/0hQW/9LWG7/R1Bt/0xegv9Ya57/S1iW/0JJaP9JVXj/Tlua/0ZXb/8/Tl//RFh3/0lQUv9GUHT/RU1d/0RQXP9JWnb/Sll5/0ZYiP87SIH/R1iD/0tfjP9OYpX/RlmI/zM6b/83Qov/UWOI/0pZev9UcZz/Wned/1BYZ/9HTWP/Tlpm/0pZd/9IVXL/TV6O/1dwmP9KV5L/O0Jx/z1Hi/9IVnv/OkVS/1Jniv9FWYL/SVx0/z5DUf9KTk7/SVp1/0NQa/9LYIX/R1t9/zpIhP9OYn3/V3CZ/1BkhP9Xc5r/SFqT/1Jll/9IVXn/UWyV/05hhv9Wcpn/Yn6e/1Niev9Xb4z/R1Fv/01ihP9MX33/X3ef/1Nslf9FVI//R1yS/0FLXf9PZYf/T2OF/0dcdv9KYIH/SVp0/1BhgP9MW3n/TGB//0lggP9HWnz/QVF2/1Joiv9gd57/bHyW/1lmg/9ZdZ7/VGiS/0pZe/9NZZL/VHGS/1FwlP9ddpz/TWJ//1Zokv9KXoH/UWKJ/19wj/9eco//WG+a/1Vtn/9OY4r/UmaE/1l0nv9OYIn/TGWB/0tmhv9HWX3/S12H/0ZVcv9JXnr/T2GH/15ug/9gc5H/SFJq/1hwlv9aaoP/V22R/193of9ccZH/R1Ry/0xhhv9KX4L/WHSc/2aBqv9WbZv/XXac/0VPa/9MX4D/U2R+/1dsi/9cd5z/UF18/1Jrjf86R1b/TF55/09nkf9EWHj/S2KE/0VWgf9CUIr/TV16/0RWcv9LYYP/TmCF/0RSdP9LXYL/R1qE/0lcjv9Yb47/T0tY/1VGPf9SX3b/R1Nz/1Zym/9deqf/UmOt/0JMiv9OYqn/SVt+/0RQbP9JWoj/VnKb/1NZZ/9MRVX/TkdP/1BZa/87R1b/RFZv/0tfgP9IW4b/P0Z+/z5EhP9DU47/R1d4/0lZff9FWXv/QUVa/1dpov9SY4L/Tl2C/05LWv9JSF7/T0hd/09HUP9MWHT/TV6B/01hnP9HVJX/QUhy/01bmf9HV6j/RVBx/0FRcv9RXXr/S0JS/z1CYf9HR1r/UUlS/1Jfcf9DUWD/QVJo/z1Ig/8/QnP/Pj5n/z9Jjf9PYZL/RU5u/0ZQa/9JQU//VWqX/1lsiv9KUmX/WWRz/1FZfP9NVHD/WmFy/1dsjP9GUmv/Q0xy/z5EXv9LT3L/Qk5y/0lVlv9JXoL/Sld9/1RifP9SXXT/SVN8/0ROaf9VZnf/T1dl/01hdv9ASVn/PUZ0/0NCb/9CQ2r/QUZ4/01dk/9IV33/QUhg/0FNZ/9XcqP/SFyE/05iiP9PUGL/TkhY/1lOVv9STVf/R1Nt/1Jnj/9PZZ3/SVOU/0RMdP9OXZz/R1eg/0dQcP9GVXP/YG6K/01GUv9DRGD/Q0FX/1NLU/9OWm7/PUdW/0hYd/9DU4n/QEiF/zxCdv9BTpD/UGGH/0JOZv9DUG3/ST9M/0lXev9QaJL/VnCX/197of9XWWv/WlBS/1lqhv9JVXr/XXym/1p9pv9WbK//S1SV/1Vtp/9NXn//SFRy/0pbhP9deKH/WWl+/0pBTP9FQkr/VWBv/zxDUf9LXnr/TGGE/01jh/9FUY3/PkaE/0xci/9EUW7/SFx8/0RYeP88P0//U2eH/190l/9ndon/W2uN/2eDrP9ngqf/TFl1/1dskP9RaIr/XHic/2KAp/9cdZn/Y3ug/0dTcv9SZoj/WWqG/2B4lv9bdZ7/VWeT/193m/9HV2v/VGeB/1Vrmf9LZIL/TWOC/1Rmj/9LXIz/UGJ6/1Jlg/9NY4T/UmSE/0NSbv9Wb5X/Xnab/2h2iv9ZcZT/YHik/1dtlP9QXIn/W3Wd/1Zsjv9XdJf/XXad/2F6mP9dbpb/SFl2/1Vpjv9Za4T/YniU/152oP9Xbp//XXah/1Nkh/9fe5//UWWJ/05mif9MZ4X/TF6B/09giv9LWnD/T2N7/09ihf9ecYb/XW2L/09hff9YcZ7/S2KR/1ZxnP89R4b/Sl2Z/1Jhff9RZoT/YYCm/2OAqf9heY//T1lm/2F0iv9PWXj/UGCD/0tfg/9de6T/VWmh/0ZRi/9HWJz/SlZu/0NTaf9YbZD/S2OC/0xigP9OWnH/Tlxp/1Bkhf9RZIL/S2GD/0NWef86SWz/VWSD/0pfhv9QZpn/P0mG/zpCaP8+SY7/Umaa/0VPa/9efKX/ZoOm/1pibf9ESmj/Wl9p/09ca/9HUWv/S1+N/1hxo/9UYKf/Q0tx/0VPg/9OX5//Q09i/0xbcf9OZZD/TVlm/0RGU/9IS0v/VGV7/01Xcv9RZon/R1d9/z1Hhv9TWl//S1t3/0RVhv9DTnj/RUxv/0NMcv9DTYD/UGWM/05ceP9OWGv/S1dz/1ttlv9GUG//UFFg/0pYcP9KVW//UlyA/0xVfv9MUXH/UVh4/0pXgv9QZZj/Qk5g/0pYbv9SXG//UGKL/05cfP9MU2H/UmF8/0VRb/9EUYX/OkNx/1tpg/9UbYn/XGqD/09dkP9bbYn/XGJ3/1NolP9kf57/UWKJ/09ccv9QXYL/VmR7/19ziv9MW4P/T2CD/1Nmif9bbof/X3eR/0ldh/9VaJr/W22K/1dvnP9OXHr/R1Z2/0xWZP9IT2j/SlZo/05ZZv9RXHj/R1F0/0dRZ/89SXD/TlyE/1Vlj/9UWoL/U1qD/19oj/9UWoD/WGWT/1BZg/9NWI//UFqJ/09Zj/9aaJH/UlyC/1BbkP9WYpj/WmSL/2Z2nv9ZZIj/Vmac/1hh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if9FUY7/OD+K/0VMff9NVZX/YWmT/05Xmv9HUYv/P0yM/zlEdf88RoX/PEaE/z5Bfv88QpD/Oz+D/zY8ff84P3n/ND56/zhHd/87RY//Nj19/zxGlf8+Rnr/O0WO/zxCV/80OFn/NTl2/zlAe/86Q5L/RVSN/z5Ilv87RYX/O0N5/0pNfv9TVX7/QEyR/z1Hgv85QoP/RlWN/z1OgP86Roz/P0R3/ztBgP89SYr/QkyF/0BJmP9CTH7/QUuO/1BppP9Raqj/PkyQ/z5Ga/9RWYv/Y3Oj/1pbgf9GT3//PUiA/ztJbP88SXn/N0Bw/zpAdP86RIP/PEV+/zhBhf85QG3/NENw/0BNdf8xO27/NDlw/ztIlf9AS4H/PEeS/ztDUf80OFT/Nzl3/zY+dv88RZP/QFOE/0BLlv84QH3/PkR6/0hIcf9MS3X/QUuH/z9KfP87RH//S16N/0NVhP9FUpT/PkR7/z9Hi/87R4z/QEuJ/0BKmv9AS4D/RE6U/1Bqnf9NY5//QkmW/0BKe/9JUZD/Y2iL/1tglv9HUIX/PUiJ/zpJb/87R3z/PkV8/zlBev86Ron/OkGI/zg/hP85QXj/NUR5/z1Ibf8zPnr/Oz96/0NLov9DToz/O0SI/zpDgP82OnX/Mzl9/zhAi/82QIr/PEaM/0JHmf8+RIf/OT+C/0dMiv9RVIj/P0aT/0JNlf8/SYv/RFKR/0FNhP82P4r/QUmI/0RJjP88RZj/QEuZ/ztFm/9ITYb/P0mF/0ZSjv9CT4r/P0qM/0tXif9DUZH/S1eP/0dSkP9AS4f/Q0qS/0JKgP8/RYj/PD5+/ztAf/8+Rov/OUB//z1Fgv9AR4H/QUeE/z1Ifv88RZD/O0KA/0hMcv9LTnT/Skx7/z1BcP89Pmn/PTxp/0dFd/9ARnT/SU18/0BEc/89QXj/QEd+/z5Gfv8/R3//P0Z9/0FLhf89R3z/O0R3/zpBcf85P3T/QkZ3/z5Hcv9ARnv/R0x5/0hOef9MUHT/TVF1/0tReP9GRWv/TUtp/1VXef9MUG3/UFFt/09Pc/9OS2j/UExm/09MYP9HR2T/QkRo/0pDZf9GR2n/Q0Jf/0FBXv9GRmD/Q0Ri/0ZEaf9ARG3/REJn/1tLSf9USEn/WU5T/0VGZP9HQU7/SEBX/0pHc/9NSFT/V0tL/09BS/89O1b/Qz9X/0RBW/9HSHX/SkhZ/1FPa/9aXnX/QUBR/z5CZP8+OUr/S0JP/0RAV/9KSXn/T0Va/1VOV/9cTk7/VktL/1tZbP9GQWr/Uk9e/1tQVP9NTFf/VlFd/1BOcf9LSFz/T0NA/1tUU/9US1P/SkZm/1JKWP9JRVj/QjxI/0U8Pf9VR0b/TUJL/0pCXf9MSGX/SERQ/1BOb/9NTm7/UlB4/0NBaf9BQWj/PkBt/0REcP9KRWr/S0xt/0ZEaf8+PGL/QD5f/z4/Zv9BPmP/Pj9c/0ZAVP9EQ1//Pz5k/zs6Vf84OmD/Q0Zl/0ZNf/8/RnX/R06D/0xNef9JTXn/Tktx/0ZIcv9AR3b/Pkd4/1Bhj/9LVYX/SVWG/0lRg/9ARn7/Rk14/z9Jdv9ASXT/PEFo/0JGcf9ESHf/REVm/0FCbP8+SHL/QU59/0FMev89PWj/Q0Nq/1Fne/9WY3n/T1Ny/z5LeP86Sob/QUtz/0pQb/9GT4X/UFVz/09jkf9CTpL/RU9+/0hSfP9GTYP/QEJe/0dQi/8/ToD/VnCd/z1Pe/8+S4n/SFB4/0lVj/8/UYv/S1x7/1lnf/9PXp//TlZ9/0VGXP9FU4b/P05+/16CqP9WeJ3/RVZz/1Jfc/9LVob/SEli/0dRbP9LaJD/UmqA/0lKY/9JUov/R0Rc/0VFT/8+RmL/RmKD/05ylv83Rmn/REld/0hbbP9bdY3/UmN+/0dWef9BVYL/SFyL/09eef9MXov/UFx4/01fev9JXY7/Q1iL/0pZcf9HVoP/SEda/0JOcf9DVoT/SWWJ/1V1mP9CWYP/SVmH/0VSc/9AV4r/P1N4/1ZqgP9RZI//TmKT/0pUdP9GV4D/SmCP/1RrlP9dfJ//UGmG/1Rpgf9JVnb/SFF0/0pTaf9CVHX/TGB//09WbP9QW4f/R1N5/0tQYP9ATGL/PUtt/0tpi/9CWHf/PUZf/0FQbv9TZ3r/Q1uB/0FOg/84RHD/N0B0/zpBcv86Q23/NUF8/zpBa/9LWZD/TWmN/0RQgf9FVG7/R1Zk/1Rea/9LV2z/SFRp/0RNX/9DSlv/TU5O/0NZc/9HUWf/SVFs/0ZRZv9GUoP/SFaK/0FQf/9IVYT/RlqI/0ZWhf86Snn/Vm6V/0lbd/87Rlr/QU5d/0NJXf88Q1b/PEde/ztFV/9ATFv/QkpP/01ddf9LXXb/SlJ4/0BQZ/89R3n/OkZ3/0pQX/9PXnP/Sll5/09kif9BUYL/PUx+/z1DXP9CRmX/RU14/0FKff9EU4X/Q1Jw/0lcff9OW3X/R1Vv/0pWcf9RY4z/TmWR/zxIZv9FS2P/UFdm/0xZcP9GUG//SF5+/1Noi/9NWIf/RlSC/0FKZ/9JTm7/SFh4/0hVgv9JVIj/TmSE/z9JWv9BUGP/RlFh/0xWb/9GVHn/UGaQ/0RNdf9GVXH/QUxd/1Nngv9GU3D/S1h+/0VYeP8+R3v/Mz5l/1NZcv9PX3j/TV+A/1Zxm/9IXZH/N0aH/zxAZ/88P1n/QUuG/0JUl/9FUW//P0tn/1Zznf9Yc5f/T11o/1hkcv9NVor/TFaF/0xQX/9NVmP/Sl15/0ROdf9HVn7/U2OJ/1hxmv9QXpz/TVib/0BKaP9FTGD/R1V8/1VkqP9KWob/QU1T/z1KVP9JXn//Rlh5/0hRU/9HS1b/Qklt/0RJVv9FT1H/SlZo/01ggf9GUW7/S12B/0teh/9BUpD/PUqL/0ZWj/9HWoP/TGSU/1BnoP9QY47/PUqA/zQ8dv8zOXH/OUSS/05hjv9JV3n/Slp//1Vvmv9WdKH/X3SV/09Zaf9ETGL/REhS/01TVf9MXnP/RVNx/0hPYf9MXIv/R1R//1Fpjf9UZ5z/Q02I/0FJgf85P3D/QEuG/0lZkP89Sl7/N0FU/1Fjg/9QY4n/Q1iF/0lcd/9CSk7/Oj5P/0pMTf9HUVz/SVx6/0NMYv9JXHr/Sl+E/0dcff9DU4X/OEiF/0ZWeP9OYoL/VGqZ/1Bnmv9OZor/UmyY/zpGiP84P37/RluT/1RsiP9IU3D/VG2R/1Zymf9WcZn/Wnii/15zj/9QW3D/R05b/1Rpf/9UY4X/T1Z0/0pYef9NZY3/VGiO/154ov9Zc5v/S1qY/z5Jh/88R4X/RFOU/0VTbv88RFP/S152/1BqkP9KX4P/QVNx/0thg/9KW3X/QUhc/0pPVv9PY33/SFVx/0RRb/9LYoP/R1x9/0RXeP9AUXT/P0yD/0tdcP9ZcJT/V3Ga/1Jlh/9KXXf/XXmj/1Ntn/9NXI7/XHSe/0tYhv9KWoH/U3Ca/0xjiP9JXoH/V3GX/2SApf9ie5v/Wm2K/1p3lv9EUGX/RlV1/0tig/9MYYH/Sllz/11ylf9adZr/Vm+Y/0hclf9DVor/S2OO/0JNXP9OXXr/VG2Q/05gff9KX4H/T2Z6/0dgfP9MYYP/S1x5/1Fjhv9VaYb/R1Jv/01igv9PZYf/R117/1BjhP9DVXj/QlJ0/0ZZfP9Ycpj/bYaq/3mLpf9pdoz/Tl19/1d1nf9VZ5H/U2eS/1Fijf9PZ43/SF6N/1V1nP9YeJT/T2mR/1lslP9fep3/SVp0/1prkf9MWoT/SmCB/0xfg/9fcJD/YHGP/1tviv9abZL/WXOg/113qf9RaZT/RFN7/01gfv9ZdJn/WHKb/09jh/9LY4r/SFlx/05ujP9DVXf/RFV8/0haif9LWXf/QlJt/0lgff9DV3X/VWmN/2h7k/9idYz/W22M/0hTbP9YcJX/Znyg/3CBmf9hbYX/U2CD/1t1pf9feaP/XHmf/0pYeP9FVnf/SmKN/0tmiv9Oaoj/Um6W/1tzm/9igaX/UmqH/2B5nv9KWX7/Rlhz/0xdhf9dcI7/V2eK/15yi/9Za4//XHah/1pypv9UbZX/T2SI/0FQY/9PY4P/W3ef/1NqmP9HXoP/SmB4/0tjgv9OZYf/RlqE/0dXh/9OY4X/Q09u/01fff9MYIP/TWCF/2Byjv9YaYT/T11//0ZLX/9IXH3/WnGZ/1Nnh/9LW3f/XHag/2B4ov9baof/VmuI/05jf/9AR2T/UmuV/09mjP9PZIn/X3yk/2aDqv9ab5//TWGZ/117o/9TZIT/SlF3/0NWc/9QYoL/Tlxz/1Bnif9cd5v/X3mb/1Nedf9KU2f/VG6S/0RUZv85QEj/SVt1/1Fnkv9NY4n/RVl5/0phhP9MYor/Pk15/0BIkP9KXYn/TFp5/z5MZ/9KYH//SF9//0dZf/8/T3L/P0tv/0JRd/9FVHT/TmyR/0tkmf9PaY7/Xnma/05PWv9RRkn/U0U+/1dpgP9EU27/TVt5/1JwmP9bdqP/YX2p/1Zrpf9JWJ3/Q06a/01foP9Wb5v/QExn/0RNbP9JXoT/SVyE/1Nznv9ac5j/U1Zj/01ESP9IQlP/VVVi/1hngP88SFv/PEJM/0VYcv9NY4T/R1l3/01hiv9EU4j/P0Z2/zo/eP9CTZf/RVmF/0ZXd/9JV3n/R1t7/0ZZe/8/T3D/QkZb/1Bik/9UZpH/R1Z6/01fmP9OYIP/VFdl/0xFTP9SSkv/VEhI/1VNVf9OV3H/Q05r/1Jpk/9XdJ//Umqd/05bqP9HUZD/P0qH/0ZUpP9LXan/R1mJ/0NLa/9EUHj/RleA/1Rvlf9TWWz/TEVO/0RBUP9BP1P/T0dP/1FIUP9QWmr/QlVr/z9JVv9IWXT/TGKB/0RUfv8/Roj/OkJ1/0FEgP89RYb/Qk6T/09ijP9GU3H/RlJy/0dae/9ETmP/SEFR/1hpkf9ab6z/T2GE/0hTb/9NT2f/TUdW/0lHaf9HTW7/UEVk/05FUP9OTl3/Tl+G/0ZSb/9MXof/UWCt/0ZVjf9DSnD/RUp1/01ah/9OX7L/R1eq/0VVeP9CTGX/QVNx/1Jiiv9JQlH/SkNU/0VGZv8/RGX/R0xf/1FOXP9RSUj/V2eA/0ZacP8/Sln/OUhY/0JKi/8+R4P/Pzpc/zo4Vv8+Q2//QkyS/0lamv9PXoH/RlF2/0ROa/9IQ1f/S0JN/1Jnff9ZbaX/WGyD/05cbP9XYnn/VmFw/0xUev9TXHb/UVNs/15rg/9WZHX/W3aa/0lZbf9GUXr/QEpq/0FHav9GSWD/Skxx/z9KY/9FTnn/SFih/0lehf9KXYX/SlZ0/1dqj/9SX3P/T1hs/0ZRef9IVHX/RUxm/09hcv9RWmX/VmiB/1Zviv9FT2H/Qktg/z5FdP9FSnL/Q0Jv/0ZMev9CQGv/R0p1/0lUlf9PZIn/RFN5/z9MZv9KUGb/OkNh/114ov9XbKL/TF6C/0lWcP9QVmr/U1Fk/0tNbv9SVnb/U1Fq/1ROXv9TVWT/VWeM/0ZTbf9JV37/S1iR/0JJd/9FSmX/SVBz/0xXe/9LWp//S1mp/0ZZff9GUnL/R1Rv/1ptlP9TVGL/UU1c/0pOcf9ETHH/Q0lm/1BUZ/9STFH/U2V9/0dddf88R1b/QEph/z5Ihv88RH7/QUJu/z5AZ/8+RHL/P0qL/0ZUkP9MXn3/Rk5t/0BNav9HSFr/QEFX/1Jsmf9RZo//RVt+/0tekv9QY3z/Tk5Z/01CR/9VS1P/Wk1L/1VLUv9LVWz/QUlf/1Rqkv9Ucpz/TF+a/0pXnP9ETYT/RVOK/0lVlv9KW6//RVaL/0VNa/9LUnb/SWCF/2R8nv9VW2r/TUVR/0NBUv88PlT/SUJV/1JLUP9VV2D/RVl0/zxHVP9HUWX/S198/0xhi/8+S4b/QUuJ/ztDe/9ASYr/QE+N/1Zoi/9KVnL/Q1Rw/0VUd/9GR1z/S0NL/0VVd/9KWnr/UGyY/1Vyov9adZz/YXmc/1NOW/9USlL/XUtG/15qe/9OW3j/S1d8/156qv9Xe6P/X4Sq/1Jnrf9OXZ7/R0+N/1Bjsv9VaZn/QVRz/0pUd/9LWYP/RFJ3/1VulP9lgaL/Tk9T/0k/Rf9HQ1X/SkE//1FTV/9PXHD/P0VL/0RSZf9PYob/TWCB/0xfg/9MXZL/QEiD/zk9a/9EUJn/Tl6M/0paev9GVXH/SVx+/0RXeP9BT2r/QT1D/0lacf9RZIv/WXKa/2d9lf9dcIz/XHmh/2R5mv9icIv/Y3aP/110mP9FTm//V2+V/1Rvl/9Va5D/X36m/2KBqv9ZcKX/WGin/2B6pP9Xbov/SFFu/0dZcv9QZIX/TF54/1pylP9efKT/V3CT/05RYv9IS13/VGaB/1Flfv9ASlb/QExh/1Fpjf9Ra47/R1x7/0pdff9TaY3/RlSO/0BLif9KXIz/T159/0VQbv9LYYD/SFx9/0FVdv86S2v/Oj9U/1NlkP9XbJL/cYak/2Nzhv9icIr/U1+G/2SBqv9kfKP/aIKm/01cdf9OXH7/V2uW/1Bsk/9beJL/XHyh/2B2oP9hgab/WGyL/2V+oP9RYIr/TVx8/1RnjP9dcJL/XmyM/2Z7lP9jd57/W3eh/2B4rf9XbZf/ZH2m/0lZb/9SY37/XXWX/1Npnf9NYor/VG6K/1Jqhv9OZYv/VmqQ/01djv9Yb5H/R1Vj/1Jlfv9Ua43/TmGD/2Bzkv9XaYT/Rld1/1Npkv9adpf/boOn/4CPov9neJD/UGWF/2SBq/9UZIr/WG+X/1lolf9XbpT/VWmS/1htk/9WdY//Wneb/09hiv9mgqT/U2iC/19ymP9QYIz/UWaG/1VqkP9ccI7/XWyM/2F5kf9keJz/YHml/2V8tP9edqD/WG2b/1JfiP9ge53/XXqe/1Zskv9NX4r/UWmJ/0tngf9MYIT/Rlh7/05dkP9OYH7/RlJn/1Vogv9HW3b/VGiO/2R5jf9icoX/UF6D/0xhg/9feZn/WXKc/1Joi/9SaYz/YH6r/05lnP9MW5P/X3ul/09dgv9JWXn/X3yj/1lxmf9ZbpD/XHmh/2SCp/9jepX/W3CG/2h9n/9PXXr/RVFr/1Rmh/9OY4T/TVxw/1pxk/9ddp//WXKd/05gm/9KXZT/VXGb/0xZdf9PYXn/WXOV/1Jnhf9NY4X/TmiD/0tkfv9QZYf/TV97/05ff/9WbI7/Q1Fs/1FkgP9TaYj/SFt8/1RphP9QYYD/RlZ1/01bb/9QZYz/UWui/0hfl/9TaY3/S2KS/z9Ijv86RH//S2Cc/191mf9HUGv/VGyI/2SGrv9efaf/a4q0/2F/mf9SWmT/UVll/1ljav9gdZX/T1Vy/1Bcgv9NY4r/TWKJ/19/qf9deqT/Tlym/0NOiv9HT4v/R1ii/09fhP85Qk7/Q1Jo/1xxlP9Sao3/S2GC/0pgf/9SZX7/S1Bq/01VVv9Xa4L/Slx3/0tYdv9UbY3/SF1//0Vbff88T2//OkZz/1Rhf/9MXHn/Um2W/1Bnof9OXpH/PEOF/zpDfP83QHf/P02f/1Nnnv9PXXz/RlNz/2B+pP9hg6z/bou0/1tjbP9LU2f/Q0Za/1NYYf9cZnH/Q1Np/0lPXf9JWYX/R1qJ/1l0nf9Yaqz/TFSZ/0dPjf85QWv/Q0+T/0xbnf9HVXT/OUFT/0lZcv9QaIr/S2CT/05gfv9MUVL/QERW/0pLTP9QWmD/VmuM/0xTcP9PYID/TWCD/0xdgP8+TXj/PUSH/1Zgef9RYX3/Rlh8/01lmf9CU4r/Q0x9/0FFX/9CSWn/RlKI/0RSkP9KXIf/RVFt/1FkgP9fe6D/W2l2/1dhav9UYoX/Wm2T/1Bbff9VW2b/T1dh/0tXdP9HU3b/U2mK/1pwnf9YZJr/TFmT/0VLa/9NVHf/UmB9/01dnf9SZJz/UGN8/0JNWv9OXnn/UGSF/01YWv9RVFf/SFJ3/0tSaf9JUVT/UmBv/1dohP9JVGv/TV9//0dWgv9DUZP/PEaC/1JTWv9PYGn/SFh0/z1Nbf9CTX7/RFN+/z1JZ/9CSGn/RVB//0dNdv9IWZL/WHCQ/0pSc/9HWXT/S1Bf/0dSdv9PWn//U12H/0tUcv9DSmf/VlJV/0tZbf9FUGf/SlRv/0xTZv9TW4P/R1SA/0xPaf9OU3L/T1hz/0BPdf9PWI3/UWiW/0dXbP9FTlv/Q05j/1Bbff9KW4H/Vmyb/0pdh/9MWXj/T1Bc/1VkfP9NWXv/QlBw/0BNbf8/SX3/Nz9j/19sj/9bb4j/VGyF/1ptiP9MWIb/T2CS/1hoh/9bbpP/WWJ//1Fkjv9UbZr/Xnue/09ihv9TZYf/U2Nz/1Vke/9XZYP/WWd5/1hwh/9Ya4L/SVd9/01fef9PX4P/S2GD/1lpg/9YdZr/XHCP/05iiP9RY5f/WG+f/1tvlv9OZJH/XXid/1Zrjv9JVGz/RlVt/0xRXv9GS1r/RUdZ/0JFU/9GT1//SlNY/1NieP9RXnT/SE90/0NLY/9DT3r/O0h3/1Nkgf9KXXv/XX2b/2Rzhf9SXIj/UF1//1xtg/9kbIj/V1ps/1drn/9jfaH/Xm+I/05dif9OWID/R1J2/0JOgv9RXIb/YXSO/2ByjP9RW4D/UV6O/1dki/9VaZv/XmZ+/11qf/9mgZj/XGt9/0tejP9LYJX/VV56/2lzgP9fcpb/Vm6d/1Fdef9MU33/UmSM/1ZoeP9SYIn/UFZ5/1tsf/9ec4j/UmF//0lPc/9OVHr/TFmL/09aYP9ET2j/TF6C/1NZiv9QWYX/VV2N/1Vaiv9VVYT/VVeA/11fhv9XX4j/VFiF/1hfjP9PVYH/TlGC/05akP9VXZT/UFmM/1BakP9TXo//V2OT/1Ndjv9OWo//UlqP/1Rhlv9VYZT/XWWV/2Vumv9jb57/WGGO/1llmf9ZZpv/X2eU/257pv9kd63/XHGi/15okv9KV4f/VWSK/1Jgjf9UXpP/U1iD/1Vlkf9VYYT/TFiJ/05Uf/9OWo3/UVqI/1FZhf9NV4f/UGOU/1lPSv9XTUX/W1Fd/1dJb/9cT13/Y2Rt/2t2gP9hW13/Z1pU/1tQVv9VUG3/U1CC/0xHWP9KSV//TkVR/01DVv9PT3j/WFZl/1ZXZv9XXHD/T0pU/0ZGYf9PS17/X1Nw/19bd/9bUFf/XVJY/11VW/9SUm7/WFVs/2Nhcf9UUWT/XFlq/1VWbv9RSWv/TUVT/1dNUv9VSlr/Tkls/1JLXv9PSl7/SkNO/0pBTv9WSlL/UEhW/0RDY/9KTXL/REFU/0tJaf9TT2n/UEpl/1VSgP9PTW//TlJ1/1ZYe/9UU3b/WFZ0/1JTd/9GTHn/TU9+/0pNc/9MTnL/T0pf/1NRcv9SVID/UE51/1BUc/9PVnb/TU1w/0xNcf9RUnf/XFl9/19hiP9aWnP/WVZp/1VWb/9UVXn/WFdz/2dle/9VVnX/YGB8/1xcc/9XU3b/WFJk/19bY/9ZU2j/XFeA/1lUbv9UV3b/T0xi/1FJV/9aVGH/VlBm/05Odf9SUXj/SUxv/ztFjP85RIH/OUCH/0BFiv84Q4T/Oj+A/zQ7eP87Qor/PEaJ/zlEjf9AR5H/PkaB/0VQmv9LVI7/PkeG/0hOjv9CTIj/P0uL/z9Mif89SIv/R0uM/0FJhf9DTpX/SFaY/01YmP9JVYf/Rk2D/0hQjP9DUI3/SFWQ/1Nhlf9TXpz/U2Cd/0xXkv9GTI//SFCO/0JNhv9FTon/Rk6J/0VOhP9FUIv/REyB/0ZMgP9GT4f/R0+J/z9Mgv8/S47/PkmN/zU+jP82PXb/MTt0/zM3TP82OmP/Oj+G/zM3eP85QpX/Qk2L/z1Glf80PYT/OTpz/0dIh/9KR2z/TlSj/zZChv84Q4v/PEyP/0dVhf88S5P/OD9+/zM3af85Q5T/RFOb/0BMpv89RID/O0OI/0dZmP9DWZb/O0WO/0VLg/9WYaD/a3CW/1hiqP9FT4f/Q1CZ/0BLhP9CTIv/R1CP/0pSlv9BS5n/QEqZ/z9Fhv8/SID/OUR6/zE5Xf8zPX7/N0KC/zY8hf81O2r/OEBx/z07U/84OmD/OD58/zlAev89Rpb/S1mQ/zxHlP83QH3/Mjhl/0lJff9IRnP/S1B//zpCgf8zOnr/R1aM/0JQgP9BUZD/NTx1/zY9bv86RYn/O0h0/0NRn/86Qnb/RlCO/1dyrv9Sb6//R1aR/0RKbv9ibJz/a3yp/2dmif9OVYf/R1KU/0ZXcv9IWH//Rk6G/0hQjf9DT5H/PUuK/0JIgf86QHD/OUh0/zlDb/8sNW//LTFj/0NHlf8+RH7/RE6Z/z5Kcf87Q3//Nz98/zlAfv9ASZX/RlOS/z1Ijv8/SIb/P0iJ/0tZnv9RVIv/S1an/0VOmf83RYf/PUuT/0JMif87Q5T/QUaB/zc9d/89R5v/Q0uf/0RLpP9IT4j/PUiF/05enP9NXZr/SFSf/0FOhf9TXaD/a2yW/1Veo/9IT4r/Q0+V/z9OgP9BU4z/QkuH/0pTmP9BT5r/Q02f/0FJjv8+SIf/OEOC/zA6cP81PIr/NDqA/09Rf/9UWYj/U1eN/1FWj/9KTob/Sk5//0lMc/9MTHr/Uk97/0REbv8+Qnn/Qkh1/0hNhf9KVYr/Qkp9/0VNiv9FSIf/PER3/z9Ghf8+QoL/PEOA/0FIhv8/R4b/Q0mH/0dPkP9IT3//S1GD/0ZPh/9IVJL/TlmU/1NbkP9JWI7/Tl2T/09Zk/9IT4z/Q0qJ/0BIhP9FSYb/QUiE/0NJg/9ASYD/QUp1/0BEd/9ER3j/PkRz/z5De/8+Qnz/P0N5/1ZOVP9hWV//Y1po/1ZSeP9YUWX/YGZ7/1xebf9ZVF//YVdY/1FHVv9LSnL/R0Vd/0hDV/9PTF3/UkpW/0NDYf9HRnD/PTdP/01SbP9CRFr/OjlO/z9AY/9PSmP/TUl3/09LY/9TTln/T0pU/05OYv9PUnr/XFlt/2BWYv9PTmT/YF1t/1hRcv9UT3L/VkxW/1dWW/9QTWD/SEdy/05JYv9EQ1j/QTtM/z86R/9LREr/SENP/0xIbv9MSmn/TUpm/2hymP9qcpr/aXGa/2Btlv9capD/W2iT/1lnkP9XY4z/YGiP/1ZeiP9aZZD/UVuJ/01XhP9TWYH/TVJ3/0lRgv9IUYb/QEh4/0dQev9HTX3/Rkhx/0ZGdP9PUXr/TFOI/0xQc/9NT3f/TU5z/0hOcv9MUX7/UlZ//1hhj/9PU4T/UleD/1NUd/9MSnD/T1By/0xOcf9HR27/Q0Nz/0REaf9DRG//QUBn/z1CZv9CRWv/P0Zw/0FId/9HTHT/S094/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" alt="یا حکیم" width="32" height="32" style="display:block;border-radius:4px;object-fit:cover;"></div>
+        <span class="yh-name">یا حکیم</span>
+      </a>
+      <span class="divider">|</span>
+      <span class="hdr-city">هەڵەبجە</span>
+    </div>
+    <div class="header-controls">
+      <button class="icon-btn" id="searchBtn" onclick="openSearch()" title="گەڕان">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="ڕووکار">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- INLINE SEARCH BAR — shown/hidden by toggle -->
+<div class="inline-search-bar" id="inlineSearchBar">
+  <input type="text" id="S" placeholder="گەڕان بە ناوی پزیشک…" oninput="render()">
+  <button class="search-close-btn" onclick="clearSearch()" title="داخستن">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<div class="search-chip" id="searchChip">
+  <span>گەڕان: <strong id="searchChipVal"></strong></span>
+  <button onclick="clearSearch()">✕</button>
+</div>
+
+<a href="risale.html" class="risale-banner" id="todayBanner">
+  <span class="risale-banner-text">← ریسالەی نوور: بۆ دۆزینەوەی چارەسەری نەخۆشییە مەعنەوییەکان</span>
+</a>
+
+<div id="filterSection" class="filters-collapsed">
+  <div class="filter-toggle-row" onclick="handleFilterRowClick(event)">
+    <div class="filter-toggle-left">
+      <svg class="filter-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 3h12l-4.5 5.5V13l-3-1.5V8.5L2 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <span class="filter-label">فلتەرەکان</span>
+      <span class="filter-doc-count" id="visibleCount">0 پزیشک</span>
+    </div>
+    <div class="filter-handle-btns" onclick="event.stopPropagation()">
+      <button class="icon-btn" id="toggleAllBtn" onclick="toggleAll()" title="هەمووی بکەرەوە / دابخە">⊞</button>
+    </div>
+    <span class="filter-chevron">▾</span>
+  </div>
+  <div class="filter-body">
+    <div class="filters-bar">
+      <div class="fg">
+        <label>پسپۆڕی</label>
+        <select id="SP">
+          <option value="">هەموو پسپۆڕییەکان</option>
+          <option>بێهۆشکاری</option><option>نەخۆشییەکانی مەمک</option>
+          <option>دڵ و قەستەرە</option><option>سنگ و دڵ و بۆرییەکانی خوێن</option>
+          <option>پێست</option><option>قوڕگ و لوت و گوێ</option>
+          <option>نەشتەرگەری گشتی</option><option>نەخۆشییەکانی هەناوی</option>
+          <option>مێشک و دەمار</option><option>نەشتەرگەری مێشک و دەمار</option>
+          <option>خۆراک و گەشە</option><option>ژنان و مناڵبوون</option>
+          <option>نەشتەرگەری چاو</option><option>ئێسک و شکاوی</option>
+          <option>مناڵان و تازە لەدایکبووان</option><option>دەروونی</option>
+          <option>تیشک و سۆنار</option><option>ڕۆماتیزم و جومگە</option>
+          <option>میزەڕۆ و گورچیلە</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>ڕۆژی هەفتە</label>
+        <select id="D">
+          <option value="">هەموو ڕۆژەکان</option>
+          <option>شەممە</option><option>یەک شەممە</option><option>دوو شەممە</option>
+          <option>سێ شەممە</option><option>چوار شەممە</option><option>پێنج شەممە</option><option>هەینی</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>کلینیک</label>
+        <select id="C">
+          <option value="">هەموو کلینیکەکان</option>
+          <option value="hawkary">هاوکاری هەڵەبجە</option>
+          <option value="baxshin">کۆمەڵگەی بەخشین</option>
+          <option value="ayanda">تەلاری ئایندە</option>
+          <option value="sulaymaniyah">سلێمانی</option>
+          <option value="other">شوێنی تر</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>بڕوانامە</label>
+        <select id="Q">
+          <option value="">هەموو بڕوانامەکان</option>
+          <option value="board">بۆرد</option>
+          <option value="arab board">بۆردی عەرەبی</option>
+          <option value="iraqi board">بۆردی عێڕاقی</option>
+          <option value="european">بۆردی ئەوروپی</option>
+          <option value="msc">ماستەر</option>
+          <option value="fellow">فێلۆ / ESTS</option>
+          <option value="acr">ACR</option>
+        </select>
+      </div>
+      <button class="reset-btn" onclick="reset()">↺ سڕینەوە</button>
+    </div>
+    <div class="incomplete-row">
+      <label>
+        <input type="checkbox" id="skipEmpty" onchange="render()">
+        <span>بۆشاییەکانیش بهێنە</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="chips-bar" id="chips"></div>
+
+<div class="content" id="content">
+  <div class="no-results" id="noRes"><p>هیچ پزیشکێک نەدۆزرایەوە</p><span>فلتەرەکانت بگۆڕە</span></div>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="گەڕانەوە بۆ سەرەوە">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M8 12V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<script>
+const DATA=[
+  {id:1,  name:"دکتۆر جیهاد ئیبراهیم",                sp:"نەخۆشییەکانی هەناوی",        q:"KBMS, MBChB",                             cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"هەموو ڕۆژانێکی هەفتە جگە لە هەینی",                       ph:"07501199495 / 07710441717",fee:"—"},
+  {id:2,  name:"دکتۆر پێشڕەو کریم عبدالرحمن",         sp:"نەخۆشییەکانی هەناوی",        q:"CABMS, MBChB",                            cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەممە، چوار شەممە",                                        ph:"07511817571",              fee:"3,000"},
+  {id:3,  name:"دکتۆر عوسمان جلال صاحب",              sp:"نەخۆشییەکانی هەناوی",        q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"سێ شەممە",                                                 ph:"07511817571",              fee:"3,000"},
+  {id:4,  name:"دکتۆر ڕێبوار فەرەج باوەیسی",          sp:"نەخۆشییەکانی هەناوی",        q:"Arab Board, MBChB",                       cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە، دوو شەممە، سێ شەممە، چوار شەممە",       ph:"07501878535 / 07708994040",fee:"—"},
+  {id:5,  name:"دکتۆر کاردۆ محمد فرج",                sp:"نەخۆشییەکانی هەناوی",        q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"دوو شەممە",                                                ph:"07501332963",              fee:"—"},
+  {id:6,  name:"دکتۆر بەرهەم زین الدین صاحب",         sp:"نەخۆشییەکانی هەناوی",        q:"FKBMS, EBEEDM, MBChB",                    cl:"کۆمەڵگەی بەخشین / تەلاری مۆدێرن",  days:"یەک شەممە (بەخشین) / چوار شەممە (مۆدێرن)",                ph:"07511817571 / 07507920200",fee:"—"},
+  {id:7,  name:"دکتۆر هاوسەر محمد",                   sp:"نەشتەرگەری گشتی",            q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"یەک شەممە، دوو شەممە",                                    ph:"07511034417 / 07710441717",fee:"—"},
+  {id:8,  name:"دکتۆر کمال عزیز عبدالقادر",           sp:"نەشتەرگەری گشتی",            q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"هەموو ڕۆژانی هەفتە جگە لە یەک شەممە",                     ph:"07511817571 / 07733517571",fee:"—"},
+  {id:9,  name:"دکتۆر ڕێباز عمر محمد",                sp:"نەشتەرگەری گشتی",            q:"FKBMS, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە",                                        ph:"07501820709",              fee:"—"},
+  {id:10, name:"دکتۆر بەهرۆز محمد حسێن",              sp:"نەشتەرگەری گشتی",            q:"FICMS, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"دوو شەممە، سێ شەممە، چوار شەممە",                         ph:"07715804442 / 07503794827",fee:"—"},
+  {id:11, name:"دکتۆر سەنگەر محمد رفیق",              sp:"ئێسک و شکاوی",               q:"MSc Orthopedics, MBChB",                  cl:"کۆمەڵگەی هاوکاری / تەلاری ئایندە", days:"دوو شەممە (هاوکاری)؛ سێ شەممە، شەوانی یەک شەممە (ئایندە)",ph:"07511034417 / 07501957909",fee:"5,000"},
+  {id:12, name:"دکتۆر میران توانا کمال",               sp:"ئێسک و شکاوی",               q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"هەموو ڕۆژانی شەممان",                                     ph:"07511034417 / 07710441717",fee:"—"},
+  {id:13, name:"دکتۆر هەردی لطیف محی الدین",          sp:"ئێسک و شکاوی",               q:"Arab Board, MBChB",                       cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"یەک شەممە، دوو شەممە",                                    ph:"07511817571",              fee:"3,000"},
+  {id:14, name:"دکتۆر ڕەوەند حمەعلی هەڵەبجەیی",      sp:"ئێسک و شکاوی",               q:"Iraqi Board, MBChB",                      cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەممە، سێ شەممە، پێنج شەممە",                             ph:"07511817571",              fee:"3,000"},
+  {id:15, name:"دکتۆر باوان محمد امین بارام کۆکۆیی", sp:"ئێسک و شکاوی",               q:"Arab Board, MBChB",                       cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە، سێ شەممە، چوار شەممە",                  ph:"07732828482 / 07728248181",fee:"—"},
+  {id:16, name:"دکتۆرە ئایار عمر عەلی",               sp:"ڕۆماتیزم و جومگە",           q:"MBChB",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەممە، دوو شەممە، چوار شەممە",                            ph:"07511817571",              fee:"—"},
+  {id:17, name:"دکتۆر ڕزگار تەیب مەعروف",            sp:"ڕۆماتیزم و جومگە",           q:"MBChB; ACR, ARMRK, ILBJH",               cl:"هەڵەبجەی شەهید / نزیک کانی قوڵکە",  days:"—",                                                        ph:"07510032518",              fee:"—"},
+  {id:18, name:"دکتۆر کرمانج محمد هادی",              sp:"ڕۆماتیزم و جومگە",           q:"MSc Rheumatology, MBChB",                 cl:"تەلاری پزیشکی ئایندە",              days:"دوو شەممە، چوار شەممە",                                   ph:"07501957909",              fee:"—"},
+  {id:19, name:"دکتۆرە لاوێن جمال",                   sp:"ڕۆماتیزم و جومگە",           q:"—",                                       cl:"بەرجی تەندروستی زیرەک (سلێمانی)",   days:"—",                                                        ph:"07705670404",              fee:"—"},
+  {id:20, name:"دکتۆرە ئەڤین مەریوان حمە ساڵح",      sp:"ڕۆماتیزم و جومگە",           q:"—",                                       cl:"—",                                  days:"—",                                                        ph:"—",                        fee:"—"},
+  {id:21, name:"دکتۆرە ژوان ابراهیم",                 sp:"ڕۆماتیزم و جومگە",           q:"—",                                       cl:"کۆمەڵگەی پزیشکی بەخشین (سلێمانی)", days:"—",                                                        ph:"07714841616",              fee:"—"},
+  {id:22, name:"دکتۆر ئارام کەریم حمە امین",          sp:"میزەڕۆ و گورچیلە",           q:"FIBMS, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"شەممە، یەک شەممە، چوار شەممە",                            ph:"07501683636 / 07701683636",fee:"—"},
+  {id:23, name:"دکتۆر نەبەز صدیق رحیم سیوەیلی",      sp:"میزەڕۆ و گورچیلە",           q:"FICMS, CABMS, MBChB",                     cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"سێ شەممە، پێنج شەممە، شەوانی یەک شەممە",                  ph:"07511817571",              fee:"3,000"},
+  {id:24, name:"دکتۆر ڕێباز ابراهیم احمد",            sp:"میزەڕۆ و گورچیلە",           q:"FKHCMS, MBChB",                           cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"سێ شەممە، پێنج شەممە",                                    ph:"07511817571",              fee:"3,000"},
+  {id:25, name:"دکتۆر شوان ابوبکر احمد",              sp:"مێشک و دەمار",               q:"MBChB",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"دوو شەممە",                                                ph:"07508036300",              fee:"—"},
+  {id:26, name:"دکتۆر نەشئەدین عزیز محمد",            sp:"نەشتەرگەری مێشک و دەمار",    q:"Iraqi Board (Baghdad), MBChB",            cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"یەک شەممە، پێنج شەممە",                                   ph:"07511872424",              fee:"3,000"},
+  {id:27, name:"دکتۆر سوارە علی مەولود",              sp:"دڵ و قەستەرە",               q:"Board",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"پێنج شەممە",                                               ph:"07511817571",              fee:"3,000"},
+  {id:28, name:"دکتۆر ڕزگار حاجی غریب",              sp:"سنگ و دڵ و بۆرییەکانی خوێن", q:"FKHCMS, ESTS, MBChB",                     cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"یەک شەممە، دوو شەممە",                                    ph:"07511034417 / 07710441717",fee:"—"},
+  {id:29, name:"دکتۆرە شۆخان فایەق سۆڵەیی",          sp:"ژنان و مناڵبوون",             q:"CABOG, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"یەک شەممە، دوو شەممە، چوار شەممە",                        ph:"07511044417",              fee:"—"},
+  {id:30, name:"دکتۆرە سارە شاکر محمود",              sp:"ژنان و مناڵبوون",             q:"Arab Board CABOG, MBChB",                 cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەممە، دوو شەممە، چوار شەممە، پێنج شەممە",                ph:"07508036300",              fee:"3,000"},
+  {id:31, name:"دکتۆرە هدی أحمد رشید",                sp:"ژنان و مناڵبوون",             q:"Arab Board, MBChB",                       cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە، سێ شەممە، چوار شەممە",                  ph:"07501545000",              fee:"—"},
+  {id:32, name:"دکتۆر محمد نظام هەورامی",             sp:"نەشتەرگەری چاو",              q:"Board; Fellow Royal College UK/USA/EU",   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"یەک شەممە، سێ شەممە، پێنج شەممە",                         ph:"07511817571",              fee:"3,000"},
+  {id:33, name:"دکتۆر محمد سبحان",                    sp:"قوڕگ و لوت و گوێ",           q:"Diploma Higher, MBChB",                   cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"هەموو ڕۆژانی هەفتە جگە لە هەینی",                         ph:"07511034417 / 07710441717",fee:"—"},
+  {id:34, name:"دکتۆر عماد جلال حبیب اللە",           sp:"قوڕگ و لوت و گوێ",           q:"Iraqi Board, MBChB",                      cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"یەک شەممە، شەوانی پێنج شەممە",                            ph:"07511817571",              fee:"3,000"},
+  {id:35, name:"دکتۆر ابراهیم اسکندر عبداللە",        sp:"قوڕگ و لوت و گوێ",           q:"—",                                       cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"—",                                                        ph:"07511872525",              fee:"—"},
+  {id:36, name:"دکتۆرە باخان عمر کریم",               sp:"قوڕگ و لوت و گوێ",           q:"Iraqi Board FICMS, MBChB",                cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە، سێ شەممە",                              ph:"07703321001 / 07501696770",fee:"—"},
+  {id:37, name:"دکتۆر زانا باقی",                     sp:"مناڵان و تازە لەدایکبووان",  q:"CABP, MBChB",                             cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"شەممە تا چوار شەممە",                                     ph:"07511034417 / 07710441717",fee:"—"},
+  {id:38, name:"دکتۆر ئومێد حسن عزیز",               sp:"مناڵان و تازە لەدایکبووان",  q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"پێنج شەممە",                                               ph:"07511817571",              fee:"3,000"},
+  {id:39, name:"دکتۆرە گوڵان عبداللە محمد",           sp:"مناڵان و تازە لەدایکبووان",  q:"Arab Board, MBChB",                       cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"سێ شەممە",                                                 ph:"07511817571",              fee:"3,000"},
+  {id:40, name:"دکتۆر سرمد عیسى عصافلی",             sp:"مناڵان و تازە لەدایکبووان",  q:"CABP, MBChB",                             cl:"تەلاری پزیشکی ئایندە",              days:"شەممە، یەک شەممە",                                        ph:"07502027121",              fee:"—"},
+  {id:41, name:"دکتۆرە پەیمان احمد کوێخا",            sp:"پێست",                        q:"MBChB",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەممە تا چوار شەممە",                                     ph:"07511872424",              fee:"3,000"},
+  {id:42, name:"دکتۆر مهدی خەلیل",                    sp:"پێست",                        q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"یەک شەممە، دوو شەممە",                                    ph:"07511336001 / 07732666001",fee:"—"},
+  {id:43, name:"دکتۆر سعدی خەلیل",                    sp:"پێست",                        q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"سێ شەممە، چوار شەممە",                                    ph:"07511336001 / 07732666001",fee:"—"},
+  {id:44, name:"دکتۆر چۆمان سەباح عمر",              sp:"تیشک و سۆنار",               q:"FKBMS, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"سێ شەممە، چوار شەممە",                                    ph:"07503370715",              fee:"—"},
+  {id:45, name:"دکتۆر هادی عمر سۆفی",                 sp:"تیشک و سۆنار",               q:"Board, MBChB",                            cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"شەممە، یەک شەممە",                                        ph:"07503370715",              fee:"—"},
+  {id:46, name:"دکتۆر ئەرسەلان عبداللە",              sp:"تیشک و سۆنار",               q:"MBChB",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"شەوانی دوو شەممە، سێ شەممە، چوار شەممە",                 ph:"07511817571",              fee:"—"},
+  {id:47, name:"دکتۆرە نەوا عبدالحمید محمد",          sp:"تیشک و سۆنار",               q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"چوار شەممە",                                               ph:"07502582000",              fee:"—"},
+  {id:48, name:"دکتۆرە سۆزان یوسف",                   sp:"تیشک و سۆنار",               q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"یەک شەممە",                                                ph:"07502582000",              fee:"—"},
+  {id:49, name:"دکتۆرە ئاڵا عبدالرحمن أحمد",          sp:"تیشک و سۆنار",               q:"MSc, MBChB",                              cl:"تەلاری پزیشکی ئایندە",              days:"سێ شەممە",                                                 ph:"07502582000",              fee:"—"},
+  {id:50, name:"دکتۆر عیرفان احمد رشید",              sp:"تیشک و سۆنار",               q:"MBChB",                                   cl:"تەلاری ئایندە / کۆمەڵگەی بەخشین",  days:"شەممە تا پێنج شەممە (ئایندە)؛ شەوانی شەممە (بەخشین)",    ph:"07501984069 / 07511817571",fee:"—"},
+  {id:51, name:"دکتۆر ماکوان محمد عبدالکریم",         sp:"دەروونی",                     q:"Arab Board CABMS, Iraqi Board FIBMS, MBChB",cl:"کۆمەڵگەی پزیشکی بەخشین",         days:"یەک شەممە",                                                ph:"07511817571",              fee:"—"},
+  {id:52, name:"دکتۆر هاوژین شەماڵ ڕەمەزان",         sp:"خۆراک و گەشە",               q:"MBChB",                                   cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"سێ شەممە، پێنج شەممە",                                    ph:"07511817571",              fee:"3,000"},
+  {id:53, name:"دکتۆرە تاڤان طە حمەسعید",             sp:"نەخۆشییەکانی مەمک",          q:"MSc Breast Medicine, MBChB",              cl:"کۆمەڵگەی پزیشکی بەخشین",            days:"یەک شەممە",                                                ph:"07511817571",              fee:"3,000"},
+  {id:54, name:"دکتۆرە ئەژین حمە تۆفیق",             sp:"نەخۆشییەکانی مەمک",          q:"HDBD, MBChB",                             cl:"کۆمەڵگەی پزیشکی هاوکاری هەڵەبجە",  days:"شەممە، چوار شەممە",                                       ph:"07511034417 / 07710441717",fee:"—"},
+  {id:55, name:"دکتۆرە ئاوان محمد ئەمین بارام",       sp:"بێهۆشکاری",                  q:"Board, MBChB",                            cl:"تەلاری پزیشکی ئایندە",              days:"یەک شەممە",                                                ph:"07501170498",              fee:"—"},
+  {id:56, name:"دکتۆرە گوڵان دلێر احمد",              sp:"بێهۆشکاری",                  q:"MBChB",                                   cl:"تەلاری پزیشکی ئایندە",              days:"—",                                                        ph:"07501170498",              fee:"—"},
+];
+
+const SC={"نەخۆشییەکانی هەناوی":"sp-internal","نەشتەرگەری گشتی":"sp-surgery","ئێسک و شکاوی":"sp-ortho","ڕۆماتیزم و جومگە":"sp-rheum","میزەڕۆ و گورچیلە":"sp-urology","مێشک و دەمار":"sp-neuro","نەشتەرگەری مێشک و دەمار":"sp-neuro","دڵ و قەستەرە":"sp-cardio","سنگ و دڵ و بۆرییەکانی خوێن":"sp-cardio","ژنان و مناڵبوون":"sp-obgyn","نەشتەرگەری چاو":"sp-ophtho","قوڕگ و لوت و گوێ":"sp-ent","مناڵان و تازە لەدایکبووان":"sp-peds","پێست":"sp-derm","تیشک و سۆنار":"sp-radio","دەروونی":"sp-psych","خۆراک و گەشە":"sp-nutri","نەخۆشییەکانی مەمک":"sp-breast","بێهۆشکاری":"sp-anest"};
+
+const SP_ICON={"نەخۆشییەکانی هەناوی":"🫃","نەشتەرگەری گشتی":"🔪","ئێسک و شکاوی":"🦴","ڕۆماتیزم و جومگە":"🦵","میزەڕۆ و گورچیلە":"🫘","مێشک و دەمار":"🧠","نەشتەرگەری مێشک و دەمار":"🧠","دڵ و قەستەرە":"🫀","سنگ و دڵ و بۆرییەکانی خوێن":"🫁","ژنان و مناڵبوون":"🤰","نەشتەرگەری چاو":"👁️","قوڕگ و لوت و گوێ":"👂","مناڵان و تازە لەدایکبووان":"👶","پێست":"🧴","تیشک و سۆنار":"🩻","دەروونی":"🧩","خۆراک و گەشە":"🥗","نەخۆشییەکانی مەمک":"🎗️","بێهۆشکاری":"💉"};
+
+const RANGES={"شەممە تا چوار شەممە":["شەممە","یەک شەممە","دوو شەممە","سێ شەممە","چوار شەممە"],"شەممە تا پێنج شەممە":["شەممە","یەک شەممە","دوو شەممە","سێ شەممە","چوار شەممە","پێنج شەممە"]};
+
+const kuDays=["یەک شەممە","دوو شەممە","سێ شەممە","چوار شەممە","پێنج شەممە","هەینی","شەممە"];
+const TODAY=kuDays[new Date().getDay()];
+document.getElementById("D").value=TODAY;
+
+let isLight=true;
+function toggleTheme(){
+  isLight=!isLight;
+  document.documentElement.classList.toggle("dark",!isLight);
+  document.getElementById("themeBtn").textContent=isLight?"🌙":"☀️";
+}
+
+let allExpanded=false;
+function toggleAll(){
+  allExpanded=!allExpanded;
+  document.querySelectorAll(".grp").forEach(g=>g.classList.toggle("closed",!allExpanded));
+  document.getElementById("toggleAllBtn").textContent=allExpanded?"⊟":"⊞";
+}
+
+function handleFilterRowClick(){ toggleFilters(); }
+function toggleFilters(){
+  document.getElementById("filterSection").classList.toggle("filters-collapsed");
+}
+
+function goToToday(){
+  const dEl=document.getElementById("D"); if(dEl) dEl.value=TODAY;
+  render();
+}
+
+// Inline search toggle
+let searchOpen=false;
+function openSearch(){
+  searchOpen=!searchOpen;
+  const bar=document.getElementById("inlineSearchBar");
+  const btn=document.getElementById("searchBtn");
+  bar.classList.toggle("show",searchOpen);
+  btn.classList.toggle("active",searchOpen);
+  if(searchOpen) setTimeout(()=>document.getElementById("S").focus(),50);
+  else { document.getElementById("S").value=""; render(); }
+}
+function clearSearch(){
+  document.getElementById("S").value="";
+  searchOpen=false;
+  document.getElementById("inlineSearchBar").classList.remove("show");
+  document.getElementById("searchBtn").classList.remove("active");
+  render();
+}
+
+window.addEventListener("scroll",()=>{
+  const btn=document.getElementById("backToTop");
+  if(btn) btn.classList.toggle("show",window.scrollY>300);
+});
+
+function matchDay(d,day){
+  if(!day)return true;
+  const s=d.days;
+  if(!s||s==="—")return true;
+  for(const[k,v]of Object.entries(RANGES))if(s.includes(k))return v.includes(day);
+  if(s.includes("هەموو ڕۆژانی شەممان"))return day==="شەممە";
+  if(s.includes("هەموو")&&s.includes("هەینی")&&s.includes("جگە"))return day!=="هەینی";
+  if(s.includes("هەموو")&&s.includes("یەک شەممە")&&s.includes("جگە"))return day!=="یەک شەممە";
+  return s.includes(day);
+}
+function matchClinic(d,v){
+  if(!v)return true; const c=d.cl;
+  if(v==="hawkary")return c.includes("هاوکاری");
+  if(v==="baxshin")return c.includes("بەخشین");
+  if(v==="ayanda")return c.includes("ئایندە");
+  if(v==="sulaymaniyah")return c.includes("سلێمانی");
+  if(v==="other")return!c.includes("هاوکاری")&&!c.includes("بەخشین")&&!c.includes("ئایندە")&&!c.includes("سلێمانی")&&c!=="—";
+  return true;
+}
+function matchQual(d,v){
+  if(!v)return true; const q=d.q.toLowerCase();
+  if(v==="board")return/board|ficms|fibms|fkbms|fkhcms|cabms|cabp|cabog/.test(q);
+  if(v==="arab board")return q.includes("arab board")||/\bcabog\b|\bcabp\b/.test(q);
+  if(v==="iraqi board")return q.includes("iraqi board")||/ficms|fibms/.test(q);
+  if(v==="european")return q.includes("european")||/ebeedm|ests/.test(q);
+  if(v==="msc")return/msc|master/.test(q);
+  if(v==="fellow")return/fellow|frcs|ests|fkbms|fkhcms|ficms|fibms/.test(q);
+  if(v==="acr")return q.includes("acr");
+  return true;
+}
+function passesSkipEmpty(d,dv,cv,qv){
+  const showEmpty=document.getElementById("skipEmpty")?.checked;
+  if(showEmpty)return true;
+  if(dv&&d.days==="—")return false;
+  if(cv&&d.cl==="—")return false;
+  if(qv&&d.q==="—")return false;
+  return true;
+}
+function getDayTags(s){
+  if(!s||s==="—")return[];
+  for(const[k,v]of Object.entries(RANGES))if(s.includes(k))return v;
+  if(s.includes("هەموو ڕۆژانی شەممان"))return["شەممە"];
+  const A=["شەممە","یەک شەممە","دوو شەممە","سێ شەممە","چوار شەممە","پێنج شەممە"];
+  if(s.includes("هەموو")&&s.includes("هەینی")&&s.includes("جگە"))return A;
+  if(s.includes("هەموو")&&s.includes("یەک شەممە")&&s.includes("جگە"))return A.filter(x=>x!=="یەک شەممە");
+  return A.filter(x=>s.includes(x));
+}
+
+// ── Specialty descriptions + page links ──
+const SP_DESC={
+  "ڕۆماتیزم و جومگە":"پسپۆڕی تیشکبینی و چارەسەری نەخۆشییەکانی جومگە، ئێسک، و ئیمیونی — وەک ئارتریتی ڕۆماتۆید، نقرس، و لووپوس.",
+  "نەخۆشییەکانی هەناوی":"پسپۆڕی کێشەکانی گەڕۆک، مێدە، رووگ، و کولیلکە — وەک گەستروئێنتریت، سیروز، و نەخۆشییەکانی لووگ.",
+  "نەشتەرگەری گشتی":"نەشتەرگەریی سەرانسەری لە هەموو پارچەکانی جەستەدا، بە تایبەت ئامەڵیەکانی مێدە، رووگ، و غددەکان.",
+  "ئێسک و شکاوی":"پسپۆڕی ئەندامە بزووتنەوەییەکان — شکاو، ئەمەڵەکانی هاوبەشی، و جووتبوونی جومگە.",
+  "میزەڕۆ و گورچیلە":"پسپۆڕی دەستگاکانی مێزکردن — گورچیلە، مەسانە، و لووڵەکانی مێز.",
+  "مێشک و دەمار":"پسپۆڕی نەخۆشییەکانی دەستگای دەمارەوەیی — سکتە، پارکینسۆن، و مایگرێن.",
+  "نەشتەرگەری مێشک و دەمار":"نەشتەرگەریی دەستگای دەمارەوەیی — مێشک، ستووری مریشک، و دەمارەکانی ناو کەللەوە.",
+  "دڵ و قەستەرە":"پسپۆڕی نەخۆشییەکانی دڵ و قەستەرە — قەلپ، هاوەڵدڵی، و قەستەرەی بەرز.",
+  "سنگ و دڵ و بۆرییەکانی خوێن":"پسپۆڕی مەندالیات — تایبەت بە نەخۆشییەکانی سنگ و بۆرییەکانی خوێن.",
+  "ژنان و مناڵبوون":"پسپۆڕی تەندروستی ژنان — دووگیانی، زایین، و نەخۆشییەکانی ئەستوو.",
+  "نەشتەرگەری چاو":"پسپۆڕی نەشتەرگەریی چاو — کاتاراکت، گلاوکۆم، و نقصانی دیدن.",
+  "قوڕگ و لوت و گوێ":"پسپۆڕی قوڕگ، لوت، و گوێ — گرتوو، ئینفیکشن، و بێدەنگی.",
+  "مناڵان و تازە لەدایکبووان":"پسپۆڕی تەندروستی مناڵ — لە لەدایکبوونەوە تا سەردەمی گەنجایەتی.",
+  "پێست":"پسپۆڕی نەخۆشییەکانی پێست — ئێگزیما، سۆریاسیس، و نەخۆشییەکانی کەش.",
+  "تیشک و سۆنار":"ئامرازی دیاگنۆزی وێنەگرتن — ئولتراساوند، ئێکسرە، و MRI.",
+  "دەروونی":"پسپۆڕی تەندروستی دەروونی — کسالتی، فیکر، و شیزۆفرێنیا.",
+  "خۆراک و گەشە":"پسپۆڕی خۆراک و گەشەی دروست — دیابێت، قەڵەوی، و کورتی ئەندامەکان.",
+  "نەخۆشییەکانی مەمک":"پسپۆڕی تەشخیص و چارەسەری نەخۆشییەکانی مەمک — بەتایبەت مەمک کانسەر.",
+  "بێهۆشکاری":"پسپۆڕی بێهۆشکردن و ئەندازەی دەرد لە کاتی نەشتەرگەریدا."
+};
+const SP_PAGE={
+  "ڕۆماتیزم و جومگە":"specialty.html?sp=rheumatology",
+  "نەخۆشییەکانی هەناوی":"specialty.html?sp=internal",
+  "نەشتەرگەری گشتی":"specialty.html?sp=surgery",
+  "ئێسک و شکاوی":"specialty.html?sp=ortho",
+  "میزەڕۆ و گورچیلە":"specialty.html?sp=urology",
+  "مێشک و دەمار":"specialty.html?sp=neuro",
+  "نەشتەرگەری مێشک و دەمار":"specialty.html?sp=neurosurgery",
+  "دڵ و قەستەرە":"specialty.html?sp=cardio",
+  "سنگ و دڵ و بۆرییەکانی خوێن":"specialty.html?sp=thoracic",
+  "ژنان و مناڵبوون":"specialty.html?sp=obgyn",
+  "نەشتەرگەری چاو":"specialty.html?sp=ophtho",
+  "قوڕگ و لوت و گوێ":"specialty.html?sp=ent",
+  "مناڵان و تازە لەدایکبووان":"specialty.html?sp=peds",
+  "پێست":"specialty.html?sp=derm",
+  "تیشک و سۆنار":"specialty.html?sp=radio",
+  "دەروونی":"specialty.html?sp=psych",
+  "خۆراک و گەشە":"specialty.html?sp=nutri",
+  "نەخۆشییەکانی مەمک":"specialty.html?sp=breast",
+  "بێهۆشکاری":"specialty.html?sp=anest"
+};
+
+// ── Doctor articles data (index page — cross-ref by name) ──
+const DOC_ARTICLES={
+  "دکتۆر ڕزگار تەیب مەعروف":[
+    {icon:"🦵",title:"ئایا ئەو دەردی زانووتەوە لە زانووکەتە نییە؟",level:"patient",link:"article.html?id=art-knee-pain"},
+    {icon:"🤲",title:"ئارتریتی ڕۆماتۆید — نەخۆشییەکە بناسە",level:"patient",link:"article.html?id=art-ra-basics"},
+    {icon:"🔥",title:"نقرس — ئەو دەردە تووندەی شەوانەکان",level:"patient",link:"article.html?id=art-gout"}
+  ]
+};
+
+function renderDocArticleDrawer(docName){
+  const arts=DOC_ARTICLES[docName];
+  if(!arts||!arts.length) return "";
+  return`<div class="idx-doc-arts" id="ida-${CSS.escape(docName)}" style="display:none">
+    <div class="idx-arts-label">📝 وتارەکان</div>
+    <div class="idx-art-links">
+      ${arts.map(a=>`<a href="${a.link}" class="idx-art-link ${a.level==='patient'?'pat':'pro'}">
+        <span>${a.icon}</span><span>${a.title.substring(0,40)}${a.title.length>40?'…':''}</span>
+        <span class="idx-art-lvl">${a.level==='patient'?'🙋':'🔬'}</span>
+      </a>`).join("")}
+    </div>
+  </div>`;
+}
+function toggleDocArts(docName,btn){
+  const el=document.getElementById("ida-"+CSS.escape(docName));
+  if(!el)return;
+  const open=el.style.display==="none";
+  el.style.display=open?"block":"none";
+  btn.classList.toggle("active",open);
+}
+
+function render(){
+  const sv=document.getElementById("S").value.trim();
+  const spv=document.getElementById("SP").value;
+  const dv=document.getElementById("D").value;
+  const cv=document.getElementById("C").value;
+  const qv=document.getElementById("Q").value;
+
+  const isToday=dv===TODAY;
+  const todayBannerEl=document.getElementById("todayBanner");
+  if(todayBannerEl) todayBannerEl.classList.toggle("hidden",!isToday);
+
+  const spOrder=[],spMap={};
+  DATA.forEach(d=>{if(!spMap[d.sp]){spMap[d.sp]=[];spOrder.push(d.sp);}spMap[d.sp].push(d);});
+  const content=document.getElementById("content");
+  content.querySelectorAll(".grp").forEach(el=>el.remove());
+  let total=0,any=false;
+  const frag=document.createDocumentFragment();
+  const isSearching=sv.length>0;
+
+  spOrder.forEach(spec=>{
+    if(spv&&spec!==spv)return;
+    const ms=spMap[spec].filter(d=>
+      (!sv||d.name.includes(sv))&&matchDay(d,dv)&&matchClinic(d,cv)&&matchQual(d,qv)&&passesSkipEmpty(d,dv,cv,qv)
+    );
+    if(!ms.length)return;
+    any=true; total+=ms.length;
+    const sc=SC[spec]||"sp-internal";
+    const icon=SP_ICON[spec]||"🏥";
+
+    const trows=ms.map(d=>{
+      const av=matchDay(d,TODAY)&&d.days!=="—";
+      const tags=getDayTags(d.days);
+      const dh=tags.length?tags.map(t=>`<span class="dtag${t===TODAY?" today":""}">${t}</span>`).join(""):`<span style="color:var(--text-dim)">—</span>`;
+      return`<tr class="${av?"avail":""}"><td class="ic">${d.id}</td><td class="nc">${av?'<span class="dot"></span>':''}${d.name}</td><td>${dh}</td><td class="cc">${d.cl}</td><td class="qc">${d.q}</td><td class="pc">${d.ph}</td><td class="fc${d.fee==="—"?" d":""}">${d.fee}</td></tr>`;
+    }).join("");
+    const cards=ms.map(d=>{
+      const av=matchDay(d,TODAY)&&d.days!=="—";
+      const tags=getDayTags(d.days);
+      const dh=tags.length?tags.map(t=>`<span class="dtag${t===TODAY?" today":""}">${t}</span>`).join(""):`<span style="color:var(--text-dim)">—</span>`;
+      const hasArts=!!DOC_ARTICLES[d.name];
+      const artBtn=hasArts?`<button class="idx-art-btn" onclick="toggleDocArts('${d.name.replace(/'/g,"\\'")}',this)">📝 وتارەکان</button>`:"";
+      const artDrawer=renderDocArticleDrawer(d.name);
+      return`<div class="doc-card${av?" avail":""}">
+        <div class="card-name">${av?'<span class="dot"></span>':''}${d.name}</div>
+        <div class="card-row"><span class="card-label">ڕۆژ</span><span class="card-val"><div class="card-days">${dh}</div></span></div>
+        <div class="card-row"><span class="card-label">کلینیک</span><span class="card-val">${d.cl}</span></div>
+        <div class="card-row"><span class="card-label">بڕوانامە</span><span class="card-val">${d.q}</span></div>
+        <div class="card-row"><span class="card-label">مۆبایل</span><span class="card-val phone">${d.ph}</span></div>
+        <div class="card-row"><span class="card-label">پسوڵە</span><span class="card-val fee${d.fee==="—"?" d":""}">${d.fee==="—"?"—":d.fee+" د"}</span></div>
+        ${artBtn?`<div class="card-row" style="margin-top:4px">${artBtn}</div>`:""}
+        ${artDrawer}
+      </div>`;
+    }).join("");
+
+    const grp=document.createElement("div");
+    grp.className="grp"+(isSearching?"":" closed");
+    grp.dataset.sp=spec;
+    const desc=SP_DESC[spec]||"";
+    const pageLink=SP_PAGE[spec]||"";
+    const descRow=desc?`<div class="grp-desc-row">
+      <span class="grp-desc">${desc}</span>
+      ${pageLink?`<a href="${pageLink}" class="grp-more-btn">🔗 زیاتر ←</a>`:""}
+    </div>`:"";
+    grp.innerHTML=`
+      <div class="grp-header">
+        <div class="grp-left"><span class="sp-icon">${icon}</span><span class="stag ${sc}">${spec}</span></div>
+        <div class="grp-right"><span class="grp-count">${ms.length} پزیشک</span><span class="chevron">▾</span></div>
+      </div>
+      <div class="grp-body">
+        ${descRow}
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>#</th><th>ناوی پزیشک</th><th>ڕۆژەکان</th><th>کلینیک</th><th>بڕوانامە</th><th>مۆبایل</th><th>پسوڵە</th></tr></thead>
+          <tbody>${trows}</tbody>
+        </table></div>
+        <div class="cards">${cards}</div>
+      </div>`;
+    grp.querySelector(".grp-header").addEventListener("click",()=>{
+      grp.classList.toggle("closed");
+      const open=document.querySelectorAll(".grp:not(.closed)").length;
+      allExpanded=open===document.querySelectorAll(".grp").length;
+      document.getElementById("toggleAllBtn").textContent=allExpanded?"⊟":"⊞";
+    });
+    frag.appendChild(grp);
+  });
+
+  content.insertBefore(frag,document.getElementById("noRes"));
+
+  // ── Risale-i Nur group (always shown, not affected by filters) ──
+  if(!document.getElementById("risaleGrp")){
+    const rg=document.createElement("div");
+    rg.id="risaleGrp";
+    rg.className="grp closed";
+    rg.innerHTML=`
+      <div class="grp-header" id="risaleGrpHdr">
+        <div class="grp-left"><span class="sp-icon">📖</span><span class="stag" style="background:#fefce8;color:#854d0e;border:1px solid #fde68a">رسالەی نور</span></div>
+        <div class="grp-right"><span class="grp-count" style="background:#fefce8;border-color:#fde68a;color:#854d0e">٣ گرووپ</span><span class="chevron">▾</span></div>
+      </div>
+      <div class="grp-body">
+        <div class="grp-desc-row">
+          <span class="grp-desc">گرووپەکانی خوێندنەوەی رسالەی نور — ئۆنلاین، هەفتەوار، بە چەند زمانێک. بۆ زیاتر سەردانی پەڕەی تایبەتی بکە.</span>
+          <a href="risale.html" class="grp-more-btn">📖 زیاتر ←</a>
+        </div>
+        <div style="padding:8px 14px 12px;display:flex;flex-direction:column;gap:8px" id="risaleCircles"></div>
+      </div>`;
+    rg.querySelector(".grp-header").addEventListener("click",()=>{
+      rg.classList.toggle("closed");
+      const open=document.querySelectorAll(".grp:not(.closed)").length;
+      allExpanded=open===document.querySelectorAll(".grp").length;
+      document.getElementById("toggleAllBtn").textContent=allExpanded?"⊟":"⊞";
+    });
+    // Reading circles
+    const circles=[
+      {name:"Lighthouse for Humanity",nameKu:"شامی مرۆڤایەتی",sched:"هەفتەیەک جار — Zoom",lang:"ئینگلیزی",platform:"Zoom"},
+      {name:"The Garden of Noor",nameKu:"باخچەی نور",sched:"هەفتەیەک دوو جار — Telegram",lang:"کوردی",platform:"Telegram"},
+      {name:"Fridays' Sohbet",nameKu:"سۆهبەتی هەینی",sched:"هەفتەیەک جار — WhatsApp",lang:"کوردی / عوسمانی",platform:"WhatsApp"}
+    ];
+    const pIcons={"Zoom":"🖥️","Telegram":"📨","WhatsApp":"💬"};
+    const circlesEl=rg.querySelector("#risaleCircles");
+    circles.forEach(c=>{
+      const d=document.createElement("div");
+      d.style.cssText="background:var(--surface2);border:1px solid #fde68a;border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:12px;";
+      d.innerHTML=`<span style="font-size:1.4rem;flex-shrink:0">${pIcons[c.platform]||"📖"}</span>
+        <div>
+          <div style="font-weight:700;font-size:.9rem">${c.nameKu} <span style="font-size:.75rem;color:var(--text-dim);font-weight:400">${c.name}</span></div>
+          <div style="font-size:.78rem;color:var(--text-muted);margin-top:3px">🗓️ ${c.sched} &nbsp;|&nbsp; 🌐 ${c.lang}</div>
+        </div>`;
+      circlesEl.appendChild(d);
+    });
+    content.insertBefore(rg,document.getElementById("noRes"));
+  }
+  document.getElementById("visibleCount").textContent=total+" پزیشک";
+  document.getElementById("noRes").className="no-results"+((!any)?" show":"");
+  allExpanded=isSearching;
+  document.getElementById("toggleAllBtn").textContent=allExpanded?"⊟":"⊞";
+  renderChips(dv);
+}
+
+function renderChips(dv){
+  const bar=document.getElementById("chips"); bar.innerHTML="";
+  [{id:"SP",lbl:v=>`پسپۆڕی: ${v}`},{id:"D",lbl:v=>v===TODAY?`ئەمڕۆ — ${v}`:`ڕۆژ: ${v}`},{id:"C",lbl:v=>({hawkary:"هاوکاری",baxshin:"بەخشین",ayanda:"ئایندە",sulaymaniyah:"سلێمانی",other:"شوێنی تر"}[v]||v)},{id:"Q",lbl:v=>({board:"بۆرد","arab board":"بۆردی عەرەبی","iraqi board":"بۆردی عێڕاقی",european:"بۆردی ئەوروپی",msc:"ماستەر",fellow:"فێلۆ",acr:"ACR"}[v]||v)}].forEach(({id,lbl})=>{
+    const el=document.getElementById(id);
+    if(el&&el.value){const c=document.createElement("div");c.className="chip";c.innerHTML=`${lbl(el.value)} <button onclick="clr('${id}')">×</button>`;bar.appendChild(c);}
+  });
+}
+function clr(id){document.getElementById(id).value="";render();}
+function reset(){["SP","C","Q"].forEach(id=>document.getElementById(id).value="");document.getElementById("S").value="";document.getElementById("D").value=TODAY;render();}
+
+["SP","D","C","Q"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+render();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">لیستی پزیشکان</a>
+    <a href="risale.html">رسالەی نور</a>
+    <a href="about.html">دەربارە</a>
+  </div>
+  <div class="footer-copy">2026</div>
+</footer>
+</body>
+</html>
