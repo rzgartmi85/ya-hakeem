@@ -1,0 +1,29 @@
+# یا حکیم — Netlify Configuration
+# This file tells Netlify how to serve the site
+
+[build]
+  publish = "."
+
+# Serve all HTML files with correct headers
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Article files — short cache since they change often
+[[headers]]
+  for = "/articles/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# data.js — no cache so updates show immediately
+[[headers]]
+  for = "/data.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Allow fetch() from same origin (needed for articles/ loading)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
