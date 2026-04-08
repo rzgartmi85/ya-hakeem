@@ -6,310 +6,145 @@
 <title>یا حکیم — ئەمێنی داتا</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0d1117; --surface: #161b22; --surface2: #1e2530; --surface3: #252d3a;
-  --border: #30363d; --border2: #404852;
-  --accent: #58a6ff; --accent2: #3fb950; --accent3: #f78166;
-  --warn: #d29922; --purple: #bc8cff;
-  --text: #e6edf3; --text-muted: #8b949e; --text-dim: #484f58;
-  --shadow: 0 4px 24px #00000060;
-  --radius: 10px;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: 'Noto Naskh Arabic', serif;
-  min-height: 100vh; direction: rtl;
-  font-size: 15px; line-height: 1.6;
-}
-
-/* ── LAYOUT ── */
-.app { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 220px; flex-shrink: 0;
-  background: var(--surface); border-left: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
-}
-.main { flex: 1; min-width: 0; padding: 28px 32px; overflow-x: hidden; }
-
-/* ── SIDEBAR ── */
-.sidebar-logo {
-  padding: 20px 18px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo .logo-row { display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
-.logo-box {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: linear-gradient(135deg,#7c3a1a,#b5601f,#5c1e06);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .85rem; flex-shrink: 0;
-}
-.logo-title { font-size: .95rem; font-weight: 700; color: var(--text); }
-.logo-sub { font-size: .71rem; color: var(--text-muted); }
-.nav-section { padding: 10px 10px 0; }
-.nav-label { font-size: .67rem; font-weight: 700; color: var(--text-dim); padding: 6px 8px 3px; letter-spacing: .08em; text-transform: uppercase; }
-.nav-btn {
-  display: flex; align-items: center; gap: 9px;
-  width: 100%; padding: 8px 10px; border: none;
-  background: none; color: var(--text-muted); cursor: pointer;
-  border-radius: 7px; font-family: 'Noto Naskh Arabic', serif;
-  font-size: .85rem; text-align: right; transition: all .15s;
-}
-.nav-btn:hover { background: var(--surface2); color: var(--text); }
-.nav-btn.active { background: var(--surface3); color: var(--accent); font-weight: 600; }
-.nav-btn .nav-icon { font-size: 1rem; flex-shrink: 0; }
-.nav-btn .nav-count {
-  margin-right: auto; background: var(--surface3);
-  border-radius: 10px; padding: 1px 7px;
-  font-size: .68rem; color: var(--text-muted);
-}
-
-/* ── PAGE HEADER ── */
-.page-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
-}
-.page-title { font-size: 1.3rem; font-weight: 700; }
-.page-sub { font-size: .82rem; color: var(--text-muted); margin-top: 2px; }
-
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 16px; border-radius: 8px; border: 1px solid;
-  cursor: pointer; font-family: 'Noto Naskh Arabic', serif;
-  font-size: .82rem; font-weight: 600; transition: all .15s;
-  white-space: nowrap;
-}
-.btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; }
-.btn-primary:hover { filter: brightness(1.1); }
-.btn-success { background: var(--accent2); border-color: var(--accent2); color: #0d1117; }
-.btn-success:hover { filter: brightness(1.1); }
-.btn-ghost { background: transparent; border-color: var(--border); color: var(--text-muted); }
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.btn-danger { background: transparent; border-color: var(--accent3); color: var(--accent3); }
-.btn-danger:hover { background: var(--accent3); color: #fff; }
-.btn-warn { background: transparent; border-color: var(--warn); color: var(--warn); }
-.btn-warn:hover { background: var(--warn); color: #0d1117; }
-.btn-sm { padding: 4px 10px; font-size: .75rem; }
-.btn-icon { padding: 6px 8px; }
-
-/* ── TABS ── */
-.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
-.tab {
-  padding: 9px 16px; border: none; background: none;
-  color: var(--text-muted); cursor: pointer;
-  font-family: 'Noto Naskh Arabic', serif; font-size: .85rem;
-  border-bottom: 2px solid transparent; transition: all .15s;
-}
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── DOCTOR TABLE ── */
-.filter-bar {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 14px; flex-wrap: wrap;
-}
-.search-input {
-  flex: 1; min-width: 180px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; color: var(--text); padding: 7px 12px;
-  font-family: 'Noto Naskh Arabic', serif; font-size: .85rem;
-  outline: none; transition: border-color .15s;
-}
-.search-input:focus { border-color: var(--accent); }
-.select-input {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; color: var(--text); padding: 7px 12px;
-  font-family: 'Noto Naskh Arabic', serif; font-size: .82rem;
-  outline: none; cursor: pointer;
-}
-.select-input:focus { border-color: var(--accent); }
-
-.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
-thead th {
-  background: var(--surface2); padding: 10px 13px;
-  text-align: right; font-weight: 600; color: var(--text-muted);
-  font-size: .75rem; white-space: nowrap; letter-spacing: .03em;
-  border-bottom: 1px solid var(--border);
-}
-tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--surface2); }
-tbody td { padding: 9px 13px; vertical-align: middle; }
-td.name-cell { font-weight: 600; color: var(--text); }
-td.sp-cell { }
-td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: center; }
-.sp-badge {
-  display: inline-block; padding: 2px 8px; border-radius: 5px;
-  font-size: .71rem; font-weight: 600;
-  background: var(--surface3); color: var(--accent); border: 1px solid var(--border2);
-}
-.empty-row td { text-align: center; padding: 32px; color: var(--text-dim); }
-
-/* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: #00000090;
-  z-index: 200; display: flex; align-items: center; justify-content: center;
-  padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 14px; width: 100%; max-width: 640px;
-  max-height: 88vh; overflow-y: auto;
-  transform: translateY(14px); transition: transform .2s;
-}
-.modal-overlay.open .modal { transform: translateY(0); }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px 14px; border-bottom: 1px solid var(--border); gap: 10px;
-}
-.modal-title { font-size: 1rem; font-weight: 700; }
-.modal-body { padding: 18px 20px; }
-.modal-footer {
-  padding: 14px 20px; border-top: 1px solid var(--border);
-  display: flex; gap: 8px; justify-content: flex-end;
-}
-.close-btn {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 7px; color: var(--text-muted); cursor: pointer;
-  padding: 5px 10px; font-size: .9rem; line-height: 1;
-  transition: all .15s;
-}
-.close-btn:hover { border-color: var(--accent3); color: var(--accent3); }
-
-/* ── FORM ── */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group.full { grid-column: 1/-1; }
-.form-label { font-size: .75rem; font-weight: 600; color: var(--text-muted); }
-.form-label .req { color: var(--accent3); }
-.form-input, .form-textarea, .form-select {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; color: var(--text); padding: 8px 12px;
-  font-family: 'Noto Naskh Arabic', serif; font-size: .88rem;
-  outline: none; transition: border-color .15s; width: 100%;
-}
-.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--accent); }
-.form-textarea { resize: vertical; min-height: 80px; line-height: 1.65; }
-.form-hint { font-size: .71rem; color: var(--text-dim); }
-
-/* ── ARTICLE EDITOR ── */
-.editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.editor-panel { display: flex; flex-direction: column; gap: 14px; }
-.editor-panel h3 { font-size: .9rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-.rich-toolbar {
-  display: flex; gap: 3px; flex-wrap: wrap;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-bottom: none; border-radius: 8px 8px 0 0; padding: 6px 8px;
-}
-.rich-toolbar button {
-  background: none; border: 1px solid transparent; border-radius: 5px;
-  color: var(--text-muted); cursor: pointer; padding: 3px 7px;
-  font-size: .8rem; font-family: 'JetBrains Mono', monospace;
-  transition: all .12s;
-}
-.rich-toolbar button:hover { background: var(--surface3); color: var(--text); border-color: var(--border); }
-.rich-toolbar .sep { width: 1px; background: var(--border); margin: 2px 3px; }
-.rich-editor {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 0 0 8px 8px; color: var(--text);
-  padding: 12px 14px; min-height: 280px;
-  font-family: 'Noto Naskh Arabic', serif; font-size: .9rem;
-  line-height: 1.8; outline: none; overflow-y: auto;
-  direction: rtl; text-align: right;
-}
-.rich-editor:focus { border-color: var(--accent); }
-.rich-editor h2 { font-size: 1.1rem; margin: 14px 0 6px; color: var(--text); }
-.rich-editor h3 { font-size: 1rem; margin: 12px 0 5px; color: var(--text); }
-.rich-editor h4 { font-size: .95rem; margin: 10px 0 4px; color: var(--text-muted); }
-.rich-editor p { margin-bottom: 8px; }
-.rich-editor ul, .rich-editor ol { padding-right: 20px; margin-bottom: 8px; }
-.rich-editor blockquote { border-right: 3px solid var(--accent); padding: 8px 12px; margin: 10px 0; background: var(--surface3); border-radius: 0 6px 6px 0; color: var(--text-muted); font-style: italic; }
-.rich-editor .tip-block { background: #0a2a15; border: 1px solid var(--accent2); border-radius: 7px; padding: 8px 12px; margin: 8px 0; color: var(--accent2); }
-.rich-editor .pro-block { background: #0a1a35; border: 1px solid var(--accent); border-radius: 7px; padding: 8px 12px; margin: 8px 0; color: var(--accent); }
-.rich-editor table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .85rem; }
-.rich-editor th { background: var(--surface3); padding: 6px 10px; border-bottom: 2px solid var(--border); text-align: right; }
-.rich-editor td { padding: 5px 10px; border-bottom: 1px solid var(--border); }
-
-/* ── ARTICLE META FORM ── */
-.meta-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-.meta-section h3 { font-size: .85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 14px; }
-.article-list { display: flex; flex-direction: column; gap: 7px; }
-.article-item {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 11px 14px;
-  display: flex; align-items: center; gap: 10px;
-  transition: border-color .15s; cursor: pointer;
-}
-.article-item:hover { border-color: var(--border2); }
-.article-item.selected { border-color: var(--accent); background: #0a1a2a; }
-.art-icon-big { font-size: 1.3rem; flex-shrink: 0; }
-.art-info { flex: 1; min-width: 0; }
-.art-title { font-size: .87rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.art-meta-line { display: flex; gap: 7px; margin-top: 3px; flex-wrap: wrap; }
-.art-tag { font-size: .68rem; padding: 1px 7px; border-radius: 4px; }
-.art-tag.patient { background: #0a2a15; color: var(--accent2); border: 1px solid #1a4a25; }
-.art-tag.professional { background: #0a1a35; color: var(--accent); border: 1px solid #1a3060; }
-.art-tag.sp { background: var(--surface3); color: var(--purple); border: 1px solid var(--border2); }
-
-/* ── OUTPUT BOX ── */
-.output-section {
-  margin-top: 20px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
-}
-.output-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 16px; background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-}
-.output-title { font-size: .8rem; font-weight: 600; color: var(--text-muted); }
-.output-code {
-  padding: 14px 16px; font-family: 'JetBrains Mono', monospace;
-  font-size: .75rem; color: #79c0ff; line-height: 1.7;
-  max-height: 320px; overflow-y: auto; white-space: pre-wrap; word-break: break-word;
-  direction: ltr; text-align: left;
-}
-.copy-success { color: var(--accent2) !important; }
-
-/* ── NOTICE / HELP ── */
-.notice {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px 16px;
-  font-size: .83rem; color: var(--text-muted); line-height: 1.7;
-}
-.notice strong { color: var(--text); }
-.notice .step { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
-.step-num {
-  background: var(--accent); color: #0d1117; border-radius: 50%;
-  width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
-  font-size: .72rem; font-weight: 700; flex-shrink: 0; margin-top: 1px;
-}
-.tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
-.kbd { background: var(--surface3); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 7px; font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text); }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
-  background: var(--accent2); color: #0d1117; padding: 10px 22px;
-  border-radius: 30px; font-weight: 600; font-size: .85rem;
-  transition: transform .3s; z-index: 500; pointer-events: none; white-space: nowrap;
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .editor-layout { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-}
-@media(max-width:680px){
-  .sidebar { display: none; }
-  .main { padding: 16px; }
-}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1e2530;--surface3:#252d3a;--border:#30363d;--border2:#404852;--accent:#58a6ff;--accent2:#3fb950;--accent3:#f78166;--warn:#d29922;--purple:#bc8cff;--text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;--shadow:0 4px 24px #00000060;--radius:10px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Naskh Arabic',serif;min-height:100vh;direction:rtl;font-size:15px;line-height:1.6;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.main{flex:1;min-width:0;padding:28px 32px;overflow-x:hidden;}
+.sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo .logo-row{display:flex;align-items:center;gap:9px;margin-bottom:4px;}
+.logo-box{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#7c3a1a,#b5601f,#5c1e06);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.logo-title{font-size:.95rem;font-weight:700;color:var(--text);}
+.logo-sub{font-size:.71rem;color:var(--text-muted);}
+.gh-status{display:flex;align-items:center;gap:6px;padding:8px 10px;margin:8px 10px;border-radius:7px;font-size:.75rem;cursor:pointer;border:1px solid var(--border);background:var(--surface2);transition:all .15s;}
+.gh-status:hover{border-color:var(--accent);}
+.gh-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.gh-dot.connected{background:var(--accent2);}
+.gh-dot.disconnected{background:var(--accent3);}
+.gh-dot.loading{background:var(--warn);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.nav-section{padding:10px 10px 0;}
+.nav-label{font-size:.67rem;font-weight:700;color:var(--text-dim);padding:6px 8px 3px;letter-spacing:.08em;text-transform:uppercase;}
+.nav-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border:none;background:none;color:var(--text-muted);cursor:pointer;border-radius:7px;font-family:'Noto Naskh Arabic',serif;font-size:.85rem;text-align:right;transition:all .15s;}
+.nav-btn:hover{background:var(--surface2);color:var(--text);}
+.nav-btn.active{background:var(--surface3);color:var(--accent);font-weight:600;}
+.nav-btn .nav-icon{font-size:1rem;flex-shrink:0;}
+.nav-btn .nav-count{margin-right:auto;background:var(--surface3);border-radius:10px;padding:1px 7px;font-size:.68rem;color:var(--text-muted);}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.page-title{font-size:1.3rem;font-weight:700;}
+.page-sub{font-size:.82rem;color:var(--text-muted);margin-top:2px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;border:1px solid;cursor:pointer;font-family:'Noto Naskh Arabic',serif;font-size:.82rem;font-weight:600;transition:all .15s;white-space:nowrap;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#0d1117;}
+.btn-primary:hover:not(:disabled){filter:brightness(1.1);}
+.btn-success{background:var(--accent2);border-color:var(--accent2);color:#0d1117;}
+.btn-success:hover:not(:disabled){filter:brightness(1.1);}
+.btn-ghost{background:transparent;border-color:var(--border);color:var(--text-muted);}
+.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:transparent;border-color:var(--accent3);color:var(--accent3);}
+.btn-danger:hover:not(:disabled){background:var(--accent3);color:#fff;}
+.btn-warn{background:transparent;border-color:var(--warn);color:var(--warn);}
+.btn-warn:hover:not(:disabled){background:var(--warn);color:#0d1117;}
+.btn-sm{padding:4px 10px;font-size:.75rem;}
+.btn-icon{padding:6px 8px;}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:22px;}
+.tab{padding:9px 16px;border:none;background:none;color:var(--text-muted);cursor:pointer;font-family:'Noto Naskh Arabic',serif;font-size:.85rem;border-bottom:2px solid transparent;transition:all .15s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.search-input{flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 12px;font-family:'Noto Naskh Arabic',serif;font-size:.85rem;outline:none;transition:border-color .15s;}
+.search-input:focus{border-color:var(--accent);}
+.select-input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 12px;font-family:'Noto Naskh Arabic',serif;font-size:.82rem;outline:none;cursor:pointer;}
+.select-input:focus{border-color:var(--accent);}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:.83rem;}
+thead th{background:var(--surface2);padding:10px 13px;text-align:right;font-weight:600;color:var(--text-muted);font-size:.75rem;white-space:nowrap;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface2);}
+tbody td{padding:9px 13px;vertical-align:middle;}
+td.name-cell{font-weight:600;color:var(--text);}
+td.actions-cell{white-space:nowrap;display:flex;gap:5px;align-items:center;}
+.sp-badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.71rem;font-weight:600;background:var(--surface3);color:var(--accent);border:1px solid var(--border2);}
+.empty-row td{text-align:center;padding:32px;color:var(--text-dim);}
+.modal-overlay{position:fixed;inset:0;background:#00000090;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;transform:translateY(14px);transition:transform .2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);gap:10px;}
+.modal-title{font-size:1rem;font-weight:700;}
+.modal-body{padding:18px 20px;}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.close-btn{background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text-muted);cursor:pointer;padding:5px 10px;font-size:.9rem;line-height:1;transition:all .15s;}
+.close-btn:hover{border-color:var(--accent3);color:var(--accent3);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:.75rem;font-weight:600;color:var(--text-muted);}
+.form-label .req{color:var(--accent3);}
+.form-input,.form-textarea,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-family:'Noto Naskh Arabic',serif;font-size:.88rem;outline:none;transition:border-color .15s;width:100%;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.65;}
+.form-hint{font-size:.71rem;color:var(--text-dim);}
+.editor-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.editor-panel{display:flex;flex-direction:column;gap:14px;}
+.editor-panel h3{font-size:.9rem;font-weight:700;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:8px;}
+.rich-toolbar{display:flex;gap:3px;flex-wrap:wrap;background:var(--surface2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:6px 8px;}
+.rich-toolbar button{background:none;border:1px solid transparent;border-radius:5px;color:var(--text-muted);cursor:pointer;padding:3px 7px;font-size:.8rem;font-family:'JetBrains Mono',monospace;transition:all .12s;}
+.rich-toolbar button:hover{background:var(--surface3);color:var(--text);border-color:var(--border);}
+.rich-toolbar .sep{width:1px;background:var(--border);margin:2px 3px;}
+.rich-editor{background:var(--surface2);border:1px solid var(--border);border-radius:0 0 8px 8px;color:var(--text);padding:12px 14px;min-height:340px;font-family:'Noto Naskh Arabic',serif;font-size:.9rem;line-height:1.8;outline:none;overflow-y:auto;direction:rtl;text-align:right;}
+.rich-editor:focus{border-color:var(--accent);}
+.rich-editor h2{font-size:1.1rem;margin:14px 0 6px;color:var(--text);}
+.rich-editor h3{font-size:1rem;margin:12px 0 5px;color:var(--text);}
+.rich-editor h4{font-size:.95rem;margin:10px 0 4px;color:var(--text-muted);}
+.rich-editor p{margin-bottom:8px;}
+.rich-editor ul,.rich-editor ol{padding-right:20px;margin-bottom:8px;}
+.rich-editor blockquote{border-right:3px solid var(--accent);padding:8px 12px;margin:10px 0;background:var(--surface3);border-radius:0 6px 6px 0;color:var(--text-muted);font-style:italic;}
+.rich-editor .tip-block{background:#0a2a15;border:1px solid var(--accent2);border-radius:7px;padding:8px 12px;margin:8px 0;color:var(--accent2);}
+.rich-editor .pro-block{background:#0a1a35;border:1px solid var(--accent);border-radius:7px;padding:8px 12px;margin:8px 0;color:var(--accent);}
+.rich-editor table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.85rem;}
+.rich-editor th{background:var(--surface3);padding:6px 10px;border-bottom:2px solid var(--border);text-align:right;}
+.rich-editor td{padding:5px 10px;border-bottom:1px solid var(--border);}
+.article-list{display:flex;flex-direction:column;gap:7px;}
+.article-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;align-items:center;gap:10px;transition:border-color .15s;}
+.article-item:hover{border-color:var(--border2);}
+.art-icon-big{font-size:1.3rem;flex-shrink:0;}
+.art-info{flex:1;min-width:0;}
+.art-title{font-size:.87rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.art-meta-line{display:flex;gap:7px;margin-top:3px;flex-wrap:wrap;}
+.art-tag{font-size:.68rem;padding:1px 7px;border-radius:4px;}
+.art-tag.patient{background:#0a2a15;color:var(--accent2);border:1px solid #1a4a25;}
+.art-tag.professional{background:#0a1a35;color:var(--accent);border:1px solid #1a3060;}
+.art-tag.sp{background:var(--surface3);color:var(--purple);border:1px solid var(--border2);}
+.output-section{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.output-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.output-title{font-size:.8rem;font-weight:600;color:var(--text-muted);}
+.output-code{padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#79c0ff;line-height:1.7;max-height:280px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left;}
+.copy-success{color:var(--accent2)!important;}
+.notice{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:.83rem;color:var(--text-muted);line-height:1.7;}
+.notice strong{color:var(--text);}
+.step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+.step-num{background:var(--accent);color:#0d1117;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:1px;}
+.kbd{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:1px 7px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--accent2);color:#0d1117;padding:10px 22px;border-radius:30px;font-weight:600;font-size:.85rem;transition:transform .3s;z-index:500;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--accent3);color:#fff;}
+/* GitHub connect panel */
+.gh-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:520px;margin:0 auto;}
+.gh-panel h2{font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.gh-panel p{font-size:.85rem;color:var(--text-muted);line-height:1.75;margin-bottom:16px;}
+.gh-panel a{color:var(--accent);}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.commit-msg-bar{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;}
+.commit-msg-input{flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 12px;font-family:'Noto Naskh Arabic',serif;font-size:.83rem;outline:none;}
+.commit-msg-input:focus{border-color:var(--accent);}
+@media(max-width:900px){.editor-layout{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr;}}
+@media(max-width:680px){.sidebar{display:none;}.main{padding:16px;}}
 </style>
 </head>
 <body>
@@ -324,6 +159,12 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
     </div>
     <div class="logo-sub">پانێلی بەڕێوەبردن</div>
   </div>
+
+  <div class="gh-status" onclick="showPage('connect')" id="ghStatusBar">
+    <div class="gh-dot disconnected" id="ghDot"></div>
+    <span id="ghStatusText">GitHub: نەپەیوەندیکراو</span>
+  </div>
+
   <div class="nav-section">
     <div class="nav-label">داتا</div>
     <button class="nav-btn active" onclick="showPage('doctors')">
@@ -337,9 +178,6 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
   </div>
   <div class="nav-section">
     <div class="nav-label">ئامرازەکان</div>
-    <button class="nav-btn" onclick="showPage('export')">
-      <span class="nav-icon">📦</span> دەرهێنانی data.js
-    </button>
     <button class="nav-btn" onclick="showPage('howto')">
       <span class="nav-icon">📖</span> ڕێنمایی
     </button>
@@ -349,47 +187,82 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
 <!-- MAIN -->
 <main class="main">
 
+  <!-- ══ CONNECT PAGE ══ -->
+  <div id="page-connect">
+    <div class="page-header"><div>
+      <div class="page-title">پەیوەندی لەگەڵ GitHub</div>
+      <div class="page-sub">یەک جار دابنێ — هەمیشە بەردەستە</div>
+    </div></div>
+    <div class="gh-panel">
+      <h2>🔑 GitHub Personal Access Token</h2>
+      <p>
+        ئەم تۆکەنە یارمەتیت دەدات کە ڕاستەوخۆ لە ئەمێنی ئۆنلاین فایلەکانت لەسەر GitHub دەستکاری بکەیت — بەبێ دابەزاندنی هیچ بەرنامەیەک.<br><br>
+        <strong>چۆن دروست بکەیت:</strong>
+      </p>
+      <div style="margin-bottom:16px">
+        <div class="step"><div class="step-num">١</div><div>بچۆ بۆ <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></div></div>
+        <div class="step"><div class="step-num">٢</div><div>ناوێکی بدە — وەک <kbd class="kbd">ya-hakeem-admin</kbd></div></div>
+        <div class="step"><div class="step-num">٣</div><div>لە <strong>Expiration</strong> — هەڵبژێرە <strong>No expiration</strong></div></div>
+        <div class="step"><div class="step-num">٤</div><div>لە <strong>Scopes</strong> — تیک بکە لەسەر <kbd class="kbd">repo</kbd> (یەکەمی لیستەکەیە)</div></div>
+        <div class="step"><div class="step-num">٥</div><div>کلیکی <strong>Generate token</strong> بکە — تۆکەنەکە کۆپی بکە</div></div>
+        <div class="step"><div class="step-num">٦</div><div>لەم بەشەی خوارەوەدا چەسپاندن بکە</div></div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="form-label">GitHub Token <span class="req">*</span></label>
+        <input class="form-input" id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" dir="ltr" style="text-align:left;font-family:'JetBrains Mono',monospace">
+      </div>
+      <div class="form-grid" style="margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label">ناوی خاوەن (GitHub username) <span class="req">*</span></label>
+          <input class="form-input" id="ghOwner" placeholder="your-username" dir="ltr" style="text-align:left">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ناوی Repository <span class="req">*</span></label>
+          <input class="form-input" id="ghRepo" placeholder="ya-hakeem" dir="ltr" style="text-align:left">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label">شاخ (Branch)</label>
+        <input class="form-input" id="ghBranch" placeholder="main" dir="ltr" style="text-align:left">
+        <span class="form-hint">بەزۆری "main" یە — ئەگەر نەیزانیت بەتاڵ بیهێڵە</span>
+      </div>
+      <button class="btn btn-primary" onclick="connectGitHub()" style="width:100%">🔗 پەیوەندیکردن و تاقیکردنەوە</button>
+      <div id="connectResult" style="margin-top:12px;font-size:.83rem;"></div>
+    </div>
+  </div>
+
   <!-- ══ DOCTORS PAGE ══ -->
-  <div id="page-doctors">
+  <div id="page-doctors" style="display:none">
     <div class="page-header">
       <div>
         <div class="page-title">پزیشکان</div>
-        <div class="page-sub">لیستی پزیشکان بەپێی پسپۆڕی — دەستکاریکردن، زیادکردن، سڕینەوە</div>
+        <div class="page-sub">دەستکاریکردن و پاشەکەوتکردنی ڕاستەوخۆ لەسەر GitHub</div>
       </div>
-      <button class="btn btn-primary" onclick="openDocModal()">＋ پزیشکی نوێ</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="loadFromGitHub()" id="btnRefresh">🔄 نوێکردنەوە</button>
+        <button class="btn btn-primary" onclick="openDocModal()">＋ پزیشکی نوێ</button>
+      </div>
     </div>
-
     <div class="filter-bar">
       <input class="search-input" id="docSearch" placeholder="🔍 گەڕان بە ناو…" oninput="renderDoctorTable()">
       <select class="select-input" id="docSpFilter" onchange="renderDoctorTable()">
         <option value="">هەموو پسپۆڕییەکان</option>
       </select>
     </div>
-
     <div class="table-wrap">
       <table id="doctorTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>ناو</th>
-            <th>پسپۆڕی</th>
-            <th>بڕوانامە</th>
-            <th>کلینیک</th>
-            <th>ئەمڕۆ</th>
-            <th>مۆبایل</th>
-            <th>کردار</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th>#</th><th>ناو</th><th>پسپۆڕی</th><th>بڕوانامە</th>
+          <th>کلینیک</th><th>ڕۆژانی کاری</th><th>مۆبایل</th><th>کردار</th>
+        </tr></thead>
         <tbody id="doctorTbody"></tbody>
       </table>
     </div>
-
-    <div class="output-section" id="docOutput" style="display:none">
-      <div class="output-header">
-        <span class="output-title">📋 کۆدی specialtyDoctors بۆ data.js</span>
-        <button class="btn btn-success btn-sm" onclick="copyOutput('docOutputCode')">📋 کۆپیکردن</button>
-      </div>
-      <div class="output-code" id="docOutputCode"></div>
+    <div class="commit-msg-bar">
+      <input class="commit-msg-input" id="docCommitMsg" placeholder="پەیامی کۆمیت — وەک: زیادکردنی دکتۆر ئەحمەد" value="Update doctors list">
+      <button class="btn btn-success" onclick="commitDoctors()" id="btnCommitDocs">
+        🚀 پاشەکەوتکردن لەسەر GitHub
+      </button>
     </div>
   </div>
 
@@ -398,19 +271,20 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
     <div class="page-header">
       <div>
         <div class="page-title">وتارەکان</div>
-        <div class="page-sub">نووسین، دەستکاری، و بەڕێوەبردنی وتارەکان</div>
+        <div class="page-sub">نووسین و بڵاوکردنەوەی ڕاستەوخۆ لەسەر GitHub</div>
       </div>
-      <button class="btn btn-primary" onclick="openArticleEditor()">＋ وتاری نوێ</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="loadFromGitHub()" id="btnRefreshArt">🔄 نوێکردنەوە</button>
+        <button class="btn btn-primary" onclick="openArticleEditor()">＋ وتاری نوێ</button>
+      </div>
     </div>
-
     <div class="tabs">
       <button class="tab active" onclick="switchArticleTab('list',this)">لیستی وتارەکان</button>
       <button class="tab" id="editorTab" onclick="switchArticleTab('editor',this)">✏️ ئامرازی نووسین</button>
     </div>
-
     <div class="tab-panel active" id="atp-list">
       <div class="filter-bar">
-        <input class="search-input" id="artSearch" placeholder="🔍 گەڕان بە ناوی وتار…" oninput="renderArticleList()">
+        <input class="search-input" id="artSearch" placeholder="🔍 گەڕان…" oninput="renderArticleList()">
         <select class="select-input" id="artSpFilter" onchange="renderArticleList()">
           <option value="">هەموو پسپۆڕییەکان</option>
         </select>
@@ -422,183 +296,144 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
       </div>
       <div class="article-list" id="articleList"></div>
     </div>
-
     <div class="tab-panel" id="atp-editor">
       <div class="editor-layout">
-
-        <!-- LEFT: Meta fields -->
+        <!-- LEFT: Meta -->
         <div class="editor-panel">
           <h3>زانیاری وتار</h3>
           <div class="form-group">
             <label class="form-label">ناوی وتار <span class="req">*</span></label>
-            <input class="form-input" id="art-title" placeholder="ناوی وتار بنووسە…" oninput="updatePreview()">
+            <input class="form-input" id="art-title" placeholder="ناوی وتار بنووسە…">
           </div>
           <div class="form-grid" style="grid-template-columns:1fr 1fr">
             <div class="form-group">
               <label class="form-label">پسپۆڕی <span class="req">*</span></label>
-              <select class="form-select" id="art-specialty" onchange="updateGroupOptions(); updatePreview()"></select>
+              <select class="form-select" id="art-specialty" onchange="updateGroupOptions()"></select>
             </div>
             <div class="form-group">
-              <label class="form-label">ئاستی وتار <span class="req">*</span></label>
-              <select class="form-select" id="art-level" onchange="updateGroupOptions(); updatePreview()">
+              <label class="form-label">ئاست <span class="req">*</span></label>
+              <select class="form-select" id="art-level" onchange="updateGroupOptions()">
                 <option value="patient">🙋 بۆ نەخۆش</option>
                 <option value="professional">🔬 کلینیکی</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">گرووپ</label>
-              <select class="form-select" id="art-group" onchange="updatePreview()"></select>
+              <select class="form-select" id="art-group"></select>
             </div>
             <div class="form-group">
               <label class="form-label">ئایکۆن</label>
-              <input class="form-input" id="art-icon" placeholder="🔬" style="font-size:1.2rem" oninput="updatePreview()">
+              <input class="form-input" id="art-icon" placeholder="📝" style="font-size:1.1rem">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">کورتە / Synopsis <span class="req">*</span></label>
-            <textarea class="form-textarea" id="art-synopsis" placeholder="کورتەیەکی ٢-٣ ڕستەیی بۆ پەڕەی پسپۆڕی..." style="min-height:70px" oninput="updatePreview()"></textarea>
-            <span class="form-hint">ئەمە لەسەر کارتی وتار نیشاندەدرێت کاتی کلیک.</span>
+            <textarea class="form-textarea" id="art-synopsis" placeholder="کورتەیەکی ٢-٣ ڕستەیی…" style="min-height:70px"></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">تاگەکان (بە کۆما جیابکەرەوە)</label>
-            <input class="form-input" id="art-tags" placeholder="ئارتریت، جومگە، دەرمان" oninput="updatePreview()">
+            <label class="form-label">تاگەکان (بە کۆما)</label>
+            <input class="form-input" id="art-tags" placeholder="ئارتریت، جومگە">
           </div>
           <div class="form-group">
-            <label class="form-label">نووسەر (ID — بچووک بە ئینگلیزی، بە خەت)</label>
-            <input class="form-input" id="art-author" placeholder="rzgar-tayb" dir="ltr" style="text-align:left" oninput="updatePreview()">
-            <span class="form-hint">پێدەکاتە ID لەناو doctors{} — وەک: rzgar-tayb</span>
+            <label class="form-label">نووسەر (ID)</label>
+            <input class="form-input" id="art-author" placeholder="rzgar-tayb" dir="ltr" style="text-align:left">
+          </div>
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <div class="form-group">
+              <label class="form-label">بەروار</label>
+              <input class="form-input" id="art-date" placeholder="2025-06" dir="ltr" style="text-align:left">
+            </div>
+            <div class="form-group">
+              <label class="form-label">بەروار بە کوردی</label>
+              <input class="form-input" id="art-dateku" placeholder="حوزەیران ٢٠٢٥">
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">بەروار (ساڵ-مانگ)</label>
-            <input class="form-input" id="art-date" placeholder="2025-06" dir="ltr" style="text-align:left" oninput="updatePreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">بەروار بە کوردی</label>
-            <input class="form-input" id="art-dateku" placeholder="حوزەیران ٢٠٢٥" oninput="updatePreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">ID ی وتار (ئۆتۆماتیک — دەتوانیت بگۆڕیت)</label>
+            <label class="form-label">ID ی وتار</label>
             <input class="form-input" id="art-id" placeholder="art-ra-basics" dir="ltr" style="text-align:left">
-            <span class="form-hint">تەنها تیپەی ئینگلیزی، ژمارە، و خەت (-) بەکاربهێنە</span>
+            <span class="form-hint">بچووک بە ئینگلیزی، بە خەت (-) — ئۆتۆماتیک دروستدەکرێت</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">YouTube (ئارەزوومەندانە)</label>
+            <input class="form-input" id="art-youtube" placeholder="https://www.youtube.com/watch?v=..." dir="ltr" style="text-align:left">
           </div>
         </div>
-
         <!-- RIGHT: Rich editor -->
         <div class="editor-panel">
           <h3>ناوەڕۆکی تەواوی وتار</h3>
           <div class="rich-toolbar">
-            <button onclick="fmt('bold')" title="ئەستور"><b>B</b></button>
-            <button onclick="fmt('italic')" title="لار"><i>I</i></button>
+            <button onclick="fmt('bold')"><b>B</b></button>
+            <button onclick="fmt('italic')"><i>I</i></button>
             <div class="sep"></div>
-            <button onclick="insertBlock('h2')" title="سەردێڕی گەورە">H2</button>
-            <button onclick="insertBlock('h3')" title="سەردێڕی ناوەندی">H3</button>
-            <button onclick="insertBlock('h4')" title="سەردێڕی بچووک">H4</button>
+            <button onclick="insertBlock('h2')">H2</button>
+            <button onclick="insertBlock('h3')">H3</button>
+            <button onclick="insertBlock('h4')">H4</button>
             <div class="sep"></div>
-            <button onclick="fmt('insertUnorderedList')" title="لیستی خاڵدار">• لیست</button>
-            <button onclick="fmt('insertOrderedList')" title="لیستی ژمارەیی">١ لیست</button>
+            <button onclick="fmt('insertUnorderedList')">• لیست</button>
+            <button onclick="fmt('insertOrderedList')">١ لیست</button>
             <div class="sep"></div>
-            <button onclick="insertBlock('blockquote')" title="بنرخ">❝</button>
-            <button onclick="insertTip()" title="تێبینی بۆ نەخۆش" style="color:#3fb950">💡 تێبینی</button>
-            <button onclick="insertPro()" title="تێبینی پزیشکی" style="color:#58a6ff">📌 پزیشکی</button>
+            <button onclick="insertBlock('blockquote')">❝</button>
+            <button onclick="insertTip()" style="color:#3fb950">💡 تێبینی</button>
+            <button onclick="insertPro()" style="color:#58a6ff">📌 پزیشکی</button>
             <div class="sep"></div>
-            <button onclick="insertTable()" title="خشتە">📊 خشتە</button>
+            <button onclick="insertTable()">📊 خشتە</button>
             <div class="sep"></div>
-            <button onclick="clearEditor()" title="پاکردنەوە" style="color:#f78166">🗑</button>
+            <button onclick="clearEditor()" style="color:#f78166">🗑</button>
           </div>
-          <div class="rich-editor" id="richEditor" contenteditable="true" oninput="updatePreview()" spellcheck="false"
-               onkeydown="handleEditorKey(event)">
+          <div class="rich-editor" id="richEditor" contenteditable="true" spellcheck="false">
             <p>ناوەڕۆکی وتارەکەت لێرە بنووسە…</p>
           </div>
-          <div class="form-group" style="margin-top:10px">
-            <label class="form-label">ڤیدیۆی YouTube (ئارەزوومەندانە)</label>
-            <input class="form-input" id="art-youtube" placeholder="https://www.youtube.com/watch?v=..." dir="ltr" style="text-align:left">
-            <span class="form-hint">لینکی YouTube بنووسە — ئۆتۆماتیک ناوتێدەخرێت</span>
-          </div>
         </div>
       </div>
-
-      <!-- OUTPUT -->
-      <div class="output-section" style="margin-top:20px">
-        <div class="output-header">
-          <span class="output-title">📋 کۆدی وتار بۆ data.js</span>
-          <div style="display:flex;gap:6px">
-            <button class="btn btn-warn btn-sm" onclick="saveArticleToLocal()">💾 پاشەکەوتکردن</button>
-            <button class="btn btn-success btn-sm" onclick="copyOutput('artOutputCode')">📋 کۆپیکردن</button>
-          </div>
-        </div>
-        <div class="output-code" id="artOutputCode"></div>
+      <!-- COMMIT BAR -->
+      <div class="commit-msg-bar" style="margin-top:18px">
+        <input class="commit-msg-input" id="artCommitMsg" placeholder="پەیامی کۆمیت — وەک: زیادکردنی وتاری نقرس" value="Add/update article">
+        <button class="btn btn-success" onclick="commitArticle()" id="btnCommitArt">
+          🚀 بڵاوکردنەوەی وتار لەسەر GitHub
+        </button>
       </div>
-    </div>
-  </div>
-
-  <!-- ══ EXPORT PAGE ══ -->
-  <div id="page-export" style="display:none">
-    <div class="page-header">
-      <div>
-        <div class="page-title">دەرهێنانی data.js</div>
-        <div class="page-sub">کۆدی ئامادەکراو بۆ جێگرینەوەی data.js</div>
-      </div>
-    </div>
-    <div class="notice" style="margin-bottom:16px">
-      <strong>⚠️ ئاگادارکردنەوە:</strong> ئەم کۆدە تەنها <strong>specialtyDoctors</strong> و <strong>articles</strong> تازەکانت لەخۆدەگرێت.
-      ئەمانە بدەیتە پشتەوانی پڕۆگرامەکەت تا جێی دروست لەناو data.js بیدات.
-    </div>
-    <div class="output-section">
-      <div class="output-header">
-        <span class="output-title">📋 هەموو داتای تازەکان</span>
-        <button class="btn btn-success btn-sm" onclick="copyOutput('fullExportCode')">📋 کۆپیکردنی هەموو</button>
-      </div>
-      <div class="output-code" id="fullExportCode"></div>
+      <div id="artCommitResult" style="margin-top:8px;font-size:.82rem;color:var(--text-muted)"></div>
     </div>
   </div>
 
   <!-- ══ HOW-TO PAGE ══ -->
   <div id="page-howto" style="display:none">
-    <div class="page-header">
-      <div><div class="page-title">ڕێنمایی بەکارهێنان</div></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px;max-width:700px">
+    <div class="page-header"><div><div class="page-title">ڕێنمایی بەکارهێنان</div></div></div>
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:680px">
       <div class="notice">
-        <strong>چۆن پزیشکی تازە زیاد بکەم؟</strong>
+        <strong>چۆن دەست پێ بکەم؟</strong>
         <div style="margin-top:8px">
-          <div class="step"><div class="step-num">١</div><div>سەردانی بەشی <strong>پزیشکان</strong> بکە</div></div>
-          <div class="step"><div class="step-num">٢</div><div>کلیکی <strong>＋ پزیشکی نوێ</strong> بکە</div></div>
-          <div class="step"><div class="step-num">٣</div><div>فۆرمەکە پڕبکەرەوە — ناو، پسپۆڕی، کلینیک، مۆبایل، ڕۆژانی کاری</div></div>
-          <div class="step"><div class="step-num">٤</div><div>کلیکی <strong>پاشەکەوتکردن</strong> بکە — کارتەکە لە خشتەکەدا دەردەکەوێت</div></div>
-          <div class="step"><div class="step-num">٥</div><div>کلیکی <strong>📋 بینینی کۆد</strong> بکە، دوایش <strong>کۆپیکردن</strong></div></div>
-          <div class="step"><div class="step-num">٦</div><div>data.js بکەرەوە بە VS Code → بچۆ بۆ <kbd class="kbd">specialtyDoctors</kbd> → جێی دروست پەستکردن</div></div>
+          <div class="step"><div class="step-num">١</div><div>بچۆ بۆ بەشی <strong>GitHub پەیوەندی</strong> لە ستوونی لاوەکی</div></div>
+          <div class="step"><div class="step-num">٢</div><div>تۆکەنی GitHub بنووسە (یەک جار تەنها)</div></div>
+          <div class="step"><div class="step-num">٣</div><div>ناوی خاوەن و ناوی Repository بنووسە — کلیکی پەیوەندیکردن بکە</div></div>
+          <div class="step"><div class="step-num">٤</div><div>ئەمێنی ئێستا ڕاستەوخۆ لەگەڵ GitHub پەیوەندیکراوە</div></div>
         </div>
       </div>
       <div class="notice">
-        <strong>چۆن وتاری تازە بنووسم؟</strong>
+        <strong>پزیشکی تازە زیاد بکە</strong>
         <div style="margin-top:8px">
-          <div class="step"><div class="step-num">١</div><div>سەردانی <strong>وتارەکان</strong> بکە → <strong>ئامرازی نووسین</strong></div></div>
-          <div class="step"><div class="step-num">٢</div><div>زانیارییەکانی لای چەپ پڕبکەرەوە: ناو، پسپۆڕی، کورتە، تاگ</div></div>
-          <div class="step"><div class="step-num">٣</div><div>ناوەڕۆکی تەواو لە <strong>ئامرازی نووسین</strong>ی لای ڕاست بنووسە</div></div>
-          <div class="step"><div class="step-num">٤</div><div>ئامرازەکانی ئاراستە بەکاربهێنە: <span class="kbd">H2</span> <span class="kbd">H3</span> <span class="kbd">💡 تێبینی</span> <span class="kbd">❝</span></div></div>
-          <div class="step"><div class="step-num">٥</div><div><strong>💾 پاشەکەوتکردن</strong> کلیک بکە — دوایش کۆپیکردن و چەسپاندن لە data.js</div></div>
+          <div class="step"><div class="step-num">١</div><div>بچۆ بۆ <strong>پزیشکان</strong> → <strong>＋ پزیشکی نوێ</strong></div></div>
+          <div class="step"><div class="step-num">٢</div><div>فۆرمەکە پڕبکەرەوە → <strong>پاشەکەوتکردن</strong></div></div>
+          <div class="step"><div class="step-num">٣</div><div>پەیامی کۆمیت بنووسە → <strong>🚀 پاشەکەوتکردن لەسەر GitHub</strong></div></div>
+          <div class="step"><div class="step-num">٤</div><div>لە ٣٠ چرکە سایتەکە نوێ دەبێتەوە ئۆتۆماتیک!</div></div>
         </div>
       </div>
       <div class="notice">
-        <strong>چۆن ئاپدەیت بکەم لەسەر سایتی Netlify؟</strong>
+        <strong>وتاری نوێ بنووسە</strong>
         <div style="margin-top:8px">
-          <div class="step"><div class="step-num">١</div><div>data.js ی نوێ پاشەکەوت بکە</div></div>
-          <div class="step"><div class="step-num">٢</div><div>بچۆ بۆ <strong>app.netlify.com</strong> → سایتەکەت → Deploys</div></div>
-          <div class="step"><div class="step-num">٣</div><div>فۆڵدەری <strong>ya-hakeem</strong> بکێشە و بیخەرەوە لەسەر دوگمەی Deploy</div></div>
-          <div class="step"><div class="step-num">٤</div><div>لە ٣٠ چرکە — سایتەکە نوێکراوەتەوە!</div></div>
+          <div class="step"><div class="step-num">١</div><div><strong>وتارەکان</strong> → <strong>ئامرازی نووسین</strong></div></div>
+          <div class="step"><div class="step-num">٢</div><div>زانیارییەکانی چەپ پڕبکەرەوە: ناو، پسپۆڕی، کورتە</div></div>
+          <div class="step"><div class="step-num">٣</div><div>ناوەڕۆکی تەواو لای ڕاست بنووسە — ئامرازەکانی ئاراستە بەکاربهێنە</div></div>
+          <div class="step"><div class="step-num">٤</div><div><strong>🚀 بڵاوکردنەوەی وتار</strong> کلیک بکە — ئۆتۆماتیک دووەیەک دەخاتە GitHub:</div></div>
+          <div style="padding-right:30px;font-size:.8rem;color:var(--text-dim)">
+            ١. فایلی ناوەڕۆک: <kbd class="kbd">articles/art-id.html</kbd><br>
+            ٢. زانیاری وتار: نوێکردنەوەی <kbd class="kbd">data.js</kbd>
+          </div>
         </div>
       </div>
       <div class="notice">
-        <strong>ئامرازەکانی نووسین</strong>
-        <div class="tag-row" style="margin-top:10px">
-          <span class="kbd">H2</span><span style="font-size:.8rem;color:var(--text-muted)">سەردێڕی گەورە</span>
-          <span class="kbd">H3</span><span style="font-size:.8rem;color:var(--text-muted)">سەردێڕی ناوەندی</span>
-          <span class="kbd">B</span><span style="font-size:.8rem;color:var(--text-muted)">ئەستور</span>
-          <span class="kbd">💡 تێبینی</span><span style="font-size:.8rem;color:var(--text-muted)">بۆکسی تێبینی بۆ نەخۆش</span>
-          <span class="kbd">📌 پزیشکی</span><span style="font-size:.8rem;color:var(--text-muted)">تێبینی کلینیکی</span>
-          <span class="kbd">❝</span><span style="font-size:.8rem;color:var(--text-muted)">بنرخ</span>
-          <span class="kbd">📊 خشتە</span><span style="font-size:.8rem;color:var(--text-muted)">خشتەی ٣ ستوون</span>
-        </div>
+        <strong>تێبینی مەعلوماتی بەیەکەوە</strong><br>
+        تۆکەنی GitHub تەنها لەناو بیرگەی ئەم براوزەرەدا پاشەکەوت دەبێت (<kbd class="kbd">localStorage</kbd>) — هەرگیز ناردراوەتە هیچ سێرڤەرێکی تر جگە لە GitHub بەخۆیی.
       </div>
     </div>
   </div>
@@ -606,7 +441,7 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
 </main>
 </div>
 
-<!-- ══ DOCTOR MODAL ══ -->
+<!-- DOCTOR MODAL -->
 <div class="modal-overlay" id="docModalOverlay" onclick="closeDocMBg(event)">
   <div class="modal">
     <div class="modal-header">
@@ -634,7 +469,6 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
         <div class="form-group full">
           <label class="form-label">ڕۆژانی کاری</label>
           <input class="form-input" id="d-days" placeholder="شەممە، دوو شەممە، چوار شەممە">
-          <span class="form-hint">ئەگەر نییە، بەتاڵ بیهێڵە</span>
         </div>
         <div class="form-group">
           <label class="form-label">ژمارەی مۆبایل</label>
@@ -642,16 +476,16 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
         </div>
         <div class="form-group">
           <label class="form-label">پسوڵەی پزیشکی</label>
-          <input class="form-input" id="d-fee" placeholder="٢٠،٠٠٠ د — یان بەتاڵ بیهێڵە">
+          <input class="form-input" id="d-fee" placeholder="٢٠،٠٠٠ د">
         </div>
         <div class="form-group full">
-          <label class="form-label">بیۆگرافی کورت (ئارەزوومەندانە)</label>
-          <textarea class="form-textarea" id="d-bio" placeholder="پسپۆڕی نەخۆشییەکانی جومگە، خاوەنی بڕوانامەی…" style="min-height:60px"></textarea>
+          <label class="form-label">بیۆگرافی کورت</label>
+          <textarea class="form-textarea" id="d-bio" style="min-height:60px" placeholder="پسپۆڕی نەخۆشییەکانی جومگە…"></textarea>
         </div>
         <div class="form-group full">
-          <label class="form-label">ID — بچووک بە ئینگلیزی، بە خەت (ئۆتۆماتیک دروستدەکرێت)</label>
-          <input class="form-input" id="d-id" placeholder="rzgar-tayb" dir="ltr" style="text-align:left">
-          <span class="form-hint">تەنها تیپەی ئینگلیزی و خەت (-) — وەک: ahmad-kamal</span>
+          <label class="form-label">ID (ئۆتۆماتیک)</label>
+          <input class="form-input" id="d-id" placeholder="doc-id" dir="ltr" style="text-align:left">
+          <span class="form-hint">تەنها تیپەی ئینگلیزی و خەت (-)</span>
         </div>
       </div>
     </div>
@@ -662,74 +496,366 @@ td.actions-cell { white-space: nowrap; display: flex; gap: 5px; align-items: cen
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════
-// DATA STORE
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════════
 const SPECIALTIES = {
-  rheumatology: "ڕۆماتیزم و جومگە",
-  internal: "نەخۆشییەکانی هەناوی",
-  surgery: "نەشتەرگەری گشتی",
-  ortho: "ئێسک و شکاوی",
-  urology: "میزەڕۆ و گورچیلە",
-  neuro: "مێشک و دەمار",
-  neurosurgery: "نەشتەرگەری مێشک و دەمار",
-  cardio: "دڵ و قەستەرە",
-  thoracic: "سنگ و دڵ و بۆرییەکانی خوێن",
-  obgyn: "ژنان و مناڵبوون",
-  ophtho: "نەشتەرگەری چاو",
-  ent: "قوڕگ و لوت و گوێ",
-  peds: "مناڵان و تازە لەدایکبووان",
-  derm: "پێست",
-  radio: "تیشک و سۆنار",
-  psych: "دەروونی",
-  nutri: "خۆراک و گەشە",
-  breast: "نەخۆشییەکانی مەمک",
-  anest: "بێهۆشکاری"
+  rheumatology:"ڕۆماتیزم و جومگە", internal:"نەخۆشییەکانی هەناوی",
+  surgery:"نەشتەرگەری گشتی", ortho:"ئێسک و شکاوی", urology:"میزەڕۆ و گورچیلە",
+  neuro:"مێشک و دەمار", neurosurgery:"نەشتەرگەری مێشک و دەمار",
+  cardio:"دڵ و قەستەرە", thoracic:"سنگ و دڵ و بۆرییەکانی خوێن",
+  obgyn:"ژنان و مناڵبوون", ophtho:"نەشتەرگەری چاو", ent:"قوڕگ و لوت و گوێ",
+  peds:"مناڵان و تازە لەدایکبووان", derm:"پێست", radio:"تیشک و سۆنار",
+  psych:"دەروونی", nutri:"خۆراک و گەشە", breast:"نەخۆشییەکانی مەمک", anest:"بێهۆشکاری"
 };
-
 const SP_GROUPS = {
-  rheumatology: {
-    patient: [{key:"risale",title:"رسالەی نور"},{key:"conditions",title:"نەخۆشییەکان"},{key:"symptoms",title:"نیشانەکان"},{key:"medications",title:"دەرمانەکان"}],
-    professional: [{key:"risale-pro",title:"رسالەی نور"},{key:"inflammatory",title:"Inflammatory Arthritis"},{key:"crystal",title:"Crystal Arthropathies"},{key:"msk",title:"MSK & Referred Pain"},{key:"ctd",title:"CTD"},{key:"vasculitis",title:"Vasculitis"},{key:"osteoporosis",title:"Osteoporosis"},{key:"investigations",title:"Investigations"}]
+  rheumatology:{
+    patient:[{key:"risale",title:"رسالەی نور"},{key:"conditions",title:"نەخۆشییەکان"},{key:"symptoms",title:"نیشانەکان"},{key:"medications",title:"دەرمانەکان"}],
+    professional:[{key:"risale-pro",title:"رسالەی نور"},{key:"inflammatory",title:"Inflammatory Arthritis"},{key:"crystal",title:"Crystal Arthropathies"},{key:"msk",title:"MSK & Referred Pain"},{key:"ctd",title:"CTD"},{key:"vasculitis",title:"Vasculitis"},{key:"osteoporosis",title:"Osteoporosis"},{key:"investigations",title:"Investigations"}]
   }
 };
 
-// Load from localStorage or start empty
-let DOCTORS = JSON.parse(localStorage.getItem('yh_doctors') || '{}');
-let ARTICLES = JSON.parse(localStorage.getItem('yh_articles') || '{}');
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let DOCTORS = {};
+let ARTICLES = {};
 let editingDocId = null;
-let editingArtId = null;
+let currentSpKey = null;
 
-// ══════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════
+// GitHub config from localStorage
+let GH = {
+  token: localStorage.getItem('yh_gh_token') || '',
+  owner: localStorage.getItem('yh_gh_owner') || '',
+  repo:  localStorage.getItem('yh_gh_repo')  || '',
+  branch:localStorage.getItem('yh_gh_branch')|| 'main',
+};
+
+// ══════════════════════════════════════════════════
+// GITHUB API HELPERS
+// ══════════════════════════════════════════════════
+const GH_API = 'https://api.github.com';
+
+async function ghFetch(path, opts={}) {
+  const res = await fetch(`${GH_API}/repos/${GH.owner}/${GH.repo}${path}`, {
+    ...opts,
+    headers: {
+      'Authorization': `token ${GH.token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json',
+      ...(opts.headers||{})
+    }
+  });
+  if(!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || `GitHub error ${res.status}`);
+  }
+  return res.status === 204 ? {} : res.json();
+}
+
+async function ghGetFile(path) {
+  try {
+    const data = await ghFetch(`/contents/${path}?ref=${GH.branch}`);
+    const content = atob(data.content.replace(/\n/g,''));
+    return { content, sha: data.sha };
+  } catch(e) {
+    if(e.message.includes('404') || e.message.includes('Not Found')) return null;
+    throw e;
+  }
+}
+
+async function ghPutFile(path, content, message, sha=null) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: GH.branch,
+  };
+  if(sha) body.sha = sha;
+  return ghFetch(`/contents/${path}`, {
+    method: 'PUT',
+    body: JSON.stringify(body)
+  });
+}
+
+// ══════════════════════════════════════════════════
+// CONNECT
+// ══════════════════════════════════════════════════
+function updateGhStatus() {
+  const connected = GH.token && GH.owner && GH.repo;
+  document.getElementById('ghDot').className = 'gh-dot ' + (connected ? 'connected' : 'disconnected');
+  document.getElementById('ghStatusText').textContent = connected
+    ? `✓ ${GH.owner}/${GH.repo}`
+    : 'GitHub: نەپەیوەندیکراو';
+}
+
+async function connectGitHub() {
+  const token  = document.getElementById('ghToken').value.trim();
+  const owner  = document.getElementById('ghOwner').value.trim();
+  const repo   = document.getElementById('ghRepo').value.trim();
+  const branch = document.getElementById('ghBranch').value.trim() || 'main';
+  const resultEl = document.getElementById('connectResult');
+
+  if(!token || !owner || !repo) {
+    resultEl.innerHTML = '<span style="color:var(--accent3)">تکایە هەموو بواری داواکراوەکان پڕبکەرەوە.</span>';
+    return;
+  }
+
+  resultEl.innerHTML = '<span style="color:var(--warn)"><span class="spinner"></span> تاقیکردنەوە…</span>';
+
+  GH = { token, owner, repo, branch };
+
+  try {
+    // Test: try to read data.js
+    const file = await ghGetFile('data.js');
+    if(!file) throw new Error('data.js نەدۆزرایەوە — دڵنیاببەوە ناوی repository دروستە');
+
+    // Save to localStorage
+    localStorage.setItem('yh_gh_token', token);
+    localStorage.setItem('yh_gh_owner', owner);
+    localStorage.setItem('yh_gh_repo', repo);
+    localStorage.setItem('yh_gh_branch', branch);
+
+    updateGhStatus();
+    resultEl.innerHTML = '<span style="color:var(--accent2)">✓ پەیوەندی سەرکەوتوو! data.js دۆزرایەوە. ئێستا داتا بارت دەکەین…</span>';
+
+    // Load data
+    await loadFromGitHub();
+    setTimeout(()=>showPage('doctors'), 800);
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:var(--accent3)">✗ هەڵە: ${e.message}</span>`;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// LOAD DATA FROM GITHUB
+// ══════════════════════════════════════════════════
+async function loadFromGitHub() {
+  if(!GH.token) return;
+  setLoading(true);
+
+  try {
+    const file = await ghGetFile('data.js');
+    if(!file) { showToast('data.js نەدۆزرایەوە', true); setLoading(false); return; }
+
+    parseDataJs(file.content);
+    renderDoctorTable();
+    renderArticleList();
+    updateCounts();
+    showToast('✓ داتا بارکرا');
+  } catch(e) {
+    showToast('هەڵە: ' + e.message, true);
+  }
+  setLoading(false);
+}
+
+function parseDataJs(src) {
+  // Extract specialtyDoctors block
+  DOCTORS = {};
+  ARTICLES = {};
+
+  // Parse specialtyDoctors
+  const sdMatch = src.match(/specialtyDoctors\s*:\s*\{([\s\S]*?)\n\s{2}\}/);
+  if(sdMatch) {
+    const block = sdMatch[1];
+    const spBlocks = [...block.matchAll(/"([^"]+)"\s*:\s*\[([\s\S]*?)\]/g)];
+    spBlocks.forEach(([, spKey, listStr]) => {
+      DOCTORS[spKey] = [];
+      const docLines = [...listStr.matchAll(/\{([^}]+)\}/g)];
+      docLines.forEach(([, objStr]) => {
+        const doc = {};
+        objStr.replace(/(\w+)\s*:\s*"([^"]*)"/g, (_, k, v) => { doc[k] = v; });
+        objStr.replace(/(\w+)\s*:\s*null/g, (_, k) => { doc[k] = null; });
+        if(doc.id) DOCTORS[spKey].push(doc);
+      });
+    });
+  }
+
+  // Parse articles
+  const artMatch = src.match(/articles\s*:\s*\{([\s\S]*?)\n\s{2}\}/);
+  if(artMatch) {
+    const artBlocks = [...artMatch[1].matchAll(/"(art-[^"]+)"\s*:\s*\{([\s\S]*?)\n\s{4}\}/g)];
+    artBlocks.forEach(([, artId, objStr]) => {
+      const art = { id: artId };
+      objStr.replace(/\b(\w+)\s*:"([^"]*)"/g, (_, k, v) => { art[k] = v; });
+      // parse arrays
+      const tagsMatch = objStr.match(/tags\s*:\s*\[([^\]]*)\]/);
+      art.tags = tagsMatch ? tagsMatch[1].match(/"([^"]*)"/g)?.map(s=>s.replace(/"/g,''))||[] : [];
+      const authMatch = objStr.match(/authors\s*:\s*\[([^\]]*)\]/);
+      art.authors = authMatch ? authMatch[1].match(/"([^"]*)"/g)?.map(s=>s.replace(/"/g,''))||[] : [];
+      ARTICLES[artId] = art;
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════
+// COMMIT DATA.JS BACK TO GITHUB
+// ══════════════════════════════════════════════════
+async function commitDoctors() {
+  if(!GH.token) { showPage('connect'); return; }
+
+  const btn = document.getElementById('btnCommitDocs');
+  const msg = document.getElementById('docCommitMsg').value.trim() || 'Update doctors list';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> ناردن…';
+
+  try {
+    // Get current data.js sha
+    const current = await ghGetFile('data.js');
+    if(!current) throw new Error('data.js نەدۆزرایەوە');
+
+    const newContent = patchDataJsDoctors(current.content);
+    await ghPutFile('data.js', newContent, msg, current.sha);
+
+    showToast('✓ پاشەکەوتکرا! سایتەکە لە ٣٠ چرکەدا نوێ دەبێتەوە.');
+    btn.innerHTML = '✓ کرا';
+    setTimeout(() => { btn.disabled = false; btn.innerHTML = '🚀 پاشەکەوتکردن لەسەر GitHub'; }, 2500);
+  } catch(e) {
+    showToast('هەڵە: ' + e.message, true);
+    btn.disabled = false;
+    btn.innerHTML = '🚀 پاشەکەوتکردن لەسەر GitHub';
+  }
+}
+
+function patchDataJsDoctors(src) {
+  // Generate new specialtyDoctors block
+  let newBlock = '  specialtyDoctors: {\n';
+  Object.entries(DOCTORS).forEach(([spKey, list]) => {
+    newBlock += `    "${spKey}": [\n`;
+    list.forEach(d => {
+      newBlock += `      {id:"${d.id}", name:"${d.name}", q:"${d.q||'—'}", cl:"${d.cl||'—'}", days:"${d.days||'—'}", ph:"${d.ph||'—'}", fee:"${d.fee||'—'}", dataId:${d.dataId?`"${d.dataId}"`:'null'}},\n`;
+    });
+    newBlock += '    ],\n';
+  });
+  newBlock += '  }';
+
+  // Replace existing specialtyDoctors block
+  const patched = src.replace(
+    /specialtyDoctors\s*:\s*\{[\s\S]*?\n\s{2}\}/,
+    newBlock
+  );
+  return patched === src ? src + '\n// specialtyDoctors patch failed' : patched;
+}
+
+// ══════════════════════════════════════════════════
+// COMMIT ARTICLE (two files: article HTML + data.js)
+// ══════════════════════════════════════════════════
+async function commitArticle() {
+  if(!GH.token) { showPage('connect'); return; }
+
+  const title = document.getElementById('art-title').value.trim();
+  if(!title) { showToast('ناوی وتار داواکراوە!', true); return; }
+
+  const artId = document.getElementById('art-id').value.trim() || ('art-' + Date.now().toString(36));
+  const sp = document.getElementById('art-specialty').value;
+  const level = document.getElementById('art-level').value;
+  const group = document.getElementById('art-group').value || 'general';
+  const icon = document.getElementById('art-icon').value.trim() || '📝';
+  const synopsis = document.getElementById('art-synopsis').value.trim();
+  const tags = document.getElementById('art-tags').value.split(/[،,]/).map(t=>t.trim()).filter(Boolean);
+  const author = document.getElementById('art-author').value.trim();
+  const date = document.getElementById('art-date').value.trim() || new Date().toISOString().slice(0,7);
+  const dateKu = document.getElementById('art-dateku').value.trim() || date;
+  const ytUrl = document.getElementById('art-youtube').value.trim();
+  const bodyHtml = document.getElementById('richEditor').innerHTML;
+
+  let ytId = '';
+  if(ytUrl){ const m=ytUrl.match(/(?:v=|youtu\.be\/)([^&\s]+)/); if(m) ytId=m[1]; }
+
+  const btn = document.getElementById('btnCommitArt');
+  const resultEl = document.getElementById('artCommitResult');
+  const commitMsg = document.getElementById('artCommitMsg').value.trim() || 'Add/update article';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> ناردن…';
+  resultEl.textContent = '';
+
+  try {
+    // 1. Write article body file
+    const articlePath = `articles/${artId}.html`;
+    const existingArt = await ghGetFile(articlePath);
+    await ghPutFile(articlePath, bodyHtml, `${commitMsg} (content)`, existingArt?.sha || null);
+    resultEl.textContent = `✓ فایلی ناوەڕۆک نوێکرایەوە: ${articlePath}`;
+
+    // 2. Update data.js with new article metadata
+    const currentDataJs = await ghGetFile('data.js');
+    if(!currentDataJs) throw new Error('data.js نەدۆزرایەوە');
+
+    const artMeta = {id:artId, specialty:sp, level, group, icon, date, title, synopsis, tags, authors:author?[author]:[], dateKu, media:ytId?[{type:'youtube',id:ytId,caption:''}]:[]};
+    ARTICLES[artId] = artMeta;
+
+    const newDataJs = patchDataJsArticle(currentDataJs.content, artMeta);
+    await ghPutFile('data.js', newDataJs, `${commitMsg} (metadata)`, currentDataJs.sha);
+
+    resultEl.textContent += `\n✓ data.js نوێکرایەوە`;
+    showToast('✓ وتارەکە بڵاوکرایەوە! سایتەکە لە ٣٠ چرکەدا نوێ دەبێتەوە.');
+    updateCounts();
+
+    btn.innerHTML = '✓ کرا';
+    setTimeout(() => { btn.disabled = false; btn.innerHTML = '🚀 بڵاوکردنەوەی وتار لەسەر GitHub'; }, 2500);
+  } catch(e) {
+    showToast('هەڵە: ' + e.message, true);
+    btn.disabled = false;
+    btn.innerHTML = '🚀 بڵاوکردنەوەی وتار لەسەر GitHub';
+  }
+}
+
+function patchDataJsArticle(src, art) {
+  const tagsStr = JSON.stringify(art.tags);
+  const authorsStr = JSON.stringify(art.authors);
+  const mediaStr = JSON.stringify(art.media);
+
+  const newEntry =
+`    "${art.id}":{
+      id:"${art.id}", specialty:"${art.specialty}", level:"${art.level}", group:"${art.group}",
+      icon:"${art.icon}", date:"${art.date}",
+      title:"${art.title.replace(/"/g,'\\"')}",
+      synopsis:"${art.synopsis.replace(/"/g,'\\"')}",
+      media:${mediaStr},
+      authors:${authorsStr}, tags:${tagsStr}, dateKu:"${art.dateKu}"
+    },`;
+
+  // Check if article already exists → replace it
+  const existingRx = new RegExp(`    "${art.id}":\\{[\\s\\S]*?\\n    \\},`, 'm');
+  if(existingRx.test(src)) {
+    return src.replace(existingRx, newEntry);
+  }
+
+  // Otherwise insert before closing } of articles block
+  // Find the articles: { ... } block end
+  const artBlockEnd = src.lastIndexOf('\n  },\n\n  risale:');
+  if(artBlockEnd > 0) {
+    return src.slice(0, artBlockEnd) + '\n' + newEntry + src.slice(artBlockEnd);
+  }
+  // Fallback: append before last }
+  return src.replace(/(\n\s{2}\},\s*\n\s*\/\/ HELPERS)/, '\n' + newEntry + '$1');
+}
+
+// ══════════════════════════════════════════════════
+// UI — NAVIGATION
+// ══════════════════════════════════════════════════
 function showPage(name) {
-  ['doctors','articles','export','howto'].forEach(p => {
-    document.getElementById('page-'+p).style.display = (p===name)?'block':'none';
+  ['connect','doctors','articles','howto'].forEach(p => {
+    document.getElementById('page-'+p).style.display = p===name ? 'block' : 'none';
   });
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const nb = document.querySelector(`.nav-btn[onclick="showPage('${name}')"]`);
   if(nb) nb.classList.add('active');
-  if(name==='export') renderFullExport();
-  updateCounts();
+  if(name==='doctors' && GH.token && !Object.keys(DOCTORS).length) loadFromGitHub();
 }
 
-// ══════════════════════════════════════════════════════
-// SPECIALTY OPTIONS
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// UI — SPECIALTY SELECTS
+// ══════════════════════════════════════════════════
 function populateSpSelects() {
   ['docSpFilter','d-specialty','art-specialty','artSpFilter'].forEach(id => {
     const el = document.getElementById(id);
     if(!el) return;
-    const hasAll = el.querySelector('option[value=""]');
-    el.innerHTML = '';
-    if(id === 'docSpFilter' || id === 'artSpFilter') {
-      el.innerHTML = `<option value="">هەموو پسپۆڕییەکان</option>`;
-    }
+    const isFilter = id.includes('Filter');
+    el.innerHTML = isFilter ? '<option value="">هەموو پسپۆڕییەکان</option>' : '';
     Object.entries(SPECIALTIES).forEach(([key,name]) => {
       const o = document.createElement('option');
       o.value = key; o.textContent = name;
@@ -738,50 +864,44 @@ function populateSpSelects() {
   });
 }
 
-// ══════════════════════════════════════════════════════
-// DOCTORS TABLE
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// UI — DOCTORS TABLE
+// ══════════════════════════════════════════════════
 function renderDoctorTable() {
   const search = document.getElementById('docSearch').value.trim().toLowerCase();
   const spFilter = document.getElementById('docSpFilter').value;
   const tbody = document.getElementById('doctorTbody');
   tbody.innerHTML = '';
 
-  // Flatten all doctors from all specialties
   let rows = [];
   Object.entries(DOCTORS).forEach(([sp, list]) => {
     list.forEach(d => rows.push({...d, spKey: sp}));
   });
-
-  // Filter
   rows = rows.filter(d => {
     const matchSp = !spFilter || d.spKey === spFilter;
-    const matchSearch = !search || d.name.toLowerCase().includes(search) ||
-      (d.cl||'').toLowerCase().includes(search);
-    return matchSp && matchSearch;
+    const matchS = !search || (d.name||'').toLowerCase().includes(search) || (d.cl||'').toLowerCase().includes(search);
+    return matchSp && matchS;
   });
 
   if(!rows.length) {
     tbody.innerHTML = `<tr class="empty-row"><td colspan="8">هیچ پزیشکێک نەدۆزرایەوە</td></tr>`;
     return;
   }
-
   rows.forEach((d, i) => {
     const tr = document.createElement('tr');
-    const spName = SPECIALTIES[d.spKey] || d.spKey;
-    const days = d.days && d.days !== '—' ? d.days : '<span style="color:var(--text-dim)">—</span>';
+    const spName = SPECIALTIES[d.spKey]||d.spKey;
+    const days = d.days && d.days!=='—' ? d.days : '<span style="color:var(--text-dim)">—</span>';
     tr.innerHTML = `
       <td style="color:var(--text-dim)">${i+1}</td>
-      <td class="name-cell">${d.name}</td>
+      <td class="name-cell">${d.name||''}</td>
       <td><span class="sp-badge">${spName}</span></td>
       <td style="color:var(--text-muted);font-size:.78rem">${d.q||'—'}</td>
       <td style="color:var(--text-muted);font-size:.79rem">${d.cl||'—'}</td>
       <td style="font-size:.79rem">${days}</td>
       <td style="font-family:monospace;font-size:.78rem;color:var(--text-muted)">${d.ph||'—'}</td>
       <td class="actions-cell">
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="editDoctor('${d.spKey}','${d.id}')" title="دەستکاری">✏️</button>
-        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteDoctor('${d.spKey}','${d.id}')" title="سڕینەوە">🗑</button>
-        <button class="btn btn-ghost btn-sm" onclick="showDocCode('${d.spKey}','${d.id}')">📋 کۆد</button>
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="editDoctor('${d.spKey}','${d.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteDoctor('${d.spKey}','${d.id}')">🗑</button>
       </td>`;
     tbody.appendChild(tr);
   });
@@ -790,8 +910,8 @@ function renderDoctorTable() {
 
 function openDocModal(spKey, docId) {
   editingDocId = docId || null;
+  currentSpKey = spKey || null;
   document.getElementById('docModalTitle').textContent = docId ? 'دەستکاریکردنی پزیشک' : 'پزیشکی نوێ';
-  // Clear
   ['d-name','d-qual','d-clinic','d-days','d-phone','d-fee','d-bio','d-id'].forEach(id => {
     document.getElementById(id).value = '';
   });
@@ -810,7 +930,7 @@ function openDocModal(spKey, docId) {
     }
   }
   document.getElementById('docModalOverlay').classList.add('open');
-  document.getElementById('d-name').focus();
+  setTimeout(() => document.getElementById('d-name').focus(), 80);
 }
 
 function editDoctor(spKey, docId) { openDocModal(spKey, docId); }
@@ -818,21 +938,9 @@ function editDoctor(spKey, docId) { openDocModal(spKey, docId); }
 function closeDocModal() { document.getElementById('docModalOverlay').classList.remove('open'); }
 function closeDocMBg(e) { if(e.target.id==='docModalOverlay') closeDocModal(); }
 
-function slugify(text) {
-  return text.toLowerCase()
-    .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim().slice(0,40);
-}
-
-function autoId(name) {
-  // Kurdish name → try to extract latin parts or just create slug from position
-  const parts = name.replace(/دکتۆر[ە]?\s*/,'').split(' ');
-  return 'doc-' + Date.now().toString(36);
-}
-
 document.getElementById('d-name').addEventListener('input', function() {
   const idEl = document.getElementById('d-id');
   if(!idEl.value || idEl.dataset.auto === 'true') {
-    const base = this.value.replace(/دکتۆر[ە]?\s*/,'').trim();
     idEl.value = 'doc-' + Date.now().toString(36);
     idEl.dataset.auto = 'true';
   }
@@ -841,13 +949,12 @@ document.getElementById('d-name').addEventListener('input', function() {
 function saveDoctor() {
   const name = document.getElementById('d-name').value.trim();
   const spKey = document.getElementById('d-specialty').value;
-  if(!name) { showToast('ناوی پزیشک داواکراوە!'); return; }
-  if(!spKey) { showToast('پسپۆڕی هەڵبژێرە!'); return; }
+  if(!name) { showToast('ناوی پزیشک داواکراوە!', true); return; }
 
   const days = document.getElementById('d-days').value.trim();
   const phone = document.getElementById('d-phone').value.trim();
   const fee = document.getElementById('d-fee').value.trim();
-  let id = document.getElementById('d-id').value.trim() || ('doc-'+Date.now().toString(36));
+  const id = document.getElementById('d-id').value.trim() || ('doc-'+Date.now().toString(36));
 
   const doc = {
     id, name,
@@ -863,61 +970,28 @@ function saveDoctor() {
   if(!DOCTORS[spKey]) DOCTORS[spKey] = [];
 
   if(editingDocId) {
-    // Remove from all specialties first
     Object.keys(DOCTORS).forEach(sp => {
       DOCTORS[sp] = DOCTORS[sp].filter(d => d.id !== editingDocId);
     });
   }
 
-  // Check duplicate id
-  const existing = DOCTORS[spKey].find(d => d.id === id && id !== editingDocId);
-  if(existing) doc.id = id + '-' + Date.now().toString(36).slice(-4);
-
   DOCTORS[spKey].push(doc);
-  localStorage.setItem('yh_doctors', JSON.stringify(DOCTORS));
   closeDocModal();
   renderDoctorTable();
-  showDocOutput();
-  showToast('✓ پاشەکەوتکرا — کۆدەکە کۆپی بکە و لە data.js بیداپەستێ');
+  showToast('✓ پاشەکەوتکرا لە بیرگەدا — کلیکی 🚀 بکە بۆ ناردن بۆ GitHub');
 }
 
 function deleteDoctor(spKey, docId) {
-  if(!confirm('دڵنیایت؟ ئەم پزیشکە دەسڕێتەوە.')) return;
+  if(!confirm('دڵنیایت؟')) return;
   DOCTORS[spKey] = (DOCTORS[spKey]||[]).filter(d => d.id !== docId);
   if(!DOCTORS[spKey].length) delete DOCTORS[spKey];
-  localStorage.setItem('yh_doctors', JSON.stringify(DOCTORS));
   renderDoctorTable();
-  showToast('سڕایەوە');
+  showToast('سڕایەوە — کلیکی 🚀 بکە بۆ ناردن بۆ GitHub');
 }
 
-function showDocOutput() {
-  const out = document.getElementById('docOutput');
-  const code = document.getElementById('docOutputCode');
-  out.style.display = 'block';
-  code.textContent = generateDoctorsCode();
-  out.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-
-function showDocCode(spKey, docId) {
-  showDocOutput();
-}
-
-function generateDoctorsCode() {
-  let lines = ['  specialtyDoctors: {'];
-  Object.entries(DOCTORS).forEach(([spKey, list]) => {
-    lines.push(`    "${spKey}": [`);
-    list.forEach(d => {
-      lines.push(`      {id:"${d.id}", name:"${d.name}", q:"${d.q}", cl:"${d.cl}", days:"${d.days}", ph:"${d.ph}", fee:"${d.fee}", dataId:null},`);
-    });
-    lines.push('    ],');
-  });
-  lines.push('  },');
-  return lines.join('\n');
-}
-
-// ══════════════════════════════════════════════════════
-// ARTICLES
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// UI — ARTICLES LIST
+// ══════════════════════════════════════════════════
 function renderArticleList() {
   const search = document.getElementById('artSearch').value.trim().toLowerCase();
   const spFilter = document.getElementById('artSpFilter').value;
@@ -926,10 +1000,9 @@ function renderArticleList() {
   container.innerHTML = '';
 
   const arts = Object.values(ARTICLES).filter(a => {
-    const matchSp = !spFilter || a.specialty === spFilter;
-    const matchLevel = !levelFilter || a.level === levelFilter;
-    const matchSearch = !search || a.title.toLowerCase().includes(search);
-    return matchSp && matchLevel && matchSearch;
+    return (!spFilter || a.specialty===spFilter) &&
+           (!levelFilter || a.level===levelFilter) &&
+           (!search || (a.title||'').toLowerCase().includes(search));
   });
 
   if(!arts.length) {
@@ -943,42 +1016,36 @@ function renderArticleList() {
     div.innerHTML = `
       <div class="art-icon-big">${a.icon||'📝'}</div>
       <div class="art-info">
-        <div class="art-title">${a.title}</div>
+        <div class="art-title">${a.title||a.id}</div>
         <div class="art-meta-line">
           <span class="art-tag ${a.level}">${a.level==='patient'?'🙋 بۆ نەخۆش':'🔬 کلینیکی'}</span>
-          <span class="art-tag sp">${SPECIALTIES[a.specialty]||a.specialty}</span>
+          <span class="art-tag sp">${SPECIALTIES[a.specialty]||a.specialty||''}</span>
           ${a.dateKu?`<span style="font-size:.72rem;color:var(--text-dim)">${a.dateKu}</span>`:''}
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button class="btn btn-ghost btn-sm btn-icon" onclick="loadArticleToEditor('${a.id}')" title="دەستکاری">✏️</button>
-        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteArticle('${a.id}')" title="سڕینەوە">🗑</button>
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="loadArticleToEditor('${a.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteArticleMeta('${a.id}')">🗑</button>
       </div>`;
     container.appendChild(div);
   });
   updateCounts();
 }
 
-function openArticleEditor(artId) {
-  // Clear editor
-  if(!artId) {
-    editingArtId = null;
-    ['art-title','art-synopsis','art-tags','art-author','art-date','art-dateku','art-id','art-youtube'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    document.getElementById('richEditor').innerHTML = '<p>ناوەڕۆکی وتارەکەت لێرە بنووسە…</p>';
-    document.getElementById('art-icon').value = '📝';
-    document.getElementById('art-level').value = 'patient';
-  }
+function openArticleEditor() {
+  ['art-title','art-synopsis','art-tags','art-author','art-date','art-dateku','art-id','art-youtube'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('richEditor').innerHTML = '<p>ناوەڕۆکی وتارەکەت لێرە بنووسە…</p>';
+  document.getElementById('art-icon').value = '📝';
+  document.getElementById('art-level').value = 'patient';
   updateGroupOptions();
-  updatePreview();
   switchArticleTab('editor', document.getElementById('editorTab'));
 }
 
-function loadArticleToEditor(artId) {
+async function loadArticleToEditor(artId) {
   const a = ARTICLES[artId];
   if(!a) return;
-  editingArtId = artId;
   document.getElementById('art-title').value = a.title||'';
   document.getElementById('art-specialty').value = a.specialty||'rheumatology';
   document.getElementById('art-level').value = a.level||'patient';
@@ -989,25 +1056,39 @@ function loadArticleToEditor(artId) {
   document.getElementById('art-dateku').value = a.dateKu||'';
   document.getElementById('art-id').value = a.id||artId;
   document.getElementById('art-icon').value = a.icon||'📝';
-  document.getElementById('art-youtube').value = a.youtubeUrl||'';
-  document.getElementById('richEditor').innerHTML = a.fullBody||a.body||'';
   updateGroupOptions();
   document.getElementById('art-group').value = a.group||'';
-  updatePreview();
+
+  // Try to load article body from GitHub
   switchArticleTab('editor', document.getElementById('editorTab'));
+  document.getElementById('richEditor').innerHTML = '<p style="color:var(--text-dim)">بارکردن…</p>';
+
+  if(GH.token) {
+    try {
+      const file = await ghGetFile(`articles/${artId}.html`);
+      if(file) {
+        document.getElementById('richEditor').innerHTML = file.content;
+      } else {
+        document.getElementById('richEditor').innerHTML = `<p>${a.synopsis||''}</p>`;
+      }
+    } catch(e) {
+      document.getElementById('richEditor').innerHTML = `<p>${a.synopsis||''}</p>`;
+    }
+  } else {
+    document.getElementById('richEditor').innerHTML = `<p>${a.synopsis||''}</p>`;
+  }
 }
 
-function deleteArticle(artId) {
-  if(!confirm('دڵنیایت؟')) return;
+function deleteArticleMeta(artId) {
+  if(!confirm('تەنها زانیاری وتارەکە دەسڕێتەوە. فایلی ناوەڕۆک لەسەر GitHub دەمێنێتەوە.')) return;
   delete ARTICLES[artId];
-  localStorage.setItem('yh_articles', JSON.stringify(ARTICLES));
   renderArticleList();
-  showToast('سڕایەوە');
+  showToast('سڕایەوە لە بیرگەدا — کلیکی 🚀 بکە بۆ نوێکردنەوەی GitHub');
 }
 
 function switchArticleTab(name, btn) {
-  document.querySelectorAll('#page-articles .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('#page-articles .tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#page-articles .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#page-articles .tab-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('atp-'+name).classList.add('active');
   if(name==='list') renderArticleList();
@@ -1024,66 +1105,71 @@ function updateGroupOptions() {
     o.value = g.key; o.textContent = g.title;
     grpSel.appendChild(o);
   });
-  if(!groups.length) {
-    grpSel.innerHTML = '<option value="general">گشتی (general)</option>';
-  }
+  if(!groups.length) grpSel.innerHTML = '<option value="general">گشتی</option>';
 }
 
-// ── Rich editor helpers ──
+// ══════════════════════════════════════════════════
+// RICH EDITOR
+// ══════════════════════════════════════════════════
 function fmt(cmd) {
   document.getElementById('richEditor').focus();
   document.execCommand(cmd, false, null);
-  updatePreview();
 }
-
 function insertBlock(tag) {
-  const editor = document.getElementById('richEditor');
-  editor.focus();
+  document.getElementById('richEditor').focus();
   const sel = window.getSelection();
   const text = sel.rangeCount ? sel.getRangeAt(0).toString() || 'ناوەڕۆک...' : 'ناوەڕۆک...';
   document.execCommand('insertHTML', false, `<${tag}>${text}</${tag}><p></p>`);
-  updatePreview();
 }
-
 function insertTip() {
   document.getElementById('richEditor').focus();
   document.execCommand('insertHTML', false, `<div class="tip-block">💡 تێبینی: ناوەڕۆکی تێبینییەکەت لێرە...</div><p></p>`);
-  updatePreview();
 }
-
 function insertPro() {
   document.getElementById('richEditor').focus();
   document.execCommand('insertHTML', false, `<div class="pro-block">📌 تێبینی پزیشکی: ناوەڕۆک...</div><p></p>`);
-  updatePreview();
 }
-
 function insertTable() {
   document.getElementById('richEditor').focus();
-  document.execCommand('insertHTML', false, `
-<table class="art-table">
-<thead><tr><th>ستوونی یەکەم</th><th>ستوونی دووەم</th><th>ستوونی سێیەم</th></tr></thead>
-<tbody>
-<tr><td>ناوەڕۆک</td><td>ناوەڕۆک</td><td>ناوەڕۆک</td></tr>
-<tr><td>ناوەڕۆک</td><td>ناوەڕۆک</td><td>ناوەڕۆک</td></tr>
-</tbody></table><p></p>`);
-  updatePreview();
+  document.execCommand('insertHTML', false, `<table class="art-table"><thead><tr><th>ستوونی یەکەم</th><th>ستوونی دووەم</th><th>ستوونی سێیەم</th></tr></thead><tbody><tr><td>ناوەڕۆک</td><td>ناوەڕۆک</td><td>ناوەڕۆک</td></tr><tr><td>ناوەڕۆک</td><td>ناوەڕۆک</td><td>ناوەڕۆک</td></tr></tbody></table><p></p>`);
 }
-
 function clearEditor() {
   if(confirm('دڵنیایت لە پاکردنەوەی هەموو ناوەڕۆکەکە؟')) {
     document.getElementById('richEditor').innerHTML = '<p></p>';
-    updatePreview();
   }
 }
 
-function handleEditorKey(e) {
-  if(e.key === 'Enter') {
-    // After a heading, insert a regular paragraph
-    setTimeout(() => updatePreview(), 10);
-  }
+// ══════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════
+function setLoading(on) {
+  ['btnRefresh','btnRefreshArt'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.disabled = on;
+    el.innerHTML = on ? '<span class="spinner"></span> بارکردن…' : '🔄 نوێکردنەوە';
+  });
 }
 
-// ── Auto-generate article ID ──
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function updateCounts() {
+  const docCount = Object.values(DOCTORS).reduce((s,l)=>s+l.length, 0);
+  const artCount = Object.keys(ARTICLES).length;
+  document.getElementById('nc-doctors').textContent = docCount;
+  document.getElementById('nc-articles').textContent = artCount;
+}
+
+// ══════════════════════════════════════════════════
+// AUTO-ID
+// ══════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('art-title').addEventListener('input', function() {
     const idEl = document.getElementById('art-id');
@@ -1094,171 +1180,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── Generate article code ──
-function updatePreview() {
-  generateArticleCode();
-}
-
-function getEditorHTML() {
-  const editor = document.getElementById('richEditor');
-  let html = editor.innerHTML;
-  // Clean up contenteditable artifacts
-  html = html.replace(/ contenteditable="[^"]*"/g, '');
-  return html;
-}
-
-function generateArticleCode() {
-  const title = document.getElementById('art-title').value.trim();
-  const synopsis = document.getElementById('art-synopsis').value.trim();
-  const sp = document.getElementById('art-specialty').value;
-  const level = document.getElementById('art-level').value;
-  const group = document.getElementById('art-group').value || 'general';
-  const icon = document.getElementById('art-icon').value.trim() || '📝';
-  const tags = document.getElementById('art-tags').value.split(/[،,]/).map(t=>t.trim()).filter(Boolean);
-  const author = document.getElementById('art-author').value.trim();
-  const date = document.getElementById('art-date').value.trim() || new Date().toISOString().slice(0,7);
-  const dateKu = document.getElementById('art-dateku').value.trim();
-  const artId = document.getElementById('art-id').value.trim() || ('art-'+Date.now().toString(36));
-  const ytUrl = document.getElementById('art-youtube').value.trim();
-  const fullBody = getEditorHTML();
-
-  // Extract YouTube ID
-  let ytId = '';
-  if(ytUrl) {
-    const m = ytUrl.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
-    if(m) ytId = m[1];
-  }
-
-  const mediaStr = ytId
-    ? `\n      media:[{type:"youtube", id:"${ytId}", caption:""}],`
-    : '\n      media:[],';
-
-  const tagsStr = JSON.stringify(tags);
-  const authorsStr = author ? `["${author.split(',').map(a=>a.trim()).join('","')}"]` : '[]';
-
-  // body = synopsis as simple HTML (shown on click on specialty page)
-  const bodyStr = `<p>${synopsis}</p>`;
-
-  const code = `  // ── وتاری تازە ── لەناو articles:{} بیداپەستێ ──
-  "${artId}":{
-    id:"${artId}", specialty:"${sp}", level:"${level}", group:"${group}",
-    icon:"${icon}", date:"${date}",
-    title:"${title||'ناوی وتار'}",
-    synopsis:"${synopsis.replace(/"/g,'\\"')||'کورتەیەکی وتار...'}",
-    body:\`${bodyStr}\`,
-    fullBody:\`${fullBody||'<p>ناوەڕۆک...</p>'}\`,${mediaStr}
-    authors:${authorsStr}, tags:${tagsStr}, dateKu:"${dateKu||date}"
-  },`;
-
-  document.getElementById('artOutputCode').textContent = code;
-  return {artId, title, sp, level, group, icon, tags, author, date, dateKu, synopsis, fullBody, ytId};
-}
-
-function saveArticleToLocal() {
-  const d = generateArticleCode();
-  if(!d.title) { showToast('ناوی وتار داواکراوە!'); return; }
-  const fullBody = getEditorHTML();
-  const ytUrl = document.getElementById('art-youtube').value.trim();
-  let ytId = '';
-  if(ytUrl) { const m = ytUrl.match(/(?:v=|youtu\.be\/)([^&\s]+)/); if(m) ytId = m[1]; }
-
-  const art = {
-    id: d.artId, specialty: d.sp, level: d.level, group: d.group,
-    icon: d.icon, date: d.date, title: d.title, synopsis: d.synopsis,
-    body: `<p>${d.synopsis}</p>`, fullBody,
-    media: ytId ? [{type:'youtube',id:ytId,caption:''}] : [],
-    authors: d.author ? d.author.split(',').map(a=>a.trim()) : [],
-    tags: d.tags, dateKu: d.dateKu || d.date, youtubeUrl: ytUrl
-  };
-
-  ARTICLES[d.artId] = art;
-  localStorage.setItem('yh_articles', JSON.stringify(ARTICLES));
-  showToast('✓ پاشەکەوتکرا — کۆدەکە کۆپی بکە و لە data.js بیداپەستێ');
-  updateCounts();
-  editingArtId = d.artId;
-}
-
-// ══════════════════════════════════════════════════════
-// FULL EXPORT
-// ══════════════════════════════════════════════════════
-function renderFullExport() {
-  let code = '// ══════════════════════════════════════════\n';
-  code += '// یا حکیم — داتای تازەکان\n';
-  code += '// ئەمانە لەناو YH = { ... } بیداپەستێ لە data.js\n';
-  code += '// ══════════════════════════════════════════\n\n';
-
-  if(Object.keys(DOCTORS).length) {
-    code += '// ── SPECIALTY DOCTORS — جێگری specialtyDoctors:{} ی هەیە ──\n';
-    code += generateDoctorsCode();
-    code += '\n\n';
-  }
-
-  if(Object.keys(ARTICLES).length) {
-    code += '// ── ARTICLES — لەناو articles:{} بیداپەستێ ──\n';
-    Object.values(ARTICLES).forEach(a => {
-      code += `  "${a.id}":{\n`;
-      code += `    id:"${a.id}", specialty:"${a.specialty}", level:"${a.level}", group:"${a.group||'general'}",\n`;
-      code += `    icon:"${a.icon||'📝'}", date:"${a.date||''}",\n`;
-      code += `    title:"${(a.title||'').replace(/"/g,'\\"')}",\n`;
-      code += `    synopsis:"${(a.synopsis||'').replace(/"/g,'\\"')}",\n`;
-      code += `    body:\`<p>${(a.synopsis||'').replace(/`/g,"'")}</p>\`,\n`;
-      code += `    fullBody:\`${(a.fullBody||'').replace(/`/g,"'")}\`,\n`;
-      code += `    media:${JSON.stringify(a.media||[])},\n`;
-      code += `    authors:${JSON.stringify(a.authors||[])}, tags:${JSON.stringify(a.tags||[])}, dateKu:"${a.dateKu||''}"\n`;
-      code += '  },\n\n';
-    });
-  }
-
-  if(!Object.keys(DOCTORS).length && !Object.keys(ARTICLES).length) {
-    code += '// هێشتا هیچ داتایەک زیاد نەکراوە.\n// پزیشک یان وتار زیاد بکە پێشتر.';
-  }
-
-  document.getElementById('fullExportCode').textContent = code;
-}
-
-// ══════════════════════════════════════════════════════
-// UTILITIES
-// ══════════════════════════════════════════════════════
-function copyOutput(id) {
-  const el = document.getElementById(id);
-  const text = el.textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    el.classList.add('copy-success');
-    setTimeout(() => el.classList.remove('copy-success'), 1200);
-    showToast('✓ کۆپیکرا! ئێستا لە data.js بیداپەستێ');
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('✓ کۆپیکرا!');
-  });
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
-}
-
-function updateCounts() {
-  const docCount = Object.values(DOCTORS).reduce((s,l) => s+l.length, 0);
-  const artCount = Object.keys(ARTICLES).length;
-  document.getElementById('nc-doctors').textContent = docCount;
-  document.getElementById('nc-articles').textContent = artCount;
-}
-
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 populateSpSelects();
-renderDoctorTable();
-renderArticleList();
 updateGroupOptions();
-updateCounts();
+updateGhStatus();
+
+// Pre-fill connect form if saved
+if(GH.token) document.getElementById('ghToken').value = GH.token;
+if(GH.owner) document.getElementById('ghOwner').value = GH.owner;
+if(GH.repo)  document.getElementById('ghRepo').value  = GH.repo;
+if(GH.branch) document.getElementById('ghBranch').value = GH.branch;
+
+// Show doctors page if already connected
+if(GH.token && GH.owner && GH.repo) {
+  showPage('doctors');
+  loadFromGitHub();
+} else {
+  showPage('connect');
+}
 </script>
 </body>
 </html>
